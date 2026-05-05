@@ -139,7 +139,6 @@
         <div class="stat-card"><div class="stat-label">Assigned</div><div class="stat-value gold" id="statAssigned">0</div></div>
         <div class="stat-card"><div class="stat-label">Delivered Today</div><div class="stat-value green" id="statDelivered">0</div></div>
         <div class="stat-card"><div class="stat-label">My Orders</div><div class="stat-value blue" id="statMyOrders">0</div></div>
-        <div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-value green" id="statRevenue">₹0</div></div>
       </div>
 
       <!-- Tabs -->
@@ -250,7 +249,6 @@
           <div class="stat-card"><div class="stat-label">Orders Made</div><div class="stat-value blue" id="repMade">0</div></div>
           <div class="stat-card"><div class="stat-label">Assigned</div><div class="stat-value gold" id="repAssigned">0</div></div>
           <div class="stat-card"><div class="stat-label">Transferred</div><div class="stat-value" id="repTransferred">0</div></div>
-          <div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-value green" id="repRevenue">₹0</div></div>
           <div class="stat-card"><div class="stat-label">Avg Delivery</div><div class="stat-value" id="repAvgTime">—</div></div>
         </div>
 
@@ -424,7 +422,6 @@ console.log('Full staff:', window.currentStaff);
     document.getElementById('statAssigned').textContent  = assigned;
     document.getElementById('statDelivered').textContent = delivered;
     document.getElementById('statMyOrders').textContent  = myOrders;
-    document.getElementById('statRevenue').textContent   = '₹' + revenue.toFixed(0);
 
     // Badge
     const badge = document.getElementById('assignBadge');
@@ -478,17 +475,15 @@ console.log('Full staff:', window.currentStaff);
           <div style="font-size:0.72rem;color:var(--text-dim);">${order.customer_phone||''}</div>
         </div>
         <div class="assign-actions">
-          ${order.status === 'done' && !isDone ? `
-            <button class="btn btn-primary btn-sm" onclick="markDelivered('${order.id}')">✅ Mark Delivered</button>
-          ` : ''}
-          ${order.status === 'done' && !order.delivered_at ? `
-            <button class="btn btn-primary btn-sm" onclick="markDelivered('${order.id}')">✅ Mark Delivered</button>
-          ` : ''}
-          ${!isDone ? `
+          ${order.status === 'done' ? `
+            <button class="btn btn-primary btn-sm" onclick="markDelivered('${order.id}')">🛎️ Mark Delivered</button>
             <button class="btn btn-gold btn-sm" onclick="openTransferModal('${order.id}')">🔄 Transfer</button>
           ` : ''}
-          ${order.payment_status === 'unpaid' && order.status === 'done' ? `
-            <button class="btn btn-secondary btn-sm" onclick="markPaid('${order.id}')">💰 Collect Payment</button>
+          ${order.status === 'delivered' ? `
+            <span style="font-size:0.78rem;color:var(--green-bright);">✅ Delivered — Awaiting payment</span>
+          ` : ''}
+          ${needsCollection ? `
+            <button class="btn btn-primary btn-sm" onclick="notifyPaymentCollected('${order.id}')">💰 Payment Collected</button>
           ` : ''}
         </div>
       </div>`;
@@ -499,7 +494,7 @@ console.log('Full staff:', window.currentStaff);
   window.markDelivered = async function(orderId) {
     const sb = window.supabaseClient;
     const { error } = await sb.from('orders').update({
-      status: 'done',
+      status: 'delivered',
       delivered_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     }).eq('id', orderId);
@@ -524,6 +519,31 @@ console.log('Full staff:', window.currentStaff);
       payment_status: 'paid', updated_at: new Date().toISOString()
     }).eq('id', orderId);
     if (!error) { window.showToast('💰 Payment collected!', '', 'success'); await loadAssignments(); }
+  };
+
+  // ── Waiter notifies payment collected to manager
+  window.notifyPaymentCollected = async function(orderId) {
+    const sb = window.supabaseClient;
+    const { error } = await sb.from('orders').update({
+      payment_status: 'paid',
+      payment_done_at: new Date().toISOString(),
+      payment_done_by: window.currentStaff?.name || '',
+      updated_at: new Date().toISOString()
+    }).eq('id', orderId);
+    if (!error) {
+      window.showToast('💰 Payment updated!','Manager will confirm','success');
+      // Update waiter delivery credit
+      const bid   = window.getActiveBranchId();
+      const today = new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'});
+      await sb.from('waiter_delivery_count').upsert({
+        branch_id:   bid,
+        waiter_id:   window.currentStaff?.staff_id,
+        waiter_name: window.currentStaff?.name,
+        date:        today,
+        count:       1
+      },{ onConflict:'branch_id,waiter_id,date' });
+      await loadAssignments();
+    }
   };
 
   // ── Transfer order
@@ -629,8 +649,8 @@ console.log('Full staff:', window.currentStaff);
         </div>
         <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:6px;">${summary}</div>
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-family:var(--font-mono);color:var(--green-bright);">₹${parseFloat(o.total).toFixed(2)}</span>
           <span style="font-size:0.75rem;color:var(--text-dim);">${dt}</span>
+          <span class="badge badge-${o.payment_status==='paid'?'paid':'unpaid'}">${o.payment_status}</span>
         </div>
       </div>`;
     }).join('');
@@ -953,7 +973,6 @@ console.log('Full staff:', window.currentStaff);
     document.getElementById('repDelivered').textContent   = delivered;
     document.getElementById('repMade').textContent        = made;
     document.getElementById('repAssigned').textContent    = assignedOrds;
-    document.getElementById('repRevenue').textContent     = '₹' + revenue.toFixed(0);
     document.getElementById('repAvgTime').textContent     = avgTime ? avgTime + ' min' : '—';
 
     // Count transferred (assigned to me but then reassigned to someone else)

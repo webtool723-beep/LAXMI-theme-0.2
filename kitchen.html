@@ -122,11 +122,7 @@
           <div class="stat-value green" id="statDone">0</div>
           <div class="stat-dot" style="background:var(--done);"></div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Revenue Today</div>
-          <div class="stat-value green" id="statRevenue">₹0</div>
-          <div class="stat-dot" style="background:var(--green-accent);"></div>
-        </div>
+        
         <div class="stat-card">
           <div class="stat-label">Total Orders</div>
           <div class="stat-value" id="statTotal">0</div>
@@ -335,7 +331,6 @@
     document.getElementById('statDone').textContent = done;
     document.getElementById('statRejected').textContent = rejected;
     document.getElementById('statTotal').textContent = todayOrders.length;
-    document.getElementById('statRevenue').textContent = '₹' + revenue.toFixed(0);
   }
 
   function updateTabCounts(orders) {
@@ -443,7 +438,7 @@
         <div>
           <div class="order-total">₹${parseFloat(order.total).toFixed(2)}</div>
           <div style="font-size:0.72rem;color:var(--text-dim);margin-top:2px;">
-            ${order.payment_status === 'paid' ? '✅ Paid' : '🔴 Unpaid'}
+            ${order.assigned_waiter_name ? `🛎️ ${order.assigned_waiter_name}` : ''}
           </div>
         </div>
         <div class="order-actions">${actionBtns}</div>
@@ -457,76 +452,123 @@
   }
 
   function getActionButtons(order) {
-    const waiterBtn = order.assigned_waiter_name
+    const waiterTag = order.assigned_waiter_name
       ? `<span style="font-size:0.72rem;color:var(--blue);background:var(--blue-dim);padding:2px 8px;border-radius:10px;border:1px solid rgba(66,165,245,0.3);">🛎️ ${order.assigned_waiter_name}</span>`
-      : `<button class="btn btn-secondary btn-sm" onclick="openAssignWaiter('${order.id}');event.stopPropagation()">🛎️ Assign</button>`;
+      : '';
 
     if (order.status === 'pending') {
       return `
         <button class="btn btn-blue btn-sm" onclick="updateStatus('${order.id}','preparing');event.stopPropagation()">👨‍🍳 Preparing</button>
         <button class="btn btn-danger btn-sm" onclick="updateStatus('${order.id}','rejected');event.stopPropagation()">✕ Reject</button>
-        ${waiterBtn}
       `;
     }
     if (order.status === 'preparing') {
-      return `
-        <button class="btn btn-primary btn-sm" onclick="updateStatus('${order.id}','done');event.stopPropagation()">✅ Done</button>
-        <button class="btn btn-danger btn-sm" onclick="updateStatus('${order.id}','rejected');event.stopPropagation()">✕ Reject</button>
-        ${waiterBtn}
-      `;
+      // If waiter already assigned show Done button, else show Assign+Done
+      if (order.assigned_waiter_name) {
+        return `
+          <button class="btn btn-primary btn-sm" onclick="markDoneWithWaiter('${order.id}');event.stopPropagation()">✅ Done</button>
+          <button class="btn btn-danger btn-sm" onclick="updateStatus('${order.id}','rejected');event.stopPropagation()">✕ Reject</button>
+          ${waiterTag}
+        `;
+      } else {
+        return `
+          <button class="btn btn-primary btn-sm" onclick="markDoneWithWaiter('${order.id}');event.stopPropagation()">✅ Done</button>
+          <button class="btn btn-danger btn-sm" onclick="updateStatus('${order.id}','rejected');event.stopPropagation()">✕ Reject</button>
+        `;
+      }
     }
     if (order.status === 'done') {
       return `
-        <button class="btn btn-gold btn-sm" onclick="markPayment('${order.id}');event.stopPropagation()">
-          ${order.payment_status === 'paid' ? '✅ Paid' : '💰 Mark Paid'}
-        </button>
-        <button class="btn btn-secondary btn-sm" onclick="printOrderBill('${order.id}');event.stopPropagation()">🖨️ Bill</button>
+        <span style="font-size:0.78rem;color:var(--green-bright);">✅ Ready — Waiter collecting</span>
+        ${waiterTag}
       `;
+    }
+    if (order.status === 'delivered') {
+      return `<span style="font-size:0.78rem;color:var(--text-dim);">🛎️ Delivered — Awaiting payment</span>`;
     }
     return '';
   }
 
-  // ── Update order status
+  // ── Update order status (simple — for pending/rejected only)
   window.updateStatus = async function(orderId, newStatus) {
     const sb = window.supabaseClient;
     const { error } = await sb.from('orders')
       .update({ status: newStatus, updated_at: new Date().toISOString() })
       .eq('id', orderId);
+    if (error) { window.showToast('Error', 'Could not update status', 'error'); return; }
+    const order = (window.allOrders || []).find(o => o.id === orderId);
+    window.logActivity && window.logActivity('order_status', `${order?.order_id} → ${newStatus}`, window.currentStaff?.name||'', window.getActiveBranchId());
+    window.showToast('✅ Updated', `Order → ${newStatus}`, 'success');
+  };
 
-    if (error) {
-      window.showToast('Error', 'Could not update order status', 'error');
+  // ── Mark done with auto waiter assignment
+  window.markDoneWithWaiter = async function(orderId) {
+    const sb    = window.supabaseClient;
+    const bid   = window.getActiveBranchId();
+    const order = (window.allOrders || []).find(o => o.id === orderId);
+    if (!order) return;
+
+    // If order was placed by a waiter — they are already assigned, just mark done
+    if (order.assigned_waiter_id) {
+      const { error } = await sb.from('orders')
+        .update({ status: 'done', updated_at: new Date().toISOString() })
+        .eq('id', orderId);
+      if (!error) {
+        window.showToast('✅ Order Ready!', `${order.assigned_waiter_name} will deliver`, 'success');
+        window.logActivity && window.logActivity('order_status', `${order.order_id} → done (waiter: ${order.assigned_waiter_name})`, window.currentStaff?.name||'', bid);
+      }
       return;
     }
 
-    const order = (window.allOrders || []).find(o => o.id === orderId);
-    const staffName = window.currentStaff?.name || '';
-    if (order) {
-      window.logActivity && window.logActivity(
-        'order_status', `${order.order_id} → ${newStatus}`, staffName, window.getActiveBranchId()
-      );
-    }
-    window.showToast('✅ Updated', `Order status → ${newStatus}`, 'success');
-  };
+    // Customer order — auto assign waiter using round-robin (least deliveries today)
+    const today = new Date().toLocaleDateString('en-CA', { timeZone:'Asia/Kolkata' });
 
-  // ── Mark payment
-  window.markPayment = async function(orderId) {
-    const sb = window.supabaseClient;
-    const order = (window.allOrders || []).find(o => o.id === orderId);
-    if (!order) return;
-    const newPayStatus = order.payment_status === 'paid' ? 'unpaid' : 'paid';
-    const { error } = await sb.from('orders')
-      .update({ payment_status: newPayStatus, updated_at: new Date().toISOString() })
-      .eq('id', orderId);
-    if (!error) {
-      window.showToast('✅ Payment', `Marked as ${newPayStatus}`, 'success');
-    }
-  };
+    // Get all active waiters
+    const { data: waiters } = await sb.from('staff').select('id,name')
+      .eq('branch_id', bid).eq('is_active', true).eq('role', 'waiter');
 
-  // ── Print bill
-  window.printOrderBill = function(orderId) {
-    const order = (window.allOrders || []).find(o => o.id === orderId);
-    if (!order) return;
-    window.printBill && window.printBill(order, window.kitchenSettings || {});
+    if (!waiters || waiters.length === 0) {
+      window.showToast('⚠️ No waiters available', 'Add waiter staff first', 'warning');
+      return;
+    }
+
+    // Get delivery counts for today
+    const { data: counts } = await sb.from('waiter_delivery_count').select('*')
+      .eq('branch_id', bid).eq('date', today);
+
+    const countMap = {};
+    (counts || []).forEach(c => { countMap[c.waiter_id] = c.count; });
+
+    // Find waiter with least deliveries (round-robin fairness)
+    let minCount = Infinity;
+    let assignedWaiter = waiters[0];
+    waiters.forEach(w => {
+      const c = countMap[w.id] || 0;
+      if (c < minCount) { minCount = c; assignedWaiter = w; }
+    });
+
+    // Mark done + assign waiter
+    const { error } = await sb.from('orders').update({
+      status:               'done',
+      assigned_waiter_id:   assignedWaiter.id,
+      assigned_waiter_name: assignedWaiter.name,
+      assigned_at:          new Date().toISOString(),
+      updated_at:           new Date().toISOString()
+    }).eq('id', orderId);
+
+    if (error) { window.showToast('Error', error.message, 'error'); return; }
+
+    // Upsert delivery count
+    await sb.from('waiter_delivery_count').upsert({
+      branch_id:   bid,
+      waiter_id:   assignedWaiter.id,
+      waiter_name: assignedWaiter.name,
+      date:        today,
+      count:       (countMap[assignedWaiter.id] || 0) + 1
+    }, { onConflict: 'branch_id,waiter_id,date' });
+
+    window.showToast('✅ Order Ready!', `Auto-assigned to ${assignedWaiter.name}`, 'success');
+    window.logActivity && window.logActivity('order_status', `${order.order_id} → done, auto-assigned to ${assignedWaiter.name}`, window.currentStaff?.name||'', bid);
   };
 
   // ── Store toggle
