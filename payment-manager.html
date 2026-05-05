@@ -363,8 +363,10 @@
 
     const { data, error } = await sb.from('orders').select('*')
       .eq('branch_id', bid)
-      .eq('status', 'delivered')
+      .in('status', ['delivered'])
       .order('created_at', { ascending:false });
+
+    console.log('Loaded orders:', data?.length, 'Error:', error);
 
     if (error) { console.error('Load orders error:', error); window.showToast('Error loading orders', error.message, 'error'); return; }
 
@@ -748,12 +750,20 @@
     const sb  = window.supabaseClient;
     const bid = window.getActiveBranchId();
 
-    sb.channel('pm-orders')
-      .on('postgres_changes', { event:'*', schema:'public', table:'orders', filter:`branch_id=eq.${bid}` },
+    sb.channel('pm-orders-' + bid)
+      .on('postgres_changes', { event:'UPDATE', schema:'public', table:'orders', filter:`branch_id=eq.${bid}` },
+        async (payload) => {
+          console.log('Order update received:', payload.new?.status, payload.new?.order_id);
+          await loadOrders();
+        })
+      .on('postgres_changes', { event:'INSERT', schema:'public', table:'orders', filter:`branch_id=eq.${bid}` },
         async () => { await loadOrders(); })
       .on('postgres_changes', { event:'INSERT', schema:'public', table:'reviews', filter:`branch_id=eq.${bid}` },
         async () => { await loadReviews(); })
-      .subscribe(s => { if(s==='SUBSCRIBED') window.setConnectionStatus('online'); });
+      .subscribe(s => {
+        console.log('PM realtime status:', s);
+        if(s==='SUBSCRIBED') window.setConnectionStatus('online');
+      });
   }
 
   // ── Tab switch
