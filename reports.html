@@ -324,7 +324,7 @@
 
   // ── KPIs
   function updateKPIs(orders) {
-    const done     = orders.filter(o => o.status === 'done');
+    const done     = orders.filter(o => o.status === 'done' || o.status === 'delivered');
     const revenue  = done.reduce((s,o) => s + parseFloat(o.total||0), 0);
     const gst      = done.reduce((s,o) => s + parseFloat(o.cgst||0) + parseFloat(o.sgst||0), 0);
     const avg      = done.length ? revenue/done.length : 0;
@@ -396,7 +396,7 @@
     const days = getDayRange(from, to);
     const byDay = {};
     days.forEach(d => byDay[d] = 0);
-    orders.filter(o=>o.status==='done').forEach(o => {
+    orders.filter(o=>o.status==='done'||o.status==='delivered').forEach(o => {
       const d = new Date(o.created_at).toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'});
       if (byDay[d] !== undefined) byDay[d] += parseFloat(o.total||0);
     });
@@ -437,7 +437,7 @@
   function drawHourlyChart(orders) {
     const hourRevenue = Array(24).fill(0);
     const hourCount   = Array(24).fill(0);
-    orders.filter(o=>o.status==='done').forEach(o => {
+    orders.filter(o=>o.status==='done'||o.status==='delivered').forEach(o => {
       const h = parseInt(new Date(o.created_at).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour:'numeric',hour12:false})) || 0;
       if (h>=0&&h<24) { hourRevenue[h]+=parseFloat(o.total||0); hourCount[h]++; }
     });
@@ -451,7 +451,7 @@
   function drawDOWChart(orders) {
     const days  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     const rev   = Array(7).fill(0);
-    orders.filter(o=>o.status==='done').forEach(o => {
+    orders.filter(o=>o.status==='done'||o.status==='delivered').forEach(o => {
       const d = new Date(o.created_at).getDay();
       rev[d] += parseFloat(o.total||0);
     });
@@ -463,7 +463,7 @@
     const svg   = document.getElementById('tableChart');
     const tbody = document.getElementById('tableReportBody');
     const byTable = {};
-    const doneOrders = orders.filter(o => o.status==='done');
+    const doneOrders = orders.filter(o => o.status==='done'||o.status==='delivered');
     doneOrders.forEach(o => {
       const t = o.table_number || 'No Table';
       if (!byTable[t]) byTable[t] = { orders:0, revenue:0 };
@@ -506,7 +506,7 @@
   // ── Top items
   function renderTopItems(orders) {
     const itemData = {};
-    orders.filter(o=>o.status!=='rejected'&&o.status!=='cancelled').forEach(o => {
+    orders.filter(o=>!['rejected','cancelled','pending','preparing'].includes(o.status)).forEach(o => {
       const items = typeof o.items==='string'?JSON.parse(o.items):o.items;
       items.forEach(i => {
         if (!itemData[i.name]) itemData[i.name] = { qty:0, revenue:0, orders:new Set(), emoji:i.emoji||'🍽️', category:'', price:i.price };

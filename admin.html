@@ -487,7 +487,7 @@
   }
 
   function updateStats(orders) {
-    const done     = orders.filter(o => o.status === 'done');
+    const done     = orders.filter(o => o.status === 'done' || o.status === 'delivered');
     const revenue  = done.reduce((s,o) => s + parseFloat(o.total||0), 0);
     const avg      = done.length ? revenue / done.length : 0;
     const pending  = orders.filter(o => o.status === 'pending' || o.status === 'preparing').length;

@@ -952,10 +952,10 @@ console.log('Full staff:', window.currentStaff);
     const orders = merged.filter(o => { if(seen.has(o.id)) return false; seen.add(o.id); return true; });
 
     // KPIs
-    const delivered    = orders.filter(o => o.status==='done' && o.assigned_waiter_id===sid).length;
+    const delivered    = orders.filter(o => (o.status==='done'||o.status==='delivered') && o.assigned_waiter_id===sid).length;
     const made         = orders.filter(o => o.firebase_uid===uid).length;
     const assignedOrds = orders.filter(o => o.assigned_waiter_id===sid).length;
-    const revenue      = orders.filter(o => o.status==='done' && o.assigned_waiter_id===sid).reduce((s,o)=>s+parseFloat(o.total||0),0);
+    const revenue      = orders.filter(o => (o.status==='done'||o.status==='delivered') && o.assigned_waiter_id===sid && o.payment_status==='paid').reduce((s,o)=>s+parseFloat(o.total||0),0);
 
     // Avg delivery time
     const delivTimes = orders.filter(o => o.assigned_at && o.delivered_at).map(o =>
