@@ -52,13 +52,14 @@ window.getAuthError = (code) => errorMap[code] || 'Something went wrong. Try aga
 
 // ── PAGE ROLES
 const pageRoles = {
-  'kitchen.html':      ['superadmin','admin','manager','kitchen'],
-  'payment-manager.html': ['superadmin','admin','manager','payment_manager'],
-  'admin.html':        ['superadmin','admin'],
-  'menu-manager.html': ['superadmin','admin','manager'],
-  'staff.html':        ['superadmin','admin'],
-  'reports.html':      ['superadmin','admin','manager'],
-  'superadmin.html':   ['superadmin'],
+  'kitchen.html':          ['superadmin','admin','manager','kitchen'],
+  'admin.html':            ['superadmin','admin'],
+  'menu-manager.html':     ['superadmin','admin','manager'],
+  'staff.html':            ['superadmin','admin'],
+  'reports.html':          ['superadmin','admin','manager'],
+  'superadmin.html':       ['superadmin'],
+  'waiter.html':           ['superadmin','admin','manager','waiter'],
+  'payment-manager.html':  ['superadmin','admin','manager','payment_manager'],
 };
 const getCurrentPage = () => window.location.pathname.split('/').pop() || 'index.html';
 

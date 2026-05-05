@@ -360,6 +360,7 @@ textarea.input { resize: vertical; min-height: 80px; }
 .badge-manager { background: rgba(66,165,245,0.15); color: var(--blue); border: 1px solid rgba(66,165,245,0.3); }
 .badge-kitchen { background: rgba(76,175,80,0.15); color: var(--green-bright); border: 1px solid rgba(76,175,80,0.3); }
 .badge-waiter { background: rgba(129,199,132,0.15); color: var(--text-mid); border: 1px solid rgba(129,199,132,0.3); }
+.badge-payment_manager { background: rgba(156,39,176,0.15); color: #ce93d8; border: 1px solid rgba(156,39,176,0.3); }
 
 /* Live dot */
 .live-dot {
