@@ -816,22 +816,28 @@
   };
 
   window.assignWaiter = async function(orderId, btn) {
-    const sel    = document.getElementById('waiterSelect');
+    const modal  = btn.closest('.modal-overlay');
+    const sel    = modal.querySelector('select');
     const wId    = sel.value;
     const wName  = sel.options[sel.selectedIndex]?.dataset.name;
     if (!wId) { window.showToast('Select a waiter','','error'); return; }
     btn.disabled = true; btn.textContent = 'Assigning…';
-    const { error } = await window.supabaseClient.from('orders').update({
+    const { data, error } = await window.supabaseClient.from('orders').update({
       assigned_waiter_id:   wId,
       assigned_waiter_name: wName,
       assigned_at: new Date().toISOString(),
       updated_at:  new Date().toISOString()
-    }).eq('id', orderId);
-    btn.closest('.modal-overlay').remove();
-    if (!error) {
-      window.showToast('✅ Waiter assigned!', `${wName} will deliver this order`, 'success');
-      window.logActivity && window.logActivity('order_status', `Waiter ${wName} assigned to order`, window.currentStaff?.name||'', window.getActiveBranchId());
+    }).eq('id', orderId).select();
+    if (error) {
+      console.error('Assign error:', error);
+      window.showToast('Error assigning waiter', error.message, 'error');
+      btn.disabled = false; btn.textContent = 'Assign';
+      return;
     }
+    modal.remove();
+    window.showToast('✅ Waiter assigned!', `${wName} will deliver this order`, 'success');
+    window.logActivity && window.logActivity('order_status', `Waiter ${wName} assigned to order`, window.currentStaff?.name||'', window.getActiveBranchId());
+    await window.loadOrders();
   };
 </script>
 </body>
