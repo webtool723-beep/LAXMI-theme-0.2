@@ -524,24 +524,14 @@ console.log('Full staff:', window.currentStaff);
   // ── Waiter notifies payment collected to manager
   window.notifyPaymentCollected = async function(orderId) {
     const sb = window.supabaseClient;
+    // Only notify manager — do NOT mark as paid
+    // Just clear the collection request so manager knows waiter has collected
     const { error } = await sb.from('orders').update({
-      payment_status: 'paid',
-      payment_done_at: new Date().toISOString(),
-      payment_done_by: window.currentStaff?.name || '',
-      updated_at: new Date().toISOString()
+      waiter_note: `Payment collected by ${window.currentStaff?.name} — awaiting manager confirmation`,
+      updated_at:  new Date().toISOString()
     }).eq('id', orderId);
     if (!error) {
-      window.showToast('💰 Payment updated!','Manager will confirm','success');
-      // Update waiter delivery credit
-      const bid   = window.getActiveBranchId();
-      const today = new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'});
-      await sb.from('waiter_delivery_count').upsert({
-        branch_id:   bid,
-        waiter_id:   window.currentStaff?.staff_id,
-        waiter_name: window.currentStaff?.name,
-        date:        today,
-        count:       1
-      },{ onConflict:'branch_id,waiter_id,date' });
+      window.showToast('✅ Manager notified!', 'Payment manager will confirm and close the bill', 'success');
       await loadAssignments();
     }
   };

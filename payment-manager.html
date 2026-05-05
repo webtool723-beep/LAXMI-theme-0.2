@@ -457,6 +457,7 @@
       </div>
       <div class="pay-items">${summary}</div>
       ${o.payment_note ? `<div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:6px;">📝 ${o.payment_note}</div>` : ''}
+      ${o.waiter_note ? `<div style="font-size:0.78rem;color:var(--blue);margin-bottom:6px;">🛎️ ${o.waiter_note}</div>` : ''}
       ${hasCollector ? `<div style="font-size:0.78rem;color:var(--blue);margin-bottom:6px;">🚶 Sent to: ${o.collect_by_waiter_name}</div>` : ''}
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div class="pay-total">₹${parseFloat(o.total).toFixed(2)}</div>
