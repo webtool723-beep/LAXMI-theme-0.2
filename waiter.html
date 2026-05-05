@@ -335,6 +335,9 @@
   // ── appInit
   window.appInit = async function() {
     window.renderStaffUI && window.renderStaffUI();
+    console.log('Staff ID:', window.currentStaff?.staff_id);
+console.log('Staff role:', window.currentStaff?.role);
+console.log('Full staff:', window.currentStaff);
     initGreeting();
     initRepDates();
     await loadWaiters();

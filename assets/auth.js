@@ -409,11 +409,14 @@ onAuthStateChanged(auth, async (user) => {
   // ✅ Authorized
   window.currentFirebaseUser = user;
   window.currentStaff = {
-    uid: user.uid, email: user.email,
-    name: staff.name, role: staff.role,
+    uid: user.uid, 
+    email: user.email,
+    name: staff.name, 
+    role: staff.role,
     branch_id: staff.branch_id || DEFAULT_BRANCH_ID,
     staff_id: staff.id
   };
+  
   if(staff.branch_id) localStorage.setItem('rms_active_branch', staff.branch_id);
 
   // Wait for page's appInit to be defined
