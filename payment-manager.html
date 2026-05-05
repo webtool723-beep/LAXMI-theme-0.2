@@ -361,11 +361,12 @@
     const bid  = window.getActiveBranchId();
     const today = new Date().toLocaleDateString('en-CA', { timeZone:'Asia/Kolkata' });
 
-    const { data } = await sb.from('orders').select('*')
+    const { data, error } = await sb.from('orders').select('*')
       .eq('branch_id', bid)
-      .in('status', ['delivered'])
-      .gte('created_at', today + 'T00:00:00+05:30')
+      .eq('status', 'delivered')
       .order('created_at', { ascending:false });
+
+    if (error) { console.error('Load orders error:', error); window.showToast('Error loading orders', error.message, 'error'); return; }
 
     allOrders = data || [];
     updateStats();
