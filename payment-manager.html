@@ -380,7 +380,7 @@
 
   // ── Stats
   function updateStats() {
-    const done    = allOrders.filter(o => o.status === 'done');
+    const done    = allOrders.filter(o => o.status === 'delivered' || o.status === 'done');
     const unpaid  = done.filter(o => o.payment_status === 'unpaid');
     const paid    = done.filter(o => o.payment_status === 'paid');
     const revenue = paid.reduce((s,o) => s + parseFloat(o.total||0), 0);
@@ -406,7 +406,7 @@
   // ── Render pending payments
   function renderPending() {
     const list = document.getElementById('pendingList');
-    const orders = allOrders.filter(o => o.status === 'done' && o.payment_status === 'unpaid');
+    const orders = allOrders.filter(o => (o.status === 'delivered' || o.status === 'done') && o.payment_status === 'unpaid');
     if (!orders.length) {
       list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">💳</div><div class="empty-state-title">No pending payments</div></div>`;
       return;
@@ -417,7 +417,7 @@
   // ── Render collection requests
   function renderCollection() {
     const list = document.getElementById('collectionList');
-    const orders = allOrders.filter(o => o.collect_by_waiter_id && o.payment_status === 'unpaid');
+    const orders = allOrders.filter(o => o.collect_by_waiter_id && o.payment_status === 'unpaid' && (o.status === 'delivered' || o.status === 'done'));
     if (!orders.length) {
       list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🚶</div><div class="empty-state-title">No collection requests</div></div>`;
       return;
@@ -428,7 +428,7 @@
   // ── Render done payments
   function renderDone() {
     const list = document.getElementById('doneList');
-    const orders = allOrders.filter(o => o.payment_status === 'paid');
+    const orders = allOrders.filter(o => o.payment_status === 'paid' && (o.status === 'delivered' || o.status === 'done'));
     if (!orders.length) {
       list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">✅</div><div class="empty-state-title">No payments yet today</div></div>`;
       return;
