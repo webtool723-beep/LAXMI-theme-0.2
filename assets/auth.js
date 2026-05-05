@@ -53,7 +53,7 @@ window.getAuthError = (code) => errorMap[code] || 'Something went wrong. Try aga
 // ── PAGE ROLES
 const pageRoles = {
   'kitchen.html':      ['superadmin','admin','manager','kitchen'],
-  'waiter.html':       ['superadmin','admin','manager','waiter'],
+  'payment-manager.html': ['superadmin','admin','manager','payment_manager'],
   'admin.html':        ['superadmin','admin'],
   'menu-manager.html': ['superadmin','admin','manager'],
   'staff.html':        ['superadmin','admin'],
@@ -416,7 +416,7 @@ onAuthStateChanged(auth, async (user) => {
     branch_id: staff.branch_id || DEFAULT_BRANCH_ID,
     staff_id: staff.id
   };
-  
+
   if(staff.branch_id) localStorage.setItem('rms_active_branch', staff.branch_id);
 
   // Wait for page's appInit to be defined

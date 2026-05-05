@@ -99,6 +99,7 @@
       <nav class="sidebar-nav">
         <div class="nav-section-label">My Pages</div>
         <a class="nav-item active" href="waiter.html"><span class="nav-item-icon">🛎️</span> My Dashboard</a>
+        <a class="nav-item" href="payment-manager.html"><span class="nav-item-icon">💳</span> Payments</a>
         <div class="nav-section-label" style="margin-top:8px;">Staff</div>
         <a class="nav-item" href="kitchen.html"><span class="nav-item-icon">🍳</span> Kitchen</a>
         <a class="nav-item" href="index.html" target="_blank"><span class="nav-item-icon">🛒</span> Order Page ↗</a>
@@ -459,7 +460,8 @@ console.log('Full staff:', window.currentStaff);
       const isDone  = order.status === 'done';
       const isPending = order.status === 'pending' || order.status === 'preparing';
 
-      return `<div class="assign-card ${isDone?'delivered':isPending?'delivering':''}">
+      const needsCollection = order.collect_by_waiter_id === window.currentStaff?.staff_id && order.payment_status === 'unpaid';
+    return `<div class="assign-card ${isDone?'delivered':isPending?'delivering':''} ${needsCollection?'collect-blink':''}">
         <div class="assign-card-head">
           <div>
             <div class="assign-order-id">${order.order_id}</div>
@@ -470,6 +472,7 @@ console.log('Full staff:', window.currentStaff);
         </div>
         <div class="assign-items">${summary}</div>
         ${order.note ? `<div class="order-note" style="margin-bottom:8px;">📝 ${order.note}</div>` : ''}
+        ${needsCollection ? `<div style="background:var(--red-dim);border:1px solid rgba(244,67,54,0.3);color:var(--red);padding:8px 10px;border-radius:6px;font-size:0.82rem;font-weight:600;margin-bottom:8px;">💰 Payment Manager requests you collect payment from this table!</div>` : ''}
         <div style="display:flex;justify-content:space-between;align-items:center;">
           <div class="assign-total">₹${parseFloat(order.total).toFixed(2)}</div>
           <div style="font-size:0.72rem;color:var(--text-dim);">${order.customer_phone||''}</div>
@@ -1018,6 +1021,18 @@ console.log('Full staff:', window.currentStaff);
         await loadAssignments();
       })
       .subscribe(s => { if(s==='SUBSCRIBED') window.setConnectionStatus('online'); });
+      
+      // Also listen for collection requests
+    sb.channel('waiter-collections-' + sid)
+      .on('postgres_changes', {
+        event: 'UPDATE', schema: 'public', table: 'orders',
+        filter: `collect_by_waiter_id=eq.${sid}`
+      }, async (payload) => {
+        playBell();
+        window.showToast('💰 Collect Payment!', `Table ${payload.new.table_number} — ₹${parseFloat(payload.new.total).toFixed(2)}`, 'warning', 10000);
+        await loadAssignments();
+      })
+      .subscribe();
   }
 
   function playBell() {

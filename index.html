@@ -836,6 +836,10 @@
           if (o.assigned_waiter_name) {
             showToast(`🛎️ ${o.assigned_waiter_name} is coming with your order!`, `Table ${o.table_number}`, 'success');
             showWaiterNotification(o.assigned_waiter_name, o.table_number);
+          } else if (o.payment_status === 'paid' && !o.rating && !o.rated_by) {
+            showToast(`📦 Order ${o.order_id}: ${o.status}`);
+            // Show customer rating prompt
+            showCustomerRatingPrompt(o);
           } else {
             showToast(`📦 Order ${o.order_id}: ${o.status}`);
           }
@@ -859,6 +863,69 @@
       })
       .subscribe();
   }
+
+  function showCustomerRatingPrompt(order) {
+    const existing = document.getElementById('customerRatingPrompt');
+    if (existing) existing.remove();
+
+    const div = document.createElement('div');
+    div.id = 'customerRatingPrompt';
+    div.style.cssText = `
+      position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+      z-index:9999;background:#1a2e1a;border:1px solid rgba(200,169,110,0.4);
+      border-radius:16px;padding:20px 24px;text-align:center;
+      box-shadow:0 8px 32px rgba(0,0,0,0.5);min-width:300px;max-width:90vw;
+      animation:slideUp 0.3s ease;
+    `;
+    let selectedStar = 0;
+    div.innerHTML = `
+      <div style="font-size:1.5rem;margin-bottom:6px;">⭐ How was your experience?</div>
+      <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);margin-bottom:14px;">${order.order_id}</div>
+      <div style="display:flex;justify-content:center;gap:8px;margin-bottom:14px;" id="custStars">
+        ${[1,2,3,4,5].map(i=>`<span style="font-size:2rem;cursor:pointer;color:rgba(255,255,255,0.3);transition:all 0.15s;" data-r="${i}" onclick="setCustStar(${i})">★</span>`).join('')}
+      </div>
+      <textarea id="custRatingNote" placeholder="Any feedback? (optional)" style="width:100%;padding:8px;border-radius:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:0.82rem;resize:none;margin-bottom:10px;" rows="2"></textarea>
+      <div style="display:flex;gap:8px;">
+        <button onclick="document.getElementById('customerRatingPrompt').remove()" style="flex:1;padding:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);border-radius:8px;cursor:pointer;font-size:0.82rem;">Skip</button>
+        <button onclick="submitCustRating('${order.id}','${order.order_id}')" style="flex:1;padding:8px;background:#c8a96e;color:#0f1a0f;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.82rem;">Submit ⭐</button>
+      </div>
+    `;
+    document.body.appendChild(div);
+  }
+
+  window.setCustStar = function(r) {
+    document.querySelectorAll('#custStars span').forEach(s => {
+      s.style.color = parseInt(s.dataset.r) <= r ? '#ffc107' : 'rgba(255,255,255,0.3)';
+    });
+    window._custRating = r;
+  };
+
+  window.submitCustRating = async function(orderId, orderIdText) {
+    const r = window._custRating || 0;
+    if (!r) { window.showToast && window.showToast('Select a star rating first','','error'); return; }
+    const note = document.getElementById('custRatingNote')?.value?.trim() || '';
+    const user = window.currentUser;
+
+    await sb.from('reviews').insert({
+      branch_id:      BRANCH_ID,
+      order_id:       orderIdText,
+      customer_name:  user?.displayName || 'Customer',
+      customer_phone: null,
+      firebase_uid:   user?.uid || null,
+      rating:         r,
+      note:           note || null
+    });
+
+    await sb.from('orders').update({
+      rating: r, rating_note: note||null,
+      rated_at: new Date().toISOString(),
+      rated_by: 'customer'
+    }).eq('id', orderId);
+
+    document.getElementById('customerRatingPrompt')?.remove();
+    window.showToast && window.showToast('⭐ Thanks for rating!','','success');
+    window._custRating = 0;
+  };
 
   function showWaiterNotification(waiterName, tableNum) {
     // Remove existing if any
