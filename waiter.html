@@ -441,9 +441,9 @@ console.log('Full staff:', window.currentStaff);
     const list = document.getElementById('assignmentsList');
     let filtered = myAssignments;
 
-    if (assignFilter === 'active')     filtered = filtered.filter(o => o.status === 'done' ? false : o.status !== 'rejected' && o.status !== 'cancelled');
-    if (assignFilter === 'delivering') filtered = filtered.filter(o => o.status === 'preparing' || o.status === 'done');
-    if (assignFilter === 'delivered')  filtered = filtered.filter(o => o.status === 'done');
+    if (assignFilter === 'active')     filtered = filtered.filter(o => ['pending','preparing','done'].includes(o.status));
+    if (assignFilter === 'delivering') filtered = filtered.filter(o => o.status === 'done');
+    if (assignFilter === 'delivered')  filtered = filtered.filter(o => o.status === 'delivered' && o.payment_status === 'unpaid');
 
     if (!filtered.length) {
       list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🛎️</div><div class="empty-state-title">No orders here</div><div class="empty-state-text">Check back soon!</div></div>`;
@@ -479,8 +479,11 @@ console.log('Full staff:', window.currentStaff);
             <button class="btn btn-primary btn-sm" onclick="markDelivered('${order.id}')">🛎️ Mark Delivered</button>
             <button class="btn btn-gold btn-sm" onclick="openTransferModal('${order.id}')">🔄 Transfer</button>
           ` : ''}
-          ${order.status === 'delivered' ? `
-            <span style="font-size:0.78rem;color:var(--green-bright);">✅ Delivered — Awaiting payment</span>
+          ${order.status === 'delivered' && order.payment_status === 'unpaid' ? `
+            <span style="font-size:0.78rem;color:var(--gold);">⏳ Awaiting payment confirmation</span>
+          ` : ''}
+          ${order.status === 'delivered' && order.payment_status === 'paid' ? `
+            <span style="font-size:0.78rem;color:var(--green-bright);">✅ Payment confirmed — Credit added!</span>
           ` : ''}
           ${needsCollection ? `
             <button class="btn btn-primary btn-sm" onclick="notifyPaymentCollected('${order.id}')">💰 Payment Collected</button>
