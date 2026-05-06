@@ -206,28 +206,7 @@
         <input type="number" id="itemSort" class="input" placeholder="0" min="0">
       </div>
 
-      <!-- Tag 1 -->
-      <div class="input-group">
-        <label class="input-label">Tag 1 Text <span style="font-weight:400;color:var(--text-dim);">(e.g. Highly Ordered)</span></label>
-        <div style="display:flex;gap:8px;">
-          <input type="text" id="itemTag1Text" class="input" placeholder="e.g. Must Try" maxlength="20" style="flex:1;">
-          <input type="color" id="itemTag1Color" value="#e53935" title="Tag color"
-            style="width:44px;height:40px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;padding:2px;">
-        </div>
-      </div>
-
-      <!-- Tag 2 -->
-      <div class="input-group">
-        <label class="input-label">Tag 2 Text <span style="font-weight:400;color:var(--text-dim);">(optional)</span></label>
-        <div style="display:flex;gap:8px;">
-          <input type="text" id="itemTag2Text" class="input" placeholder="e.g. Chef's Pick" maxlength="20" style="flex:1;">
-          <input type="color" id="itemTag2Color" value="#1e88e5" title="Tag color"
-            style="width:44px;height:40px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;padding:2px;">
-        </div>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:12px;">
-    </div>
+      
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeCatModal()">Cancel</button>
       <button class="btn btn-primary" onclick="saveCategory()" id="catSaveBtn">Save Category</button>
@@ -246,6 +225,26 @@
       <div class="input-group" style="grid-column:1/-1;">
         <label class="input-label">Item Name *</label>
         <input type="text" id="itemName" class="input" placeholder="e.g. Paneer Butter Masala">
+      </div>
+
+      <!-- Tag 1 -->
+      <div class="input-group">
+        <label class="input-label">Tag 1 Text <span style="font-weight:400;color:var(--text-dim);">(e.g. Highly Ordered)</span></label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="itemTag1Text" class="input" placeholder="e.g. Must Try" maxlength="20" style="flex:1;">
+          <input type="color" id="itemTag1Color" value="#e53935" title="Tag color"
+            style="width:44px;height:40px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;padding:2px;">
+        </div>
+      </div>
+
+      <!-- Tag 2 -->
+      <div class="input-group">
+        <label class="input-label">Tag 2 Text <span style="font-weight:400;color:var(--text-dim);">(optional)</span></label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="itemTag2Text" class="input" placeholder="e.g. Chef's Pick" maxlength="20" style="flex:1;">
+          <input type="color" id="itemTag2Color" value="#1e88e5" title="Tag color"
+            style="width:44px;height:40px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;padding:2px;">
+        </div>
       </div>
       <div class="input-group">
         <label class="input-label">Category *</label>
