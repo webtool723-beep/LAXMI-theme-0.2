@@ -359,10 +359,7 @@
   let selectedItems = new Set();
 
 
-  // Show/hide special time when Today's Special toggled
-  document.getElementById('itemTodaysSpecial')?.addEventListener('change', function() {
-    document.getElementById('specialTimeWrap').style.display = this.checked ? 'flex' : 'none';
-  });
+  
 
 
   // ── appInit called by auth.js
@@ -371,6 +368,10 @@
     window.buildAuthGate && window.buildAuthGate('Menu Manager');
     buildEmojiGrid('catEmojiGrid', 'catEmoji', 'catEmojiPreview');
     buildEmojiGrid('itemEmojiGrid', 'itemEmoji', 'itemEmojiPreview');
+    // Attach event listener here — after appContent is visible
+    document.getElementById('itemTodaysSpecial')?.addEventListener('change', function() {
+      document.getElementById('specialTimeWrap').style.display = this.checked ? 'flex' : 'none';
+    });
     await loadCategories();
     await loadMenuItems();
     window.startHeartbeat && window.startHeartbeat();

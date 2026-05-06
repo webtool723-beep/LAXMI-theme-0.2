@@ -977,43 +977,7 @@
     .subscribe();
 
   // ── Load initial data
-  async function loadAutoTagData() {
-    const today = new Date().toLocaleDateString('en-CA', { timeZone:'Asia/Kolkata' });
-    const { data: todayOrders } = await sb.from('orders').select('items')
-      .eq('branch_id', BRANCH_ID)
-      .gte('created_at', today + 'T00:00:00+05:30')
-      .not('status', 'in', '("rejected","cancelled")');
-
-    const itemCount = {};
-    (todayOrders || []).forEach(o => {
-      const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
-      items.forEach(i => { itemCount[i.id] = (itemCount[i.id] || 0) + i.qty; });
-    });
-    const sorted = Object.entries(itemCount).sort((a,b) => b[1]-a[1]).slice(0,3);
-    window.bestSellerItems = new Set(sorted.map(([id]) => parseInt(id)));
-
-    // Top rated
-    const { data: reviews } = await sb.from('reviews').select('order_id,rating')
-      .eq('branch_id', BRANCH_ID).gte('rating', 4);
-    const ratedItemIds = new Set();
-    if (reviews && reviews.length > 0) {
-      const orderIds = [...new Set(reviews.map(r => r.order_id))];
-      const { data: ratedOrders } = await sb.from('orders').select('order_id,items')
-        .in('order_id', orderIds);
-      (ratedOrders || []).forEach(o => {
-        const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
-        items.forEach(i => ratedItemIds.add(parseInt(i.id)));
-      });
-    }
-    window.topRatedItems = ratedItemIds;
-  }
-
-  async function loadAll() {
-    await loadAutoTagData();
-    await loadSettings();
-    await loadCategories();
-    await loadMenuItems();
-  }
+  
 
   async function loadSettings() {
     const { data } = await sb.from('settings').select('key,value').eq('branch_id', BRANCH_ID);
