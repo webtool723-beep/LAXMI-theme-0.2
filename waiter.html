@@ -691,7 +691,7 @@ console.log('Full staff:', window.currentStaff);
     let filtered = myHistory;
     if (historyFilter === 'assigned') filtered = filtered.filter(o => o.assigned_waiter_id === mySid);
     if (historyFilter === 'self')     filtered = filtered.filter(o => o.firebase_uid === myUid);
-    if (historyFilter === 'delivered')filtered = filtered.filter(o => o.status === 'done' && o.delivered_at);
+    if (historyFilter === 'delivered')filtered = filtered.filter(o => o.status === 'delivered' || (o.status === 'done' && o.delivered_at));
     if (historyFilter === 'rejected') filtered = filtered.filter(o => o.status === 'rejected');
 
     if (!filtered.length) {
