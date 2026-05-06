@@ -446,7 +446,7 @@
       <div class="order-card-header">
         <div>
           <div class="order-id">${order.order_id}</div>
-          <div class="order-table">Table ${order.table_number || '—'}</div>
+          <div class="order-table">${order.room_number ? '🛏️ Room ' + order.room_number : '🪑 Table ' + (order.table_number || '—')}</div>
           <div class="order-time" id="timer-${order.id}" data-created="${order.created_at}" data-status="${order.status}">
             ⏱ ${elapsedText}${delayLabel}
           </div>

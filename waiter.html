@@ -461,7 +461,7 @@ console.log('Full staff:', window.currentStaff);
     const today = new Date().toLocaleDateString('en-CA', { timeZone:'Asia/Kolkata' });
 
     const { data } = await sb.from('orders').select('*')
-      .eq('assigned_waiter_id', sid)
+      .or(`assigned_waiter_id.eq.${sid},collect_by_waiter_id.eq.${sid}`)
       .gte('created_at', today + 'T00:00:00+05:30')
       .order('assigned_at', { ascending:false });
 
@@ -512,7 +512,7 @@ console.log('Full staff:', window.currentStaff);
 
     // Badge
     // Badge only counts active (pending/preparing/done) — not delivered
-    const activeBadgeCount = myAssignments.filter(o => ['pending','preparing','done'].includes(o.status)).length;
+    const activeBadgeCount = myAssignments.filter(o => ['pending','preparing','done'].includes(o.status) || (o.status === 'delivered' && o.collect_by_waiter_id === window.currentStaff?.staff_id && o.payment_status === 'unpaid')).length;
     const badge = document.getElementById('assignBadge');
     if (activeBadgeCount > 0) { badge.textContent = activeBadgeCount; badge.style.display = 'inline-flex'; }
     else badge.style.display = 'none';
@@ -530,7 +530,7 @@ console.log('Full staff:', window.currentStaff);
     const list = document.getElementById('assignmentsList');
     let filtered = myAssignments;
 
-    if (assignFilter === 'active')     filtered = filtered.filter(o => ['pending','preparing','done'].includes(o.status));
+    if (assignFilter === 'active')     filtered = filtered.filter(o => ['pending','preparing','done'].includes(o.status) || (o.status === 'delivered' && o.collect_by_waiter_id === window.currentStaff?.staff_id && o.payment_status === 'unpaid'));
     if (assignFilter === 'delivering') filtered = filtered.filter(o => o.status === 'done');
     if (assignFilter === 'delivered')  filtered = filtered.filter(o => o.status === 'delivered' && o.payment_status === 'unpaid');
 
