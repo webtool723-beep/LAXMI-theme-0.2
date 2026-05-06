@@ -447,6 +447,68 @@
       @page { size: auto; margin: 14mm 12mm; }
     }
 
+    /* ── FLOATING BUTTONS (MOBILE) ── */
+    #mobileNotificationBanner {
+      display: none; background: #fdf0ee;
+      border-bottom: 1px solid rgba(192,57,43,0.2);
+      color: var(--red); text-align: center;
+      padding: 10px; font-size: 0.875rem; font-weight: 600;
+      position: sticky; top: 0; z-index: 201; width: 100%;
+    }
+    .fab-container {
+      display: none; position: fixed; bottom: 20px; right: 20px;
+      z-index: 150; flex-direction: column; gap: 12px; align-items: flex-end;
+    }
+    .fab-category {
+      background: transparent; border: none; width: 44px; height: 44px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+      cursor: pointer; transition: transform 0.2s;
+    }
+    .fab-category span {
+      display: block; width: 24px; height: 3px; background: var(--green-dark); border-radius: 2px;
+    }
+    .fab-cart {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--gold); color: var(--green-dark);
+      font-size: 1.5rem; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none; cursor: pointer;
+      position: relative; transition: transform 0.2s;
+    }
+    .fab-cart:hover { transform: scale(1.05); }
+    .fab-cart.pulse { animation: fabPulse 0.3s ease; }
+    .fab-badge {
+      position: absolute; top: -2px; right: -2px;
+      background: var(--red); color: #fff;
+      width: 22px; height: 22px; border-radius: 50%;
+      font-size: 0.75rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      display: none;
+    }
+    
+    /* Category Drawer */
+    .mobile-cat-drawer {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--surface); border-radius: 20px 20px 0 0;
+      padding: 20px; z-index: 302; transform: translateY(100%);
+      transition: transform 0.3s ease; box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+      max-height: 80vh; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
+    }
+    .mobile-cat-drawer.open { transform: translateY(0); }
+    .mobile-cat-item {
+      padding: 14px; background: var(--cream); border-radius: 12px;
+      font-size: 1rem; font-weight: 600; color: var(--green-dark);
+      border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; cursor: pointer;
+    }
+    .mobile-cat-item.active {
+      background: var(--green-dark); color: var(--gold); border-color: var(--green-dark);
+    }
+    
+    @keyframes fabPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
     /* ── ANIMATIONS ── */
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
@@ -463,6 +525,17 @@
       .menu-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
       .card-emoji { font-size: 1.8rem; padding: 14px 12px 6px; }
       #toastContainer { left: 16px; right: 16px; max-width: none; bottom: 70px; }
+      
+      /* Hide desktop cart and categories */
+      .btn-cart { display: none !important; }
+      .cat-tabs { display: none !important; }
+
+      /* Floating Buttons */
+      .fab-container { display: flex; }
+      
+      /* Mobile Notification Banner */
+      #mobileNotificationBanner.show { display: block; }
+      #storeBanner.show { display: none !important; }
     }
   </style>
 </head>
@@ -470,6 +543,7 @@
 
 <!-- ── STORE CLOSED BANNER ── -->
 <div id="storeBanner">🔴 We are currently not accepting orders. Please check back later.</div>
+<div id="mobileNotificationBanner">🔴 We are currently not accepting orders. Please check back later.</div>
 
 <!-- ── HEADER ── -->
 <header class="header">
@@ -671,6 +745,26 @@
 
 <!-- ── TOAST ── -->
 <div id="toastContainer"></div>
+
+<!-- ── MOBILE FLOATING BUTTONS ── -->
+<div class="fab-container" id="fabContainer">
+  <button class="fab-category" id="fabCategory" onclick="openMobileCategory()">
+    <span></span><span></span><span></span>
+  </button>
+  <button class="fab-cart" id="fabCart" onclick="openCart()">
+    🛒
+    <span class="fab-badge" id="fabBadge">0</span>
+  </button>
+</div>
+
+<!-- ── MOBILE CATEGORY DRAWER ── -->
+<div class="mobile-cat-drawer" id="mobileCatDrawer">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+    <h3 style="font-family:var(--font-display); color:var(--green-dark);">Categories</h3>
+    <button onclick="closeMobileCategory()" style="background:none; border:none; font-size:1.5rem; color:var(--text-dim); cursor:pointer;">&times;</button>
+  </div>
+  <div id="mobileCatList" style="display:flex; flex-direction:column; gap:8px;"></div>
+</div>
 
 <!-- ── PRINT SLIP ── -->
 <div id="printSlip"></div>
@@ -995,6 +1089,8 @@
   window.updateStoreBanner = (isOpen) => {
     const banner = document.getElementById('storeBanner');
     banner.classList.toggle('show', !isOpen);
+    const mobileBanner = document.getElementById('mobileNotificationBanner');
+    if (mobileBanner) mobileBanner.classList.toggle('show', !isOpen);
     window.storeIsOpen = isOpen;
   };
 
@@ -1020,6 +1116,15 @@
       btn.onclick = () => filterCategory(c.id, btn);
       tabs.appendChild(btn);
     });
+
+    // Render Mobile Categories
+    const mobileList = document.getElementById('mobileCatList');
+    if (mobileList) {
+      mobileList.innerHTML = `<button class="mobile-cat-item active" data-cat="all" onclick="filterCategory('all', this, true)">🍽️ All</button>`;
+      cats.forEach(c => {
+        mobileList.innerHTML += `<button class="mobile-cat-item" data-cat="${c.id}" onclick="filterCategory('${c.id}', this, true)">${c.emoji} ${c.name}</button>`;
+      });
+    }
   }
 
   async function loadMenuItems() {
@@ -1247,6 +1352,21 @@
     const badge = document.getElementById('cartBadge');
     badge.textContent = total;
     badge.style.display = total > 0 ? 'flex' : 'none';
+
+    // Update FAB Badge
+    const fabBadge = document.getElementById('fabBadge');
+    if (fabBadge) {
+      fabBadge.textContent = total;
+      fabBadge.style.display = total > 0 ? 'flex' : 'none';
+    }
+    
+    // Animate FAB
+    const fabCart = document.getElementById('fabCart');
+    if (fabCart && total > 0) {
+      fabCart.classList.remove('pulse');
+      void fabCart.offsetWidth; // trigger reflow
+      fabCart.classList.add('pulse');
+    }
   }
 
   window.renderCartBody = function() {
@@ -1468,9 +1588,17 @@
   };
 
   // ── FILTER
-  window.filterCategory = function(catId, el) {
-    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
-    if (el) el.classList.add('active');
+  window.filterCategory = function(catId, el, isMobile = false) {
+    document.querySelectorAll('.cat-tab, .mobile-cat-item').forEach(t => t.classList.remove('active'));
+    
+    const desktopTab = document.querySelector(`.cat-tab[data-cat="${catId}"]`);
+    if (desktopTab) desktopTab.classList.add('active');
+    
+    const mobileTab = document.querySelector(`.mobile-cat-item[data-cat="${catId}"]`);
+    if (mobileTab) mobileTab.classList.add('active');
+    
+    if (isMobile) closeMobileCategory();
+
     const search = document.getElementById('searchInput').value.toLowerCase();
     let items = window.allMenuItems || [];
     if (catId !== 'all') items = items.filter(i => i.category_id == catId);
@@ -1550,11 +1678,15 @@
     document.getElementById('overlay').classList.add('show');
     window.renderCartBody && window.renderCartBody();
     document.body.style.overflow = 'hidden';
+    const fabCat = document.getElementById('fabCategory');
+    if (fabCat) fabCat.style.display = 'none';
   }
   function closeCart() {
     document.getElementById('cartDrawer').classList.remove('open');
     document.getElementById('overlay').classList.remove('show');
     document.body.style.overflow = '';
+    const fabCat = document.getElementById('fabCategory');
+    if (fabCat) fabCat.style.display = '';
   }
   function openHistory() {
     document.getElementById('historyDrawer').classList.add('open');
@@ -1567,7 +1699,7 @@
     document.getElementById('overlay').classList.remove('show');
     document.body.style.overflow = '';
   }
-  function closeAll() { closeCart(); closeHistory(); }
+  function closeAll() { closeCart(); closeHistory(); closeMobileCategory(); }
   function openAuthModal() {
     document.getElementById('authModal').classList.add('show');
     document.body.style.overflow = 'hidden';
@@ -1578,6 +1710,22 @@
   }
   function closeSuccessModal() {
     document.getElementById('successModal').classList.remove('show');
+  }
+  
+  function openMobileCategory() {
+    document.getElementById('mobileCatDrawer').classList.add('open');
+    document.getElementById('overlay').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function closeMobileCategory() {
+    const drawer = document.getElementById('mobileCatDrawer');
+    if (drawer) drawer.classList.remove('open');
+    if (!document.getElementById('cartDrawer').classList.contains('open') && 
+        !document.getElementById('historyDrawer').classList.contains('open')) {
+      document.getElementById('overlay').classList.remove('show');
+      document.body.style.overflow = '';
+    }
   }
   function switchTab(tab) {
     document.getElementById('loginForm').style.display = tab === 'login' ? '' : 'none';
