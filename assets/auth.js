@@ -97,7 +97,11 @@ window.getSetting = async (key, bid=null) => {
 };
 window.setSetting = async (key, value, bid=null) => {
   const b = bid || window.getActiveBranchId();
-  const {error} = await sb.from('settings').upsert({branch_id:b,key,value},{onConflict:'branch_id,key'});
+  // 1. Fetch existing ID
+  const {data: existing} = await sb.from('settings').select('id').eq('branch_id',b).eq('key',key).maybeSingle();
+  const payload = { branch_id: b, key, value };
+  if (existing) payload.id = existing.id;
+  const {error} = await sb.from('settings').upsert(payload);
   return !error;
 };
 

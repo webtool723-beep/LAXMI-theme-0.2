@@ -1468,9 +1468,11 @@
     const counterKey = `invoice_counter_${today}`;
     let invoiceNo = `INV-${year}-0001`;
     try {
-      const { data: cData } = await sb.from('settings').select('value').eq('branch_id', BRANCH_ID).eq('key', counterKey).maybeSingle();
+      const { data: cData } = await sb.from('settings').select('id, value').eq('branch_id', BRANCH_ID).eq('key', counterKey).maybeSingle();
       const count = (cData ? parseInt(cData.value || '0') : 0) + 1;
-      await sb.from('settings').upsert({ branch_id: BRANCH_ID, key: counterKey, value: String(count) }, { onConflict: 'branch_id,key' });
+      const payload = { branch_id: BRANCH_ID, key: counterKey, value: String(count) };
+      if (cData && cData.id) payload.id = cData.id;
+      await sb.from('settings').upsert(payload);
       invoiceNo = `INV-${year}-${String(count).padStart(4, '0')}`;
     } catch(e) { console.error('Invoice counter error:', e); }
 

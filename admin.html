@@ -454,17 +454,33 @@
   window.saveSettings = async function() {
     const sb = window.supabaseClient;
     const bid = window.getActiveBranchId();
+    
+    // Fetch existing settings to get their IDs for reliable upsert
+    const { data: existing } = await sb.from('settings').select('id, key').eq('branch_id', bid);
+    const idMap = {};
+    if (existing) {
+      existing.forEach(r => idMap[r.key] = r.id);
+    }
+
     const rows = [
-      { branch_id:bid, key:'restaurant_name', value: document.getElementById('setName').value.trim() },
-      { branch_id:bid, key:'phone',           value: document.getElementById('setPhone').value.trim() },
-      { branch_id:bid, key:'address',         value: document.getElementById('setAddress').value.trim() },
-      { branch_id:bid, key:'gstin',           value: document.getElementById('setGstin').value.trim() },
-      { branch_id:bid, key:'gst_rate',        value: document.getElementById('setGstRate').value },
-      { branch_id:bid, key:'store_open',      value: String(document.getElementById('setStoreOpen').checked) },
-      { branch_id:bid, key:'bill_footer',     value: document.getElementById('setBillFooter').value.trim() },
-      { branch_id:bid, key:'currency',        value: document.getElementById('setCurrency').value.trim() || '₹' },
+      { key:'restaurant_name', value: document.getElementById('setName').value.trim() },
+      { key:'phone',           value: document.getElementById('setPhone').value.trim() },
+      { key:'address',         value: document.getElementById('setAddress').value.trim() },
+      { key:'gstin',           value: document.getElementById('setGstin').value.trim() },
+      { key:'gst_rate',        value: document.getElementById('setGstRate').value },
+      { key:'store_open',      value: String(document.getElementById('setStoreOpen').checked) },
+      { key:'bill_footer',     value: document.getElementById('setBillFooter').value.trim() },
+      { key:'currency',        value: document.getElementById('setCurrency').value.trim() || '₹' },
     ];
-    const { error } = await sb.from('settings').upsert(rows, { onConflict:'branch_id,key' });
+    
+    const payload = rows.map(r => ({
+      branch_id: bid,
+      key: r.key,
+      value: r.value,
+      ...(idMap[r.key] ? { id: idMap[r.key] } : {})
+    }));
+
+    const { error } = await sb.from('settings').upsert(payload);
     if (error) { window.showToast('Error saving settings', error.message, 'error'); return; }
     window.showToast('✅ Settings saved!', '', 'success');
     window.logActivity && window.logActivity('settings', 'Settings updated', window.currentStaff?.name || '', bid);
