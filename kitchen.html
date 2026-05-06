@@ -478,7 +478,11 @@
       `;
     }
     if (order.status === 'delivered') {
-      return `<span style="font-size:0.78rem;color:var(--text-dim);">🛎️ Delivered — Awaiting payment</span>`;
+      if (order.payment_status === 'paid') {
+        return `<span style="font-size:0.78rem;color:var(--green-bright);">🛎️ Delivered & Paid</span>`;
+      } else {
+        return `<span style="font-size:0.78rem;color:var(--text-dim);">🛎️ Delivered — Awaiting payment</span>`;
+      }
     }
     return '';
   }
