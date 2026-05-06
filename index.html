@@ -457,16 +457,22 @@
     }
     .fab-container {
       display: none; position: fixed; bottom: 20px; right: 20px;
-      z-index: 150; flex-direction: column; gap: 12px; align-items: flex-end;
+      z-index: 305; flex-direction: column; gap: 12px; align-items: flex-end;
     }
     .fab-category {
-      background: transparent; border: none; width: 44px; height: 44px;
+      background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(4px);
+      border: 1px solid var(--border); width: 48px; height: 48px; border-radius: 50%;
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
-      cursor: pointer; transition: transform 0.2s;
+      cursor: pointer; transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     .fab-category span {
-      display: block; width: 24px; height: 3px; background: var(--green-dark); border-radius: 2px;
+      display: block; width: 22px; height: 3px; background: var(--green-dark); border-radius: 2px;
+      transition: all 0.3s ease; transform-origin: center;
     }
+    .fab-category.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .fab-category.open span:nth-child(2) { opacity: 0; }
+    .fab-category.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
     .fab-cart {
       width: 56px; height: 56px; border-radius: 50%;
       background: var(--gold); color: var(--green-dark);
@@ -750,7 +756,7 @@
 
 <!-- ── MOBILE FLOATING BUTTONS ── -->
 <div class="fab-container" id="fabContainer">
-  <button class="fab-category" id="fabCategory" onclick="openMobileCategory()">
+  <button class="fab-category" id="fabCategory" onclick="toggleMobileCategory()">
     <span></span><span></span><span></span>
   </button>
   <button class="fab-cart" id="fabCart" onclick="openCart()">
@@ -1714,15 +1720,28 @@
     document.getElementById('successModal').classList.remove('show');
   }
   
+  function toggleMobileCategory() {
+    const drawer = document.getElementById('mobileCatDrawer');
+    if (drawer.classList.contains('open')) {
+      closeMobileCategory();
+    } else {
+      openMobileCategory();
+    }
+  }
+
   function openMobileCategory() {
     document.getElementById('mobileCatDrawer').classList.add('open');
     document.getElementById('overlay').classList.add('show');
     document.body.style.overflow = 'hidden';
+    const fab = document.getElementById('fabCategory');
+    if (fab) fab.classList.add('open');
   }
   
   function closeMobileCategory() {
     const drawer = document.getElementById('mobileCatDrawer');
     if (drawer) drawer.classList.remove('open');
+    const fab = document.getElementById('fabCategory');
+    if (fab) fab.classList.remove('open');
     if (!document.getElementById('cartDrawer').classList.contains('open') && 
         !document.getElementById('historyDrawer').classList.contains('open')) {
       document.getElementById('overlay').classList.remove('show');
