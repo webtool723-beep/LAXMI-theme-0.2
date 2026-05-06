@@ -1688,6 +1688,8 @@
     document.body.style.overflow = 'hidden';
     const fabCat = document.getElementById('fabCategory');
     if (fabCat) fabCat.style.display = 'none';
+    const fabCart = document.getElementById('fabCart');
+    if (fabCart) fabCart.style.display = 'none';
   }
   function closeCart() {
     document.getElementById('cartDrawer').classList.remove('open');
@@ -1695,6 +1697,8 @@
     document.body.style.overflow = '';
     const fabCat = document.getElementById('fabCategory');
     if (fabCat) fabCat.style.display = '';
+    const fabCart = document.getElementById('fabCart');
+    if (fabCart) fabCart.style.display = '';
   }
   function openHistory() {
     document.getElementById('historyDrawer').classList.add('open');
