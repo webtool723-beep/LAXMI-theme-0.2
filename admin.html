@@ -144,7 +144,7 @@
       <div class="admin-tabs">
         <button class="admin-tab active" onclick="switchTab('dashboard',this)">📊 Dashboard</button>
         <button class="admin-tab" onclick="switchTab('orders',this)">📋 Orders</button>
-        <button class="admin-tab" onclick="switchTab('tables',this)">🪑 Tables</button>
+        <button class="admin-tab" onclick="switchTab('tables',this)">🪑 Tables / Rooms</button>
         <button class="admin-tab" onclick="switchTab('settings',this)">⚙️ Settings</button>
         <button class="admin-tab" onclick="switchTab('activity',this)">📜 Activity Log</button>
       </div>
@@ -198,6 +198,11 @@
             <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-dim);">🔍</span>
             <input type="text" id="orderSearch" class="input" placeholder="Search order ID, table, phone…" oninput="filterOrders()" style="padding-left:36px;">
           </div>
+          <select id="orderTypeFilter" class="input" style="max-width:140px;" onchange="filterOrders()">
+            <option value="all">All Types</option>
+            <option value="table">Table Orders</option>
+            <option value="room">Room Orders</option>
+          </select>
           <select id="orderStatusFilter" class="input" style="max-width:140px;" onchange="filterOrders()">
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
@@ -221,7 +226,7 @@
             <thead>
               <tr>
                 <th onclick="sortOrders('order_id')">Order ID ↕</th>
-                <th onclick="sortOrders('table_number')">Table ↕</th>
+                <th>Table/Room</th>
                 <th>Items</th>
                 <th onclick="sortOrders('total')">Total ↕</th>
                 <th onclick="sortOrders('status')">Status ↕</th>
@@ -241,10 +246,10 @@
       <!-- ══ TABLES TAB ══ -->
       <div class="tab-panel" id="tab-tables">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
-          <div class="section-title" style="margin:0;">🪑 Restaurant Tables</div>
+          <div class="section-title" style="margin:0;">🪑 Restaurant Tables & Rooms</div>
           <div style="display:flex;gap:8px;">
             <button class="btn btn-secondary btn-sm" onclick="printAllQR()">🖨️ Print All QR</button>
-            <button class="btn btn-primary" onclick="openTableModal()">+ Add Table</button>
+            <button class="btn btn-primary" onclick="openTableModal()">+ Add Table/Room</button>
           </div>
         </div>
 
@@ -351,8 +356,15 @@
     </div>
     <div style="display:flex;flex-direction:column;gap:16px;">
       <div class="input-group">
-        <label class="input-label">Table Number *</label>
-        <input type="text" id="tableNum" class="input" placeholder="e.g. 01, A1, VIP">
+        <label class="input-label">Type</label>
+        <select id="tableType" class="input">
+          <option value="table">Table</option>
+          <option value="room">Room</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Number *</label>
+        <input type="text" id="tableNum" class="input" placeholder="e.g. 01, A1, VIP, 101">
       </div>
       <div class="input-group">
         <label class="input-label">Seats</label>
@@ -628,7 +640,7 @@
       const time = new Date(o.created_at).toLocaleTimeString('en-IN', { timeZone:'Asia/Kolkata', hour:'2-digit', minute:'2-digit' });
       return `<tr>
         <td><span style="font-family:var(--font-mono);font-size:0.82rem;">${o.order_id}</span></td>
-        <td>T${o.table_number || '—'}</td>
+        <td>${o.room_number ? 'R' + o.room_number : 'T' + (o.table_number || '—')}</td>
         <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:0.8rem;">${summary}</td>
         <td><span style="font-family:var(--font-mono);color:var(--green-bright);">₹${parseFloat(o.total).toFixed(2)}</span></td>
         <td><span class="badge badge-${o.status}">${o.status}</span></td>
@@ -658,16 +670,19 @@
     const search    = document.getElementById('orderSearch')?.value?.toLowerCase() || '';
     const status    = document.getElementById('orderStatusFilter')?.value || 'all';
     const payment   = document.getElementById('orderPayFilter')?.value || 'all';
+    const type      = document.getElementById('orderTypeFilter')?.value || 'all';
 
     filteredOrders = allOrders.filter(o => {
       const matchSearch = !search ||
         o.order_id?.toLowerCase().includes(search) ||
         o.table_number?.toLowerCase().includes(search) ||
+        o.room_number?.toLowerCase().includes(search) ||
         o.customer_phone?.includes(search) ||
         o.customer_name?.toLowerCase().includes(search);
       const matchStatus  = status === 'all' || o.status === status;
       const matchPayment = payment === 'all' || o.payment_status === payment;
-      return matchSearch && matchStatus && matchPayment;
+      const matchType    = type === 'all' || (type === 'room' ? !!o.room_number : !o.room_number);
+      return matchSearch && matchStatus && matchPayment && matchType;
     });
 
     // Sort
@@ -705,7 +720,7 @@
       const time = new Date(o.created_at).toLocaleTimeString('en-IN', { timeZone:'Asia/Kolkata', hour:'2-digit', minute:'2-digit' });
       return `<tr>
         <td><span style="font-family:var(--font-mono);font-size:0.8rem;cursor:pointer;color:var(--green-bright);" onclick="openOrderDetail('${o.id}')">${o.order_id}</span></td>
-        <td>T${o.table_number||'—'}</td>
+        <td>${o.room_number ? 'R' + o.room_number : 'T' + (o.table_number || '—')}</td>
         <td style="font-size:0.8rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${summary}</td>
         <td><span style="font-family:var(--font-mono);">₹${parseFloat(o.total).toFixed(2)}</span></td>
         <td><span class="badge badge-${o.status}">${o.status}</span></td>
@@ -768,7 +783,7 @@
     const rate = parseFloat(settings.gst_rate || 5);
     const half = rate / 2;
 
-    document.getElementById('orderDetailTitle').textContent = `${order.order_id} — Table ${order.table_number||'—'}`;
+    document.getElementById('orderDetailTitle').textContent = `${order.order_id} — ${order.room_number ? 'Room ' + order.room_number : 'Table ' + (order.table_number||'—')}`;
     document.getElementById('orderDetailBody').innerHTML = `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;font-size:0.875rem;">
         <div><span style="color:var(--text-dim);">Status</span><br><span class="badge badge-${order.status}" style="margin-top:4px;">${order.status}</span></div>
@@ -836,23 +851,27 @@
       grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-dim);">No tables yet. Add your first table!</div>`;
       return;
     }
-    grid.innerHTML = allTables.map(t => `
+    grid.innerHTML = allTables.map(t => {
+      const isRoom = !!t.room_number;
+      const numLabel = isRoom ? '🛏️ ' + t.room_number : '🪑 ' + t.table_number;
+      return `
       <div class="table-card ${t.is_occupied?'occupied':''}" onclick="openTableModal(${t.id})">
-        <div class="table-num">${t.table_number}</div>
+        <div class="table-num" style="font-size:1.5rem;">${numLabel}</div>
         <div class="table-seats">👥 ${t.seats} seats</div>
         <div class="table-status ${t.is_occupied?'occupied':'free'}">${t.is_occupied?'🔴 Occupied':'🟢 Free'}</div>
         <div style="margin-top:10px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
           <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();showQR(${t.id})">📱 QR</button>
-          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteTable(${t.id},'${t.table_number}')">🗑</button>
+          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteTable(${t.id},'${isRoom ? t.room_number : t.table_number}')">🗑</button>
         </div>
-      </div>`).join('');
+      </div>`}).join('');
   }
 
   window.openTableModal = function(tableId = null) {
     editingTableId = tableId;
     const t = allTables.find(t => t.id === tableId);
-    document.getElementById('tableModalTitle').textContent = t ? `Edit Table ${t.table_number}` : 'Add Table';
-    document.getElementById('tableNum').value   = t?.table_number || '';
+    document.getElementById('tableModalTitle').textContent = t ? `Edit ${t.room_number ? 'Room ' + t.room_number : 'Table ' + t.table_number}` : 'Add Table / Room';
+    if (document.getElementById('tableType')) document.getElementById('tableType').value = t?.room_number ? 'room' : 'table';
+    document.getElementById('tableNum').value   = t?.room_number || t?.table_number || '';
     document.getElementById('tableSeats').value = t?.seats || 4;
     document.getElementById('tableModal').style.display = 'flex';
   };
@@ -861,12 +880,15 @@
   window.saveTable = async function() {
     const sb  = window.supabaseClient;
     const bid = window.getActiveBranchId();
+    const type  = document.getElementById('tableType')?.value || 'table';
     const num   = document.getElementById('tableNum').value.trim();
     const seats = parseInt(document.getElementById('tableSeats').value) || 4;
-    if (!num) { window.showToast('Table number required','','error'); return; }
+    if (!num) { window.showToast('Number required','','error'); return; }
     const btn = document.getElementById('tableSaveBtn');
     btn.disabled=true; btn.textContent='Saving…';
-    const payload = { branch_id:bid, table_number:num, seats };
+    const payload = { branch_id:bid, seats };
+    if (type === 'room') { payload.room_number = num; payload.table_number = null; }
+    else { payload.table_number = num; payload.room_number = null; }
     let error;
     if (editingTableId) {
       ({error} = await sb.from('restaurant_tables').update(payload).eq('id', editingTableId));
@@ -891,8 +913,9 @@
   window.showQR = function(tableId) {
     const table = allTables.find(t => t.id === tableId);
     if (!table) return;
+    const isRoom = !!table.room_number;
     const baseUrl = window.location.origin + window.location.pathname.replace('admin.html','index.html');
-    const url = `${baseUrl}?table=${encodeURIComponent(table.table_number)}&token=${table.qr_token}`;
+    const url = isRoom ? `${baseUrl}?room=${encodeURIComponent(table.room_number)}&token=${table.qr_token}` : `${baseUrl}?table=${encodeURIComponent(table.table_number)}&token=${table.qr_token}`;
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
 
     const modal = document.createElement('div');
@@ -901,17 +924,17 @@
     modal.innerHTML = `
       <div class="modal" style="max-width:320px;text-align:center;">
         <div class="modal-header">
-          <h2 class="modal-title">📱 Table ${table.table_number} QR</h2>
+          <h2 class="modal-title">📱 ${isRoom ? 'Room ' + table.room_number : 'Table ' + table.table_number} QR</h2>
           <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">×</button>
         </div>
         <div class="qr-wrap">
           <img src="${qrUrl}" alt="QR Code" class="qr-img" width="200" height="200">
-          <div class="qr-table-number">Table ${table.table_number} · ${table.seats} seats</div>
+          <div class="qr-table-number">${isRoom ? 'Room ' + table.room_number : 'Table ' + table.table_number} · ${table.seats} seats</div>
           <div style="font-size:0.72rem;color:var(--text-dim);word-break:break-all;margin-top:4px;">${url}</div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" onclick="window.open('${qrUrl}','_blank')">⬇️ Download</button>
-          <button class="btn btn-primary" onclick="printQR('${table.table_number}','${qrUrl}')">🖨️ Print</button>
+          <button class="btn btn-primary" onclick="printQR('${isRoom ? table.room_number : table.table_number}', '${qrUrl}', ${isRoom})">🖨️ Print</button>
           <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Close</button>
         </div>
       </div>`;
@@ -919,14 +942,14 @@
     modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
   };
 
-  window.printQR = function(tableNum, qrUrl) {
+  window.printQR = function(num, qrUrl, isRoom = false) {
     const slip = document.getElementById('printSlip');
     slip.innerHTML = `
       <div style="font-family:monospace;text-align:center;padding:20px;">
         <div style="font-size:20px;font-weight:700;margin-bottom:4px;">🍃 LAXMI</div>
         <div style="font-size:14px;margin-bottom:12px;">Scan to Order</div>
         <img src="${qrUrl}" width="200" height="200" style="margin:0 auto;display:block;">
-        <div style="font-size:18px;font-weight:700;margin-top:12px;">Table ${tableNum}</div>
+        <div style="font-size:18px;font-weight:700;margin-top:12px;">${isRoom ? 'Room ' + num : 'Table ' + num}</div>
       </div>`;
     window.print();
   };
@@ -936,13 +959,14 @@
     const baseUrl = window.location.origin + window.location.pathname.replace('admin.html','index.html');
     const slip = document.getElementById('printSlip');
     slip.innerHTML = allTables.map(table => {
-      const url = `${baseUrl}?table=${encodeURIComponent(table.table_number)}&token=${table.qr_token}`;
+      const isRoom = !!table.room_number;
+      const url = isRoom ? `${baseUrl}?room=${encodeURIComponent(table.room_number)}&token=${table.qr_token}` : `${baseUrl}?table=${encodeURIComponent(table.table_number)}&token=${table.qr_token}`;
       const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(url)}`;
       return `<div style="font-family:monospace;text-align:center;padding:16px;display:inline-block;width:200px;margin:8px;break-inside:avoid;">
         <div style="font-size:16px;font-weight:700;">🍃 LAXMI</div>
         <div style="font-size:11px;margin-bottom:8px;">Scan to Order</div>
-        <img src="${qrUrl}" width="160" height="160">
-        <div style="font-size:16px;font-weight:700;margin-top:8px;">Table ${table.table_number}</div>
+        <img src="${qrUrl}" width="180" height="180" style="margin:0 auto;display:block;">
+        <div style="font-size:16px;font-weight:700;margin-top:12px;">${isRoom ? 'Room ' + table.room_number : 'Table ' + table.table_number}</div>
       </div>`;
     }).join('');
     window.print();

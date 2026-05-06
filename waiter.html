@@ -551,7 +551,7 @@ console.log('Full staff:', window.currentStaff);
         <div class="assign-card-head">
           <div>
             <div class="assign-order-id">${order.order_id}</div>
-            <div class="assign-table">Table ${order.table_number || '—'}</div>
+            <div class="assign-table">${order.room_number ? '🛏️ Room ' + order.room_number : '🪑 Table ' + (order.table_number || '—')}</div>
             <div class="assign-time">⏱ ${elapsed}</div>
           </div>
           <span class="badge badge-${order.status}">${order.status}</span>
@@ -634,7 +634,7 @@ console.log('Full staff:', window.currentStaff);
     if (!order) return;
 
     document.getElementById('transferInfo').innerHTML = `
-      <strong>${order.order_id}</strong> — Table ${order.table_number||'—'}
+      <strong>${order.order_id}</strong> — ${order.room_number ? 'Room ' + order.room_number : 'Table ' + (order.table_number||'—')}
     `;
 
     const sel = document.getElementById('transferWaiter');
@@ -717,7 +717,7 @@ console.log('Full staff:', window.currentStaff);
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px;">
           <div>
             <div style="font-family:var(--font-mono);font-size:0.8rem;color:var(--text-mid);">${o.order_id}</div>
-            <div style="font-weight:600;">Table ${o.table_number||'—'}</div>
+            <div style="font-weight:600;">${o.room_number ? '🛏️ Room ' + o.room_number : '🪑 Table ' + (o.table_number||'—')}</div>
           </div>
           <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
             <span class="badge badge-${o.status}">${o.status}</span>

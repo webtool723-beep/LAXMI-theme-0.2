@@ -767,7 +767,7 @@
     const rate = window.gstRate || 5;
     const half = rate / 2;
 
-    document.getElementById('modalTitle').textContent = `${order.order_id} — Table ${order.table_number || '—'}`;
+    document.getElementById('modalTitle').textContent = `${order.order_id} — ${order.room_number ? 'Room ' + order.room_number : 'Table ' + (order.table_number || '—')}`;
 
     const itemRows = items.map(i =>
       `<tr>
