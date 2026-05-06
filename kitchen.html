@@ -495,29 +495,31 @@
     window.showToast('✅ Updated', `Order → ${newStatus}`, 'success');
   };
 
-  // ── Mark done with auto waiter assignment
+  // ── Mark done with smart auto waiter assignment
   window.markDoneWithWaiter = async function(orderId) {
     const sb    = window.supabaseClient;
     const bid   = window.getActiveBranchId();
     const order = (window.allOrders || []).find(o => o.id === orderId);
     if (!order) return;
 
-    // If order was placed by a waiter — they are already assigned, just mark done
+    // ── Situation 5: Waiter placed the order — already assigned, just mark done
     if (order.assigned_waiter_id) {
       const { error } = await sb.from('orders')
         .update({ status: 'done', updated_at: new Date().toISOString() })
         .eq('id', orderId);
       if (!error) {
         window.showToast('✅ Order Ready!', `${order.assigned_waiter_name} will deliver`, 'success');
-        window.logActivity && window.logActivity('order_status', `${order.order_id} → done (waiter: ${order.assigned_waiter_name})`, window.currentStaff?.name||'', bid);
+        window.logActivity && window.logActivity(
+          'order_status',
+          `${order.order_id} → done (waiter: ${order.assigned_waiter_name})`,
+          window.currentStaff?.name || '', bid
+        );
       }
       return;
     }
 
-    // Customer order — auto assign waiter using round-robin (least deliveries today)
-    const today = new Date().toLocaleDateString('en-CA', { timeZone:'Asia/Kolkata' });
-
-    // Get all active waiters
+    // ── Situation 3: No waiters at all
+    // Always fetch fresh from DB (fixes Situation 4 — deactivated mid-shift)
     const { data: waiters } = await sb.from('staff').select('id,name')
       .eq('branch_id', bid).eq('is_active', true).eq('role', 'waiter');
 
@@ -526,22 +528,61 @@
       return;
     }
 
-    // Get delivery counts for today
+    // ── Get each waiter's CURRENT active orders (status = done, not yet delivered)
+    // This fixes Situation 1 — waiter already busy with an order
+    const { data: activeOrders } = await sb.from('orders').select('assigned_waiter_id')
+      .eq('branch_id', bid)
+      .in('status', ['done']) // 'done' = kitchen ready, waiter picking up/delivering
+      .not('assigned_waiter_id', 'is', null);
+
+    // Count active orders per waiter right now
+    const activeMap = {};
+    waiters.forEach(w => { activeMap[w.id] = 0; });
+    (activeOrders || []).forEach(o => {
+      if (activeMap[o.assigned_waiter_id] !== undefined) {
+        activeMap[o.assigned_waiter_id]++;
+      }
+    });
+
+    // ── Get today's total delivery count for tiebreaking (fairness)
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
     const { data: counts } = await sb.from('waiter_delivery_count').select('*')
       .eq('branch_id', bid).eq('date', today);
-
     const countMap = {};
     (counts || []).forEach(c => { countMap[c.waiter_id] = c.count; });
 
-    // Find waiter with least deliveries (round-robin fairness)
-    let minCount = Infinity;
+    // ── Smart assignment: 
+    // Primary sort: fewest ACTIVE orders right now
+    // Tiebreak: fewest total deliveries today (round-robin fairness)
     let assignedWaiter = waiters[0];
+    let minActive = Infinity;
+    let minTotal  = Infinity;
+
     waiters.forEach(w => {
-      const c = countMap[w.id] || 0;
-      if (c < minCount) { minCount = c; assignedWaiter = w; }
+      const active = activeMap[w.id] || 0;
+      const total  = countMap[w.id]  || 0;
+      if (
+        active < minActive ||
+        (active === minActive && total < minTotal)
+      ) {
+        minActive = active;
+        minTotal  = total;
+        assignedWaiter = w;
+      }
     });
 
-    // Mark done + assign waiter
+    // ── Situation 2: All waiters are busy — warn but still assign least-busy one
+    const allBusy = waiters.every(w => (activeMap[w.id] || 0) > 0);
+    if (allBusy) {
+      window.showToast(
+        '⚠️ All waiters are busy',
+        `Assigned to ${assignedWaiter.name} — fewest active orders`,
+        'warning',
+        6000
+      );
+    }
+
+    // ── Mark done + assign waiter
     const { error } = await sb.from('orders').update({
       status:               'done',
       assigned_waiter_id:   assignedWaiter.id,
@@ -550,9 +591,9 @@
       updated_at:           new Date().toISOString()
     }).eq('id', orderId);
 
-    if (error) { window.showToast('Error', error.message, 'error'); return; }
+    if (error) { window.showToast('Error assigning waiter', error.message, 'error'); return; }
 
-    // Upsert delivery count
+    // ── Update daily delivery count for tiebreaking
     await sb.from('waiter_delivery_count').upsert({
       branch_id:   bid,
       waiter_id:   assignedWaiter.id,
@@ -561,8 +602,19 @@
       count:       (countMap[assignedWaiter.id] || 0) + 1
     }, { onConflict: 'branch_id,waiter_id,date' });
 
-    window.showToast('✅ Order Ready!', `Auto-assigned to ${assignedWaiter.name}`, 'success');
-    window.logActivity && window.logActivity('order_status', `${order.order_id} → done, auto-assigned to ${assignedWaiter.name}`, window.currentStaff?.name||'', bid);
+    if (!allBusy) {
+      window.showToast(
+        '✅ Order Ready!',
+        `Auto-assigned to ${assignedWaiter.name} ${minActive === 0 ? '(free)' : `(${minActive} active)`}`,
+        'success'
+      );
+    }
+
+    window.logActivity && window.logActivity(
+      'order_status',
+      `${order.order_id} → done, auto-assigned to ${assignedWaiter.name} (active:${minActive}, today:${minTotal})`,
+      window.currentStaff?.name || '', bid
+    );
   };
 
   // ── Store toggle
