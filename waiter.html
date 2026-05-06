@@ -472,8 +472,7 @@ console.log('Full staff:', window.currentStaff);
         <div class="assign-items">${summary}</div>
         ${order.note ? `<div class="order-note" style="margin-bottom:8px;">📝 ${order.note}</div>` : ''}
         ${needsCollection ? `<div style="background:var(--red-dim);border:1px solid rgba(244,67,54,0.3);color:var(--red);padding:8px 10px;border-radius:6px;font-size:0.82rem;font-weight:600;margin-bottom:8px;">💰 Payment Manager requests you collect payment from this table!</div>` : ''}
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div class="assign-total">₹${parseFloat(order.total).toFixed(2)}</div>
+        <div style="display:flex;justify-content:flex-end;align-items:center;">
           <div style="font-size:0.72rem;color:var(--text-dim);">${order.customer_phone||''}</div>
         </div>
         <div class="assign-actions">
@@ -548,8 +547,7 @@ console.log('Full staff:', window.currentStaff);
     if (!order) return;
 
     document.getElementById('transferInfo').innerHTML = `
-      <strong>${order.order_id}</strong> — Table ${order.table_number||'—'}<br>
-      Total: <strong style="color:var(--green-bright);">₹${parseFloat(order.total).toFixed(2)}</strong>
+      <strong>${order.order_id}</strong> — Table ${order.table_number||'—'}
     `;
 
     const sel = document.getElementById('transferWaiter');
@@ -1000,7 +998,6 @@ console.log('Full staff:', window.currentStaff);
           <span>Table <strong>${t}</strong></span>
           <div style="display:flex;gap:12px;">
             <span style="color:var(--text-dim);font-size:0.8rem;">${d.count} orders</span>
-            <span style="font-family:var(--font-mono);color:var(--green-bright);">₹${d.revenue.toFixed(0)}</span>
           </div>
         </div>`).join('')
       : `<div style="padding:20px;text-align:center;color:var(--text-dim);">No deliveries in this range</div>`;
