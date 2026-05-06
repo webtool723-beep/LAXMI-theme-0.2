@@ -24,7 +24,6 @@
       gap: 12px; margin-bottom: 16px; flex-wrap: wrap;
     }
     .bulk-bar.show { display: flex; }
-    .tab-panels { }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
     .page-tabs { display: flex; gap: 4px; background: var(--surface2); border-radius: var(--radius-sm); padding: 4px; margin-bottom: 24px; width: fit-content; }
@@ -204,8 +203,30 @@
       </div>
       <div class="input-group">
         <label class="input-label">Sort Order</label>
-        <input type="number" id="catSort" class="input" placeholder="0" min="0">
+        <input type="number" id="itemSort" class="input" placeholder="0" min="0">
       </div>
+
+      <!-- Tag 1 -->
+      <div class="input-group">
+        <label class="input-label">Tag 1 Text <span style="font-weight:400;color:var(--text-dim);">(e.g. Highly Ordered)</span></label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="itemTag1Text" class="input" placeholder="e.g. Must Try" maxlength="20" style="flex:1;">
+          <input type="color" id="itemTag1Color" value="#e53935" title="Tag color"
+            style="width:44px;height:40px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;padding:2px;">
+        </div>
+      </div>
+
+      <!-- Tag 2 -->
+      <div class="input-group">
+        <label class="input-label">Tag 2 Text <span style="font-weight:400;color:var(--text-dim);">(optional)</span></label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="itemTag2Text" class="input" placeholder="e.g. Chef's Pick" maxlength="20" style="flex:1;">
+          <input type="color" id="itemTag2Color" value="#1e88e5" title="Tag color"
+            style="width:44px;height:40px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;padding:2px;">
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;">
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeCatModal()">Cancel</button>
@@ -261,6 +282,22 @@
             <label class="toggle"><input type="checkbox" id="itemAvailable" checked><span class="toggle-slider"></span></label>
             <span class="toggle-label">Available</span>
           </label>
+          <label class="toggle-wrap">
+            <label class="toggle"><input type="checkbox" id="itemChefsSpecial"><span class="toggle-slider"></span></label>
+            <span class="toggle-label">👨‍🍳 Chef's Special</span>
+          </label>
+          <label class="toggle-wrap">
+            <label class="toggle"><input type="checkbox" id="itemTodaysSpecial"><span class="toggle-slider"></span></label>
+            <span class="toggle-label">⏰ Today's Special</span>
+          </label>
+          <div id="specialTimeWrap" style="display:none;gap:8px;flex-direction:column;">
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input type="time" id="itemSpecialStart" class="input" style="flex:1;" placeholder="Start time">
+              <span style="color:var(--text-dim);font-size:0.8rem;">to</span>
+              <input type="time" id="itemSpecialEnd" class="input" style="flex:1;" placeholder="End time">
+            </div>
+            <div style="font-size:0.75rem;color:var(--text-dim);">Tag shows only during these hours. Leave empty to show all day.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -320,6 +357,13 @@
   let editingCatId = null;
   let editingItemId = null;
   let selectedItems = new Set();
+
+
+  // Show/hide special time when Today's Special toggled
+  document.getElementById('itemTodaysSpecial')?.addEventListener('change', function() {
+    document.getElementById('specialTimeWrap').style.display = this.checked ? 'flex' : 'none';
+  });
+
 
   // ── appInit called by auth.js
   window.appInit = async function() {
@@ -643,9 +687,18 @@
       document.getElementById('itemDesc').value = item.description || '';
       document.getElementById('itemEmoji').value = item.emoji || '🍽️';
       document.getElementById('itemEmojiPreview').textContent = item.emoji || '🍽️';
-      document.getElementById('itemSort').value = item.sort_order || 0;
-      document.getElementById('itemVeg').checked = item.is_veg !== false;
-      document.getElementById('itemAvailable').checked = item.is_available !== false;
+      document.getElementById('itemSort').value          = item.sort_order || 0;
+      document.getElementById('itemVeg').checked         = item.is_veg !== false;
+      document.getElementById('itemAvailable').checked   = item.is_available !== false;
+      document.getElementById('itemChefsSpecial').checked   = item.is_chefs_special || false;
+      document.getElementById('itemTodaysSpecial').checked  = item.is_todays_special || false;
+      document.getElementById('itemTag1Text').value      = item.tag1_text || '';
+      document.getElementById('itemTag1Color').value     = item.tag1_color || '#e53935';
+      document.getElementById('itemTag2Text').value      = item.tag2_text || '';
+      document.getElementById('itemTag2Color').value     = item.tag2_color || '#1e88e5';
+      document.getElementById('itemSpecialStart').value  = item.special_start_time || '';
+      document.getElementById('itemSpecialEnd').value    = item.special_end_time || '';
+      document.getElementById('specialTimeWrap').style.display = item.is_todays_special ? 'flex' : 'none';
     } else {
       title.textContent = 'Add Menu Item';
       document.getElementById('itemName').value = '';
@@ -653,9 +706,18 @@
       document.getElementById('itemDesc').value = '';
       document.getElementById('itemEmoji').value = '🍽️';
       document.getElementById('itemEmojiPreview').textContent = '🍽️';
-      document.getElementById('itemSort').value = menuItems.length;
-      document.getElementById('itemVeg').checked = true;
-      document.getElementById('itemAvailable').checked = true;
+      document.getElementById('itemSort').value            = menuItems.length;
+      document.getElementById('itemVeg').checked           = true;
+      document.getElementById('itemAvailable').checked     = true;
+      document.getElementById('itemChefsSpecial').checked  = false;
+      document.getElementById('itemTodaysSpecial').checked = false;
+      document.getElementById('itemTag1Text').value        = '';
+      document.getElementById('itemTag1Color').value       = '#e53935';
+      document.getElementById('itemTag2Text').value        = '';
+      document.getElementById('itemTag2Color').value       = '#1e88e5';
+      document.getElementById('itemSpecialStart').value    = '';
+      document.getElementById('itemSpecialEnd').value      = '';
+      document.getElementById('specialTimeWrap').style.display = 'none';
       if (categories.length > 0) document.getElementById('itemCategory').value = categories[0].id;
     }
     document.getElementById('itemModal').style.display = 'flex';
@@ -685,10 +747,25 @@
     const btn = document.getElementById('itemSaveBtn');
     btn.disabled = true; btn.textContent = 'Saving…';
 
+    const tag1Text  = document.getElementById('itemTag1Text').value.trim();
+    const tag1Color = document.getElementById('itemTag1Color').value;
+    const tag2Text  = document.getElementById('itemTag2Text').value.trim();
+    const tag2Color = document.getElementById('itemTag2Color').value;
+    const isChefsSpecial   = document.getElementById('itemChefsSpecial').checked;
+    const isTodaysSpecial  = document.getElementById('itemTodaysSpecial').checked;
+    const specialStart     = document.getElementById('itemSpecialStart').value || null;
+    const specialEnd       = document.getElementById('itemSpecialEnd').value || null;
+
     const payload = {
       branch_id: bid, category_id: parseInt(catId), name,
       description: desc || null, emoji, price, sort_order: sortOrder,
-      is_veg: isVeg, is_available: isAvailable
+      is_veg: isVeg, is_available: isAvailable,
+      tag1_text: tag1Text || null, tag1_color: tag1Color,
+      tag2_text: tag2Text || null, tag2_color: tag2Color,
+      is_chefs_special:    isChefsSpecial,
+      is_todays_special:   isTodaysSpecial,
+      special_start_time:  specialStart,
+      special_end_time:    specialEnd
     };
 
     let error;

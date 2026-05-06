@@ -196,6 +196,14 @@
     }
     .menu-card:hover { box-shadow: var(--shadow); border-color: var(--gold-light); transform: translateY(-2px); }
     .menu-card.sold-out { opacity: 0.6; }
+    .item-tags { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:6px; }
+    .item-tag {
+      display:inline-flex; align-items:center; gap:3px;
+      padding:2px 8px; border-radius:20px;
+      font-size:0.65rem; font-weight:700;
+      letter-spacing:0.04em; text-transform:uppercase;
+      color:#fff; white-space:nowrap;
+    }
     .sold-out-badge {
       position: absolute; top: 10px; right: 10px;
       background: var(--red); color: #fff;
@@ -969,7 +977,39 @@
     .subscribe();
 
   // ── Load initial data
+  async function loadAutoTagData() {
+    const today = new Date().toLocaleDateString('en-CA', { timeZone:'Asia/Kolkata' });
+    const { data: todayOrders } = await sb.from('orders').select('items')
+      .eq('branch_id', BRANCH_ID)
+      .gte('created_at', today + 'T00:00:00+05:30')
+      .not('status', 'in', '("rejected","cancelled")');
+
+    const itemCount = {};
+    (todayOrders || []).forEach(o => {
+      const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
+      items.forEach(i => { itemCount[i.id] = (itemCount[i.id] || 0) + i.qty; });
+    });
+    const sorted = Object.entries(itemCount).sort((a,b) => b[1]-a[1]).slice(0,3);
+    window.bestSellerItems = new Set(sorted.map(([id]) => parseInt(id)));
+
+    // Top rated
+    const { data: reviews } = await sb.from('reviews').select('order_id,rating')
+      .eq('branch_id', BRANCH_ID).gte('rating', 4);
+    const ratedItemIds = new Set();
+    if (reviews && reviews.length > 0) {
+      const orderIds = [...new Set(reviews.map(r => r.order_id))];
+      const { data: ratedOrders } = await sb.from('orders').select('order_id,items')
+        .in('order_id', orderIds);
+      (ratedOrders || []).forEach(o => {
+        const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
+        items.forEach(i => ratedItemIds.add(parseInt(i.id)));
+      });
+    }
+    window.topRatedItems = ratedItemIds;
+  }
+
   async function loadAll() {
+    await loadAutoTagData();
     await loadSettings();
     await loadCategories();
     await loadMenuItems();
@@ -1068,10 +1108,60 @@
     const card = document.createElement('div');
     card.className = `menu-card${!item.is_available ? ' sold-out' : ''}`;
     card.id = `card-${item.id}`;
+    // Build tags (max 2 — manual first, then auto)
+    const tags = [];
+
+    // Manual tags
+    if (item.tag1_text) tags.push({ text: item.tag1_text, color: item.tag1_color || '#e53935' });
+    if (item.tag2_text && tags.length < 2) tags.push({ text: item.tag2_text, color: item.tag2_color || '#1e88e5' });
+
+    // Auto tags (only if space remaining)
+    if (tags.length < 2) {
+      // Chef's Special
+      if (item.is_chefs_special) tags.push({ text: "👨‍🍳 Chef's Special", color: '#2e7d32' });
+    }
+    if (tags.length < 2) {
+      // Today's Special (check time window)
+      if (item.is_todays_special) {
+        let showSpecial = true;
+        if (item.special_start_time && item.special_end_time) {
+          const now   = new Date();
+          const hm    = now.getHours() * 60 + now.getMinutes();
+          const [sh, sm] = item.special_start_time.split(':').map(Number);
+          const [eh, em] = item.special_end_time.split(':').map(Number);
+          showSpecial = hm >= sh*60+sm && hm <= eh*60+em;
+        }
+        if (showSpecial) tags.push({ text: '⏰ Today\'s Special', color: '#6a1b9a' });
+      }
+    }
+    if (tags.length < 2) {
+      // New item (added within 7 days)
+      const created = new Date(item.created_at);
+      const daysDiff = (Date.now() - created.getTime()) / (1000 * 60 * 60 * 24);
+      if (daysDiff <= 7) tags.push({ text: '✨ New', color: '#0277bd' });
+    }
+    if (tags.length < 2) {
+      // Top Rated (from reviews — checked against window.topRatedItems)
+      if (window.topRatedItems && window.topRatedItems.has(item.id)) {
+        tags.push({ text: '⭐ Top Rated', color: '#f57f17' });
+      }
+    }
+    if (tags.length < 2) {
+      // Best Seller (from today's orders — checked against window.bestSellerItems)
+      if (window.bestSellerItems && window.bestSellerItems.has(item.id)) {
+        tags.push({ text: '🔥 Best Seller', color: '#b71c1c' });
+      }
+    }
+
+    const tagsHtml = tags.length
+      ? `<div class="item-tags">${tags.map(t => `<span class="item-tag" style="background:${t.color};">${t.text}</span>`).join('')}</div>`
+      : '';
+
     card.innerHTML = `
       ${!item.is_available ? '<div class="sold-out-badge">Sold Out</div>' : ''}
       <div class="card-emoji">${item.emoji || '🍽️'}</div>
       <div class="card-body">
+        ${tagsHtml}
         <div class="card-top">
           <div class="card-name">${item.name}</div>
           <div class="veg-indicator ${item.is_veg ? 'veg' : 'nonveg'}" title="${item.is_veg ? 'Veg' : 'Non-Veg'}"></div>
@@ -1444,7 +1534,48 @@
     setTimeout(() => { t.classList.add('removing'); setTimeout(() => t.remove(), 300); }, 4000);
   };
 
+  // ── Load best sellers and top rated for auto tags
+  async function loadAutoTagData() {
+    // Best sellers — top 3 items ordered today
+    const today = new Date().toLocaleDateString('en-CA', { timeZone:'Asia/Kolkata' });
+    const { data: todayOrders } = await sb.from('orders').select('items')
+      .eq('branch_id', BRANCH_ID)
+      .gte('created_at', today + 'T00:00:00+05:30')
+      .not('status', 'in', '("rejected","cancelled")');
+
+    const itemCount = {};
+    (todayOrders || []).forEach(o => {
+      const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
+      items.forEach(i => { itemCount[i.id] = (itemCount[i.id] || 0) + i.qty; });
+    });
+    const sorted = Object.entries(itemCount).sort((a,b) => b[1]-a[1]).slice(0,3);
+    window.bestSellerItems = new Set(sorted.map(([id]) => parseInt(id)));
+
+    // Top rated — items with avg rating >= 4
+    const { data: reviews } = await sb.from('reviews').select('order_id,rating')
+      .eq('branch_id', BRANCH_ID).gte('rating', 4);
+
+    // Match reviews to items via order items
+    const ratedItemIds = new Set();
+    if (reviews && reviews.length > 0) {
+      const orderIds = reviews.map(r => r.order_id);
+      const { data: ratedOrders } = await sb.from('orders').select('order_id,items')
+        .in('order_id', orderIds);
+      (ratedOrders || []).forEach(o => {
+        const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
+        items.forEach(i => ratedItemIds.add(i.id));
+      });
+    }
+    window.topRatedItems = ratedItemIds;
+  }
+
   // ── Init
+  async function loadAll() {
+    await loadAutoTagData();
+    await loadSettings();
+    await loadCategories();
+    await loadMenuItems();
+  }
   loadAll();
 </script>
 
