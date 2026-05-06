@@ -146,6 +146,9 @@
           <button class="filter-tab" data-status="preparing" onclick="setFilter('preparing',this)">
             👨‍🍳 Preparing <span class="tab-count" id="tabPreparing">0</span>
           </button>
+          <button class="filter-tab" id="filterTabDelayed" data-status="delayed" onclick="setFilter('delayed',this)">
+            ⚠️ Delayed <span class="tab-count" id="tabDelayed">0</span>
+          </button>
           <button class="filter-tab" data-status="all" onclick="setFilter('all',this)">
             📋 All Today
           </button>
@@ -337,10 +340,18 @@
     const pending   = todayOrders.filter(o => o.status === 'pending').length;
     const preparing = todayOrders.filter(o => o.status === 'preparing').length;
     const active    = pending + preparing;
+    
+    // Delayed: Active orders > 15 mins
+    const delayed = todayOrders.filter(o => 
+      (o.status === 'pending' || o.status === 'preparing') && 
+      getMinutesElapsed(o.created_at) >= 15
+    ).length;
 
     document.getElementById('tabActive').textContent    = active;
     document.getElementById('tabPending').textContent   = pending;
     document.getElementById('tabPreparing').textContent = preparing;
+    const tabDelayed = document.getElementById('tabDelayed');
+    if (tabDelayed) tabDelayed.textContent = delayed;
   }
 
   // ── Render orders
@@ -361,8 +372,13 @@
     let filtered = orders.filter(o =>
       new Date(o.created_at).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }) === today);
 
-    if (filter === 'active') filtered = filtered.filter(o => o.status === 'pending' || o.status === 'preparing');
-    else if (filter !== 'all') filtered = filtered.filter(o => o.status === filter);
+    if (filter === 'active') {
+      filtered = filtered.filter(o => o.status === 'pending' || o.status === 'preparing');
+    } else if (filter === 'delayed') {
+      filtered = filtered.filter(o => (o.status === 'pending' || o.status === 'preparing') && getMinutesElapsed(o.created_at) >= 15);
+    } else if (filter !== 'all') {
+      filtered = filtered.filter(o => o.status === filter);
+    }
 
     // Sort: pending first, then preparing, then by time
     filtered.sort((a, b) => {
@@ -388,13 +404,30 @@
 
   function createOrderCard(order) {
     const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
-    const elapsed = getElapsedTime(order.created_at);
-    const isUrgent = order.status === 'pending' && getMinutesElapsed(order.created_at) >= 10;
+    const elapsedMins = getMinutesElapsed(order.created_at);
+    let elapsedText = getElapsedTime(order.created_at);
+    
+    // Preparation Time Logic
+    let delayClass = '';
+    let delayLabel = '';
+    if (order.status === 'pending' || order.status === 'preparing') {
+      if (elapsedMins >= 18) {
+        delayClass = 'delay-urgent';
+        delayLabel = ' (Urgent)';
+      } else if (elapsedMins >= 15) {
+        delayClass = 'delay-warning';
+        delayLabel = ' (Slightly Delayed)';
+      }
+    }
 
     const card = document.createElement('div');
-    card.className = `order-card status-${order.status}`;
+    card.className = `order-card status-${order.status} ${delayClass}`;
     card.id = `order-${order.id}`;
-    if (isUrgent) card.style.animation = 'pulse-card 2s infinite';
+    
+    // Only pulse if pending for > 10 mins but not yet urgent (pulse-card is a separate animation)
+    if (order.status === 'pending' && elapsedMins >= 10 && elapsedMins < 18) {
+      card.style.animation = 'pulse-card 2s infinite';
+    }
 
     const itemsHtml = items.map(i =>
       `<li class="order-item">
@@ -414,8 +447,8 @@
         <div>
           <div class="order-id">${order.order_id}</div>
           <div class="order-table">Table ${order.table_number || '—'}</div>
-          <div class="order-time" id="timer-${order.id}" data-created="${order.created_at}">
-            ⏱ ${elapsed}
+          <div class="order-time" id="timer-${order.id}" data-created="${order.created_at}" data-status="${order.status}">
+            ⏱ ${elapsedText}${delayLabel}
           </div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
@@ -677,10 +710,55 @@
   }
 
   window.updateTimers = function() {
+    let hasUrgent = false;
+    
     document.querySelectorAll('[id^="timer-"]').forEach(el => {
       const created = el.dataset.created;
-      if (created) el.innerHTML = `⏱ ${getElapsedTime(created)}`;
+      const status = el.dataset.status;
+      if (!created) return;
+      
+      const mins = getMinutesElapsed(created);
+      let text = getElapsedTime(created);
+      
+      const card = el.closest('.order-card');
+      
+      if (status === 'pending' || status === 'preparing') {
+        if (mins >= 18) {
+          text += ' (Urgent)';
+          if (card) {
+            card.classList.add('delay-urgent');
+            card.classList.remove('delay-warning');
+          }
+          hasUrgent = true;
+        } else if (mins >= 15) {
+          text += ' (Slightly Delayed)';
+          if (card) {
+            card.classList.add('delay-warning');
+            card.classList.remove('delay-urgent');
+          }
+        } else {
+          if (card) {
+            card.classList.remove('delay-urgent');
+            card.classList.remove('delay-warning');
+          }
+        }
+      }
+      
+      el.innerHTML = `⏱ ${text}`;
     });
+    
+    const delayTab = document.getElementById('filterTabDelayed');
+    if (delayTab) {
+      if (hasUrgent) {
+        delayTab.classList.add('blink-red');
+      } else {
+        delayTab.classList.remove('blink-red');
+      }
+    }
+    
+    if (window.allOrders) {
+      updateTabCounts(window.allOrders);
+    }
   };
 
   // ── Order detail modal

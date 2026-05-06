@@ -848,6 +848,43 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .order-card.status-done { border-left-color: var(--done); }
 .order-card.status-rejected { border-left-color: var(--rejected); opacity: 0.7; }
 
+/* Preparation Delay Classes */
+.order-card.delay-warning {
+  border-top-right-radius: 8px;
+  box-shadow: inset -4px 4px 0px rgba(255,193,7,0.7); /* gold corner */
+}
+
+.order-card.delay-urgent {
+  animation: red-corner-blink 1.5s infinite;
+}
+
+@keyframes red-corner-blink {
+  0%, 100% {
+    border-top-right-radius: 8px;
+    box-shadow: inset -6px 6px 0px rgba(244,67,54,1); /* red corner */
+  }
+  50% {
+    border-top-right-radius: 8px;
+    box-shadow: inset -6px 6px 10px rgba(244,67,54,0.1);
+  }
+}
+
+.blink-red {
+  animation: bg-red-blink 1.5s infinite;
+}
+
+@keyframes bg-red-blink {
+  0%, 100% {
+    background: rgba(244,67,54,0.2);
+    border-color: rgba(244,67,54,0.5);
+    color: var(--red);
+  }
+  50% {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text-dim);
+  }
+}
 .order-card-header {
   padding: 14px 16px 12px;
   border-bottom: 1px solid var(--border);
