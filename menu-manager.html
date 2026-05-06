@@ -226,6 +226,18 @@
         <label class="input-label">Item Name *</label>
         <input type="text" id="itemName" class="input" placeholder="e.g. Paneer Butter Masala">
       </div>
+      <div class="input-group">
+        <label class="input-label">Category *</label>
+        <select id="itemCategory" class="input"></select>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Price (₹) *</label>
+        <input type="number" id="itemPrice" class="input" placeholder="0.00" min="0" step="0.01">
+      </div>
+      <div class="input-group" style="grid-column:1/-1;">
+        <label class="input-label">Description</label>
+        <textarea id="itemDesc" class="input" rows="2" placeholder="Short description…"></textarea>
+      </div>
 
       <!-- Tag 1 -->
       <div class="input-group">
@@ -258,6 +270,25 @@
         <label class="input-label">Description</label>
         <textarea id="itemDesc" class="input" rows="2" placeholder="Short description…"></textarea>
       </div>
+
+      <!-- Marketing Tags -->
+      <div class="input-group">
+        <label class="input-label">Tag 1 Text <span style="font-weight:400;color:var(--text-dim);">(e.g. Highly Ordered)</span></label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="itemTag1Text" class="input" placeholder="e.g. Must Try" maxlength="20" style="flex:1;">
+          <input type="color" id="itemTag1Color" value="#e53935" title="Tag color"
+            style="width:44px;height:40px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;padding:2px;">
+        </div>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Tag 2 Text <span style="font-weight:400;color:var(--text-dim);">(optional)</span></label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="itemTag2Text" class="input" placeholder="e.g. Chef's Pick" maxlength="20" style="flex:1;">
+          <input type="color" id="itemTag2Color" value="#1e88e5" title="Tag color"
+            style="width:44px;height:40px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;padding:2px;">
+        </div>
+      </div>
+
       <div class="input-group">
         <label class="input-label">Emoji</label>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
@@ -362,17 +393,18 @@
 
 
   // ── appInit called by auth.js
-  window.appInit = async function() {
+window.appInit = async function() {
     window.renderStaffUI && window.renderStaffUI();
     window.buildAuthGate && window.buildAuthGate('Menu Manager');
     buildEmojiGrid('catEmojiGrid', 'catEmoji', 'catEmojiPreview');
     buildEmojiGrid('itemEmojiGrid', 'itemEmoji', 'itemEmojiPreview');
-    // Attach event listener here — after appContent is visible
+    // Load items FIRST so category table shows correct count
+    await loadMenuItems();
+    await loadCategories();
+    // Attach today's special toggle listener
     document.getElementById('itemTodaysSpecial')?.addEventListener('change', function() {
       document.getElementById('specialTimeWrap').style.display = this.checked ? 'flex' : 'none';
     });
-    await loadCategories();
-    await loadMenuItems();
     window.startHeartbeat && window.startHeartbeat();
     window.listenToSettings && window.listenToSettings();
   };
