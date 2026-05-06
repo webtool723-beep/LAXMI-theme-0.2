@@ -414,8 +414,8 @@ console.log('Full staff:', window.currentStaff);
   function updateStats() {
     const today     = new Date().toLocaleDateString('en-CA', { timeZone:'Asia/Kolkata' });
     const todayOrds = myHistory.filter(o => new Date(o.created_at).toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'}) === today);
-    const delivered = myAssignments.filter(o => o.status === 'done').length;
-    const assigned  = myAssignments.filter(o => o.status !== 'done' && o.status !== 'rejected').length;
+    const delivered = myAssignments.filter(o => o.status === 'delivered' || (o.status === 'done' && o.delivered_at)).length;
+    const assigned  = myAssignments.filter(o => !['delivered','rejected','cancelled'].includes(o.status)).length;
     const myOrders  = myHistory.filter(o => o.firebase_uid === window.currentStaff?.uid).length;
     const revenue   = myAssignments.filter(o => o.status === 'done').reduce((s,o) => s + parseFloat(o.total||0), 0);
 
@@ -424,8 +424,10 @@ console.log('Full staff:', window.currentStaff);
     document.getElementById('statMyOrders').textContent  = myOrders;
 
     // Badge
+    // Badge only counts active (pending/preparing/done) — not delivered
+    const activeBadgeCount = myAssignments.filter(o => ['pending','preparing','done'].includes(o.status)).length;
     const badge = document.getElementById('assignBadge');
-    if (assigned > 0) { badge.textContent = assigned; badge.style.display = 'inline-flex'; }
+    if (activeBadgeCount > 0) { badge.textContent = activeBadgeCount; badge.style.display = 'inline-flex'; }
     else badge.style.display = 'none';
   }
 
@@ -952,7 +954,7 @@ console.log('Full staff:', window.currentStaff);
     const orders = merged.filter(o => { if(seen.has(o.id)) return false; seen.add(o.id); return true; });
 
     // KPIs
-    const delivered    = orders.filter(o => (o.status==='done'||o.status==='delivered') && o.assigned_waiter_id===sid).length;
+    const delivered = orders.filter(o => o.status==='delivered' && o.assigned_waiter_id===sid).length;
     const made         = orders.filter(o => o.firebase_uid===uid).length;
     const assignedOrds = orders.filter(o => o.assigned_waiter_id===sid).length;
     const revenue      = orders.filter(o => (o.status==='done'||o.status==='delivered') && o.assigned_waiter_id===sid && o.payment_status==='paid').reduce((s,o)=>s+parseFloat(o.total||0),0);
@@ -975,7 +977,7 @@ console.log('Full staff:', window.currentStaff);
     document.getElementById('repTransferred').textContent = (transferred||[]).length;
 
     // Breakdown
-    const statuses = ['done','pending','preparing','rejected','cancelled'];
+    const statuses = ['delivered','pending','preparing','rejected','cancelled'];
     document.getElementById('repBreakdown').innerHTML = statuses.map(st => {
       const count = orders.filter(o=>o.status===st).length;
       return `<div class="report-row">
@@ -986,7 +988,7 @@ console.log('Full staff:', window.currentStaff);
 
     // Tables served
     const tableMap = {};
-    orders.filter(o=>o.status==='done'&&o.assigned_waiter_id===sid).forEach(o => {
+    orders.filter(o=>o.status==='delivered'&&o.assigned_waiter_id===sid).forEach(o => {
       const t = o.table_number||'—';
       if (!tableMap[t]) tableMap[t] = { count:0, revenue:0 };
       tableMap[t].count++;

@@ -118,7 +118,7 @@
           <div class="stat-dot" style="background:var(--preparing);"></div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Done Today</div>
+          <div class="stat-label">Completed Today</div>
           <div class="stat-value green" id="statDone">0</div>
           <div class="stat-dot" style="background:var(--done);"></div>
         </div>
@@ -145,9 +145,6 @@
           </button>
           <button class="filter-tab" data-status="preparing" onclick="setFilter('preparing',this)">
             👨‍🍳 Preparing <span class="tab-count" id="tabPreparing">0</span>
-          </button>
-          <button class="filter-tab" data-status="done" onclick="setFilter('done',this)">
-            ✅ Done <span class="tab-count" id="tabDone">0</span>
           </button>
           <button class="filter-tab" data-status="all" onclick="setFilter('all',this)">
             📋 All Today
@@ -320,17 +317,16 @@
     const todayOrders = orders.filter(o => o.created_at?.startsWith(today) ||
       new Date(o.created_at).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }) === today);
 
-    const pending = todayOrders.filter(o => o.status === 'pending').length;
+    const pending   = todayOrders.filter(o => o.status === 'pending').length;
     const preparing = todayOrders.filter(o => o.status === 'preparing').length;
-    const done = todayOrders.filter(o => o.status === 'done').length;
-    const rejected = todayOrders.filter(o => o.status === 'rejected').length;
-    const revenue = todayOrders.filter(o => o.status === 'done').reduce((s, o) => s + parseFloat(o.total || 0), 0);
+    const done      = todayOrders.filter(o => o.status === 'done' || o.status === 'delivered').length;
+    const rejected  = todayOrders.filter(o => o.status === 'rejected').length;
 
-    document.getElementById('statPending').textContent = pending;
+    document.getElementById('statPending').textContent   = pending;
     document.getElementById('statPreparing').textContent = preparing;
-    document.getElementById('statDone').textContent = done;
-    document.getElementById('statRejected').textContent = rejected;
-    document.getElementById('statTotal').textContent = todayOrders.length;
+    document.getElementById('statDone').textContent      = done;
+    document.getElementById('statRejected').textContent  = rejected;
+    document.getElementById('statTotal').textContent     = todayOrders.length;
   }
 
   function updateTabCounts(orders) {
@@ -338,15 +334,13 @@
     const todayOrders = orders.filter(o =>
       new Date(o.created_at).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }) === today);
 
-    const pending = todayOrders.filter(o => o.status === 'pending').length;
+    const pending   = todayOrders.filter(o => o.status === 'pending').length;
     const preparing = todayOrders.filter(o => o.status === 'preparing').length;
-    const done = todayOrders.filter(o => o.status === 'done').length;
-    const active = pending + preparing;
+    const active    = pending + preparing;
 
-    document.getElementById('tabActive').textContent = active;
-    document.getElementById('tabPending').textContent = pending;
+    document.getElementById('tabActive').textContent    = active;
+    document.getElementById('tabPending').textContent   = pending;
     document.getElementById('tabPreparing').textContent = preparing;
-    document.getElementById('tabDone').textContent = done;
   }
 
   // ── Render orders
@@ -372,7 +366,7 @@
 
     // Sort: pending first, then preparing, then by time
     filtered.sort((a, b) => {
-      const statusOrder = { pending: 0, preparing: 1, done: 2, rejected: 3, cancelled: 4 };
+      const statusOrder = { pending: 0, preparing: 1, done: 2, delivered: 3, rejected: 4, cancelled: 5 };
       if (statusOrder[a.status] !== statusOrder[b.status]) return statusOrder[a.status] - statusOrder[b.status];
       return new Date(a.created_at) - new Date(b.created_at);
     });
