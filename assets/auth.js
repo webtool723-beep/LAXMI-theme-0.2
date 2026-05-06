@@ -251,6 +251,7 @@ window.printBill = (order, info={}) => {
   slip.innerHTML = `<div style="font-family:monospace;font-size:12px;color:#000;max-width:300px;margin:0 auto">
     <div style="font-size:18px;font-weight:700;text-align:center" class="bill-restaurant">${finalInfo.restaurant_name||'LAXMI'}</div>
     <div style="text-align:center;font-size:11px">${finalInfo.address||''}</div>
+    ${finalInfo.gstin ? `<div style="text-align:center;font-size:11px;margin-top:2px">GSTIN: ${finalInfo.gstin}</div>` : ''}
     <hr style="border:none;border-top:1px dashed #999;margin:8px 0">
     <div style="display:flex;justify-content:space-between"><span>Invoice:</span><span>${order.invoice_no||'—'}</span></div>
     <div style="display:flex;justify-content:space-between"><span>Order:</span><span>${order.order_id}</span></div>
