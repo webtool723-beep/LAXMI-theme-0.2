@@ -244,12 +244,13 @@ window.calcGST    = (subtotal, rate=5) => {
   return {cgst,sgst,total:parseFloat((subtotal+cgst+sgst).toFixed(2))};
 };
 window.printBill = (order, info={}) => {
+  const finalInfo = window.restaurantSettings && window.restaurantSettings.restaurant_name ? window.restaurantSettings : info;
   const slip = document.getElementById('printSlip'); if(!slip) return;
   const items = typeof order.items==='string'?JSON.parse(order.items):order.items;
-  const half = parseFloat(info.gst_rate||5)/2;
+  const half = parseFloat(finalInfo.gst_rate||5)/2;
   slip.innerHTML = `<div style="font-family:monospace;font-size:12px;color:#000;max-width:300px;margin:0 auto">
-    <div style="font-size:18px;font-weight:700;text-align:center">${info.restaurant_name||'LAXMI'}</div>
-    <div style="text-align:center;font-size:11px">${info.address||''}</div>
+    <div style="font-size:18px;font-weight:700;text-align:center" class="bill-restaurant">${finalInfo.restaurant_name||'LAXMI'}</div>
+    <div style="text-align:center;font-size:11px">${finalInfo.address||''}</div>
     <hr style="border:none;border-top:1px dashed #999;margin:8px 0">
     <div style="display:flex;justify-content:space-between"><span>Invoice:</span><span>${order.invoice_no||'—'}</span></div>
     <div style="display:flex;justify-content:space-between"><span>Order:</span><span>${order.order_id}</span></div>
