@@ -123,13 +123,7 @@ window.listenToSettings = function() {
 
       // ── Restaurant name
       if (key === 'restaurant_name') {
-        document.title = value + ' — ' + (document.title.split('—')[1]||'').trim();
-        document.querySelectorAll('.sidebar-logo-name').forEach(el => {
-          el.textContent = '🍃 ' + value;
-        });
-        document.querySelectorAll('[data-setting="restaurant_name"]').forEach(el => {
-          el.textContent = value;
-        });
+        window.applyRestaurantName(value);
       }
 
       // ── Store open/close
@@ -170,6 +164,51 @@ window.listenToSettings = function() {
     })
     .subscribe();
 };
+
+window.applyRestaurantName = function(name) {
+  if (!name) return;
+  
+  // Title
+  if (document.title.includes('—')) {
+    document.title = name + ' — ' + document.title.split('—')[1].trim();
+  } else {
+    document.title = name;
+  }
+  
+  // Generic logos
+  document.querySelectorAll('.sidebar-logo-name, .logo-text, .modal-logo, .auth-logo, .bill-restaurant').forEach(el => {
+    if (el.classList.contains('bill-restaurant') || el.classList.contains('auth-logo')) {
+      el.textContent = name;
+    } else {
+      el.textContent = '🍃 ' + name;
+    }
+  });
+
+  // Specific data binding
+  document.querySelectorAll('[data-setting="restaurant_name"]').forEach(el => {
+    el.textContent = name;
+  });
+};
+
+window.fetchAndApplyGlobalSettings = async function() {
+  const bid = window.getActiveBranchId();
+  if (!bid) return;
+  const { data } = await sb.from('settings').select('key,value').eq('branch_id', bid);
+  if (!data) return;
+  
+  if (!window.restaurantSettings) window.restaurantSettings = {};
+  data.forEach(r => window.restaurantSettings[r.key] = r.value);
+  
+  if (window.restaurantSettings.restaurant_name) {
+    window.applyRestaurantName(window.restaurantSettings.restaurant_name);
+  }
+  if (window.restaurantSettings.gst_rate) {
+    window.gstRate = parseFloat(window.restaurantSettings.gst_rate);
+  }
+};
+
+// Immediately execute on load
+window.fetchAndApplyGlobalSettings();
 
 window.logActivity = async (eventType, desc, staffName='', bid=null) => {
   const b = bid || window.getActiveBranchId();
