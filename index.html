@@ -6,6 +6,7 @@
   <title>LAXMI — Order Online</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     /* ── Customer Light Theme ── */
     :root {
@@ -1583,39 +1584,51 @@
     
     let items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
     
-    let text = `================================\n`;
-    text += `         LAXMI RESTAURANT       \n`;
-    text += `================================\n`;
+    let text = `========================================\n`;
+    text += `            LAXMI RESTAURANT            \n`;
+    text += `========================================\n`;
     text += `Order ID : ${o.order_id}\n`;
     if (o.invoice_no) text += `Invoice  : ${o.invoice_no}\n`;
     text += `Date     : ${new Date(o.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}\n`;
     text += `Location : ${o.room_number ? 'Room ' + o.room_number : 'Table ' + (o.table_number || '—')}\n`;
     text += `Status   : PAID\n`;
-    text += `--------------------------------\n`;
+    text += `----------------------------------------\n`;
     items.forEach(i => {
       let line = `${i.name} x${i.qty}`;
       let price = `Rs.${(i.price * i.qty).toFixed(2)}`;
-      let spaces = 32 - line.length - price.length;
+      let spaces = 40 - line.length - price.length;
       if (spaces < 1) spaces = 1;
       text += line + " ".repeat(spaces) + price + "\n";
     });
-    text += `--------------------------------\n`;
+    text += `----------------------------------------\n`;
     text += `Subtotal : Rs.${parseFloat(o.subtotal).toFixed(2).padStart(12)}\n`;
     text += `GST      : Rs.${parseFloat(o.gst).toFixed(2).padStart(12)}\n`;
     text += `TOTAL    : Rs.${parseFloat(o.total).toFixed(2).padStart(12)}\n`;
-    text += `================================\n`;
-    text += `      Thank you, visit again!   \n`;
-    text += `================================\n`;
+    text += `========================================\n`;
+    text += `        Thank you, visit again!         \n`;
+    text += `========================================\n`;
 
-    const blob = new Blob([text], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Bill_${o.order_id}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    try {
+      const { jsPDF } = window.jspdf;
+      const lineCount = text.split('\\n').length;
+      const height = Math.max(100, lineCount * 4.5 + 20);
+      const doc = new jsPDF({ format: [80, height] });
+      doc.setFont("courier", "normal");
+      doc.setFontSize(9);
+      doc.text(text, 4, 10);
+      doc.save(`Bill_${o.order_id}.pdf`);
+    } catch (err) {
+      console.error('PDF generation error', err);
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Bill_${o.order_id}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
   };
 
   window.updateOrderInHistory = function(order) {
