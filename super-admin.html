@@ -681,6 +681,7 @@
       await window.setSetting('restaurant_name', name, newBranchId);
       await window.setSetting('phone', payload.phone, newBranchId);
       await window.setSetting('address', payload.address, newBranchId);
+      await window.setSetting('store_open', payload.is_active ? 'true' : 'false', newBranchId);
     }
     
     document.getElementById('branchSaveBtn').disabled = false;
