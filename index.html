@@ -1063,40 +1063,70 @@
     btn.textContent = 'Save Changes';
   };
 
+  // ── My Orders realtime (logged-in customers)
   let myOrdersChannel = null;
   function subscribeMyOrders(uid) {
     if (myOrdersChannel) sb.removeChannel(myOrdersChannel);
     myOrdersChannel = sb.channel('my-orders-' + uid)
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `firebase_uid=eq.${uid}` },
         (payload) => {
-          const o = payload.new;
+          const o    = payload.new;
+          const prev = payload.old;
           updateOrderInHistory(o);
 
-          if (o.status === 'picked_up') {
-            // Waiter picked up from kitchen
-            const waiter = o.assigned_waiter_name ? `${o.assigned_waiter_name} is` : 'Your order is';
-            showToast(`🛯️ ${waiter} on the way!`, 'success');
-            showWaiterNotification(o.assigned_waiter_name || 'Your order', o.table_number || o.room_number, 'ontheway');
-          } else if (o.status === 'delivered') {
-            // Order physically delivered
-            const waiter = o.assigned_waiter_name || 'Your order';
-            showToast(`🎉 Order delivered by ${waiter}!`, 'success');
-            showWaiterNotification(o.assigned_waiter_name || 'Order', o.table_number || o.room_number, 'delivered');
-          } else if (o.review_requested === true && !o.rating) {
-            // Payment Manager assigned review to customer
-            showToast('⭐ Your feedback is requested!', 'success');
-            setTimeout(() => openCustomerReviewPopup(o), 1000);
-          } else if (o.payment_status === 'paid' && !o.rating && !o.rated_by) {
-            showToast(`📦 Order ${o.order_id}: ${o.status}`);
-            showCustomerRatingPrompt(o);
+          // ── STATUS-BASED MESSAGES ──
+          // Only fire when status actually changed (avoid re-fire on other column updates)
+          if (o.status !== prev.status) {
+
+            if (o.status === 'preparing') {
+              // Kitchen started preparing
+              showToast(`👨‍🍳 Your order ${o.order_id} is now being prepared!`);
+              showStatusBanner('preparing', o);
+
+            } else if (o.status === 'done') {
+              // Kitchen finished — waiter coming
+              const waiter = o.assigned_waiter_name || 'Our team';
+              showToast(`🍽️ Order ready! ${waiter} will pick it up shortly.`);
+              showStatusBanner('done', o);
+
+            } else if (o.status === 'picked_up') {
+              // Waiter picked up from kitchen
+              const waiter = o.assigned_waiter_name || 'Your waiter';
+              showToast(`🚵 ${waiter} is on the way to your table!`, 'success');
+              showWaiterNotification(o.assigned_waiter_name, o.table_number || o.room_number, 'ontheway');
+
+            } else if (o.status === 'delivered') {
+              // Waiter delivered at table
+              const waiter = o.assigned_waiter_name || 'Your order';
+              showToast(`🎉 ${waiter} has delivered your order. Enjoy!`, 'success');
+              showWaiterNotification(o.assigned_waiter_name, o.table_number || o.room_number, 'delivered');
+
+            } else if (o.status === 'rejected') {
+              showToast(`❌ Order ${o.order_id} was rejected. Please contact staff.`, 'error');
+
+            } else if (o.status === 'cancelled') {
+              showToast(`❌ Order ${o.order_id} was cancelled.`, 'error');
+            }
+
           } else {
-            showToast(`📦 Order ${o.order_id}: ${o.status}`);
+            // Status did NOT change — check for other meaningful updates
+
+            if (o.payment_status === 'paid' && prev.payment_status !== 'paid') {
+              // Payment confirmed by PM
+              showToast(`💳 Payment confirmed for ${o.order_id}. Thank you!`, 'success');
+            }
+
+            if (o.review_requested === true && !o.rating && prev.review_requested !== true) {
+              // PM assigned review task to customer
+              showToast('⭐ We’d love your feedback!');
+              setTimeout(() => openCustomerReviewPopup(o), 1000);
+            }
           }
         })
       .subscribe();
   }
 
-  // Guest table subscription — shows waiter notification & review prompts without login
+  // ── Guest table subscription (no login — tracked by table number)
   let guestTableChannel = null;
   function subscribeGuestTable(tableNum) {
     if (guestTableChannel) sb.removeChannel(guestTableChannel);
@@ -1105,21 +1135,78 @@
         event: 'UPDATE', schema: 'public', table: 'orders',
         filter: `table_number=eq.${tableNum}`
       }, (payload) => {
-        const o = payload.new;
-        if (o.assigned_waiter_name && o.status === 'done') {
-          showWaiterNotification(o.assigned_waiter_name, tableNum);
-        }
-        // Guest: detect review assignment by payment manager
-        if (o.review_requested === true && !o.rating) {
-          const guestHistory = (() => { try { return JSON.parse(localStorage.getItem('rms_guest_history') || '[]'); } catch(e){ return []; } })();
-          const isMyOrder = guestHistory.some(h => h.id === o.order_id);
-          if (isMyOrder) {
-            showToast('⭐ Please rate your experience!');
+        const o    = payload.new;
+        const prev = payload.old;
+
+        // Confirm this order belongs to guest by checking localStorage
+        const guestHistory = (() => { try { return JSON.parse(localStorage.getItem('rms_guest_history') || '[]'); } catch(e){ return []; } })();
+        const isMyOrder = guestHistory.some(h => h.id === o.order_id);
+        if (!isMyOrder) return;
+
+        if (o.status !== prev.status) {
+
+          if (o.status === 'preparing') {
+            showToast(`👨‍🍳 Your order ${o.order_id} is being prepared!`);
+
+          } else if (o.status === 'done') {
+            const waiter = o.assigned_waiter_name || 'Our team';
+            showToast(`🍽️ Order ready! ${waiter} is on the way.`);
+
+          } else if (o.status === 'picked_up') {
+            const waiter = o.assigned_waiter_name || 'Your waiter';
+            showToast(`🚵 ${waiter} is on the way to your table!`, 'success');
+            showWaiterNotification(o.assigned_waiter_name, tableNum, 'ontheway');
+
+          } else if (o.status === 'delivered') {
+            showToast(`🎉 Your order has been delivered. Enjoy!`, 'success');
+            showWaiterNotification(o.assigned_waiter_name, tableNum, 'delivered');
+
+          } else if (o.status === 'rejected') {
+            showToast(`❌ Your order was rejected. Please contact staff.`, 'error');
+          }
+
+        } else {
+          if (o.payment_status === 'paid' && prev.payment_status !== 'paid') {
+            showToast(`💳 Payment confirmed. Thank you!`, 'success');
+          }
+          if (o.review_requested === true && !o.rating && prev.review_requested !== true) {
+            showToast('⭐ We’d love your feedback!');
             setTimeout(() => openCustomerReviewPopup(o), 1000);
           }
         }
       })
       .subscribe();
+  }
+
+  // ── Status banner (subtle top notification, auto-dismisses)
+  function showStatusBanner(status, order) {
+    const existing = document.getElementById('statusNotifBanner');
+    if (existing) existing.remove();
+
+    const configs = {
+      preparing: { icon: '👨‍🍳', color: '#3b82f6', title: 'Being Prepared', msg: 'Our kitchen is cooking your order!' },
+      done:      { icon: '🍽️',       color: '#c8a96e', title: 'Order Ready!',   msg: 'A waiter will bring it to your table shortly.' }
+    };
+    const c = configs[status];
+    if (!c) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'statusNotifBanner';
+    banner.style.cssText = `
+      position:fixed; top:72px; left:50%; transform:translateX(-50%);
+      z-index:9999; background:#1a2e1a; border:1px solid rgba(${status==='preparing'?'59,130,246':'200,169,110'},0.4);
+      border-radius:12px; padding:14px 20px; text-align:center;
+      box-shadow:0 8px 32px rgba(0,0,0,0.4); min-width:260px; max-width:90vw;
+      animation:slideUp 0.3s ease;
+    `;
+    banner.innerHTML = `
+      <div style="font-size:1.8rem;margin-bottom:6px;">${c.icon}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:1rem;color:${c.color};margin-bottom:4px;">${c.title}</div>
+      <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);">${c.msg}</div>
+      <button onclick="this.parentElement.remove()" style="margin-top:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);padding:4px 14px;border-radius:20px;font-size:0.78rem;cursor:pointer;">OK</button>
+    `;
+    document.body.appendChild(banner);
+    setTimeout(() => { if (banner.parentElement) banner.remove(); }, 8000);
   }
 
   function showCustomerRatingPrompt(order) {
