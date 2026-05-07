@@ -557,7 +557,7 @@
     if (!svg) return;
 
     const hourly = Array(24).fill(0);
-    orders.filter(o => o.status === 'done').forEach(o => {
+    orders.filter(o => o.status === 'done' || o.status === 'delivered').forEach(o => {
       const h = new Date(o.created_at).toLocaleString('en-IN', { timeZone:'Asia/Kolkata', hour:'numeric', hour12:false });
       const hr = parseInt(h) || 0;
       if (hr >= 0 && hr < 24) hourly[hr] += parseFloat(o.total || 0);
@@ -751,7 +751,7 @@
         <td>
           <div class="order-actions-cell">
             <button class="btn btn-secondary btn-sm" onclick="openOrderDetail('${o.id}')">👁 View</button>
-            ${o.payment_status==='unpaid'&&o.status==='done'?`<button class="btn btn-gold btn-sm" onclick="markPaid('${o.id}')">💰 Paid</button>`:''}
+            
             <button class="btn btn-secondary btn-sm" onclick="printSingleBill('${o.id}')">🖨️</button>
           </div>
         </td>
@@ -834,7 +834,7 @@
       ${order.note?`<div class="order-note" style="margin-top:12px;">📝 ${order.note}</div>`:''}
     `;
     document.getElementById('orderDetailFooter').innerHTML = `
-      ${order.payment_status==='unpaid'&&order.status==='done'?`<button class="btn btn-gold" onclick="markPaid('${order.id}');closeOrderDetail()">💰 Mark Paid</button>`:''}
+      
       <button class="btn btn-secondary" onclick="printSingleBill('${order.id}')">🖨️ Print Bill</button>
       <button class="btn btn-ghost" onclick="closeOrderDetail()">Close</button>
     `;
