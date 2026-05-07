@@ -504,8 +504,18 @@
       ...(idMap[r.key] ? { id: idMap[r.key] } : {})
     }));
 
-    const { error } = await sb.from('settings').upsert(payload);
-    if (error) { window.showToast('Error saving settings', error.message, 'error'); return; }
+    const toUpdate = payload.filter(p => p.id);
+    const toInsert = payload.filter(p => !p.id);
+
+    if (toUpdate.length > 0) {
+      const { error } = await sb.from('settings').upsert(toUpdate);
+      if (error) { window.showToast('Error saving settings', error.message, 'error'); return; }
+    }
+    if (toInsert.length > 0) {
+      const { error } = await sb.from('settings').insert(toInsert);
+      if (error) { window.showToast('Error inserting settings', error.message, 'error'); return; }
+    }
+    
     window.showToast('✅ Settings saved!', '', 'success');
     window.logActivity && window.logActivity('settings', 'Settings updated', window.currentStaff?.name || '', bid);
     await loadSettings();
