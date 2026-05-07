@@ -709,7 +709,7 @@
   }
 
   window.updateTimers = function() {
-    let hasUrgent = false;
+    let hasDelayed = false;
     
     document.querySelectorAll('[id^="timer-"]').forEach(el => {
       const created = el.dataset.created;
@@ -728,13 +728,14 @@
             card.classList.add('delay-urgent');
             card.classList.remove('delay-warning');
           }
-          hasUrgent = true;
+          hasDelayed = true;
         } else if (mins >= 15) {
           text += ' (Slightly Delayed)';
           if (card) {
             card.classList.add('delay-warning');
             card.classList.remove('delay-urgent');
           }
+          hasDelayed = true;
         } else {
           if (card) {
             card.classList.remove('delay-urgent');
@@ -748,7 +749,7 @@
     
     const delayTab = document.getElementById('filterTabDelayed');
     if (delayTab) {
-      if (hasUrgent) {
+      if (hasDelayed) {
         delayTab.classList.add('blink-red');
       } else {
         delayTab.classList.remove('blink-red');
@@ -1035,5 +1036,7 @@
 </script>
 </body>
 </html>
+
+
 
 
