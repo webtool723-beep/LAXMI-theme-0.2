@@ -276,8 +276,16 @@
               <textarea id="setAddress" class="input" rows="2" placeholder="Full address…"></textarea>
             </div>
             <div class="input-group">
+              <label class="input-label">Legal Name</label>
+              <input type="text" id="setLegalName" class="input" placeholder="E.g. Laxmi Foods Pvt Ltd">
+            </div>
+            <div class="input-group">
               <label class="input-label">GSTIN</label>
               <input type="text" id="setGstin" class="input" placeholder="22AAAAA0000A1Z5" maxlength="15">
+            </div>
+            <div class="input-group">
+              <label class="input-label">FSSAI Lic No.</label>
+              <input type="text" id="setFssai" class="input" placeholder="E.g. 10020000000000">
             </div>
             <div class="input-group">
               <label class="input-label">GST Rate (%)</label>
@@ -450,7 +458,9 @@
     document.getElementById('setName').value        = settings.restaurant_name || 'LAXMI';
     document.getElementById('setPhone').value       = settings.phone || '';
     document.getElementById('setAddress').value     = settings.address || '';
+    document.getElementById('setLegalName').value   = settings.legal_name || '';
     document.getElementById('setGstin').value       = settings.gstin || '';
+    document.getElementById('setFssai').value       = settings.fssai_lic || '';
     document.getElementById('setGstRate').value     = settings.gst_rate || '5';
     document.getElementById('setBillFooter').value  = settings.bill_footer || '';
     document.getElementById('setCurrency').value    = settings.currency || '₹';
@@ -478,7 +488,9 @@
       { key:'restaurant_name', value: document.getElementById('setName').value.trim() },
       { key:'phone',           value: document.getElementById('setPhone').value.trim() },
       { key:'address',         value: document.getElementById('setAddress').value.trim() },
+      { key:'legal_name',      value: document.getElementById('setLegalName').value.trim() },
       { key:'gstin',           value: document.getElementById('setGstin').value.trim() },
+      { key:'fssai_lic',       value: document.getElementById('setFssai').value.trim() },
       { key:'gst_rate',        value: document.getElementById('setGstRate').value },
       { key:'store_open',      value: String(document.getElementById('setStoreOpen').checked) },
       { key:'bill_footer',     value: document.getElementById('setBillFooter').value.trim() },
