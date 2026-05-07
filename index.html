@@ -1584,6 +1584,16 @@
     
     let items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
     
+    // Always fetch latest settings for bill generation
+    try {
+      const { data: sData } = await sb.from('settings').select('key,value').eq('branch_id', BRANCH_ID);
+      if (sData) {
+        window.restaurantSettings = window.restaurantSettings || {};
+        sData.forEach(r => window.restaurantSettings[r.key] = r.value);
+        window.gstRate = parseFloat(window.restaurantSettings.gst_rate || '5');
+      }
+    } catch(e) { console.error('Failed to update settings for bill', e); }
+    
     const restName = window.restaurantSettings?.restaurant_name || 'LAXMI';
     const gstNo = window.restaurantSettings?.gst_number || '22AAAAA0000A1Z5';
     const dateStr = new Date(o.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
