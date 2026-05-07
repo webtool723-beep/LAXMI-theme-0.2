@@ -564,11 +564,22 @@
 
     document.getElementById('branchSaveBtn').disabled = true;
     let error;
+    let newBranchId = editingBranchId;
     if (editingBranchId) {
       ({error} = await sb.from('branches').update(payload).eq('id', editingBranchId));
     } else {
-      ({error} = await sb.from('branches').insert(payload));
+      const { data, error: err } = await sb.from('branches').insert(payload).select('id').single();
+      error = err;
+      if (data) newBranchId = data.id;
     }
+    
+    // ── SYNC TO SETTINGS FOR REALTIME UPDATES ──
+    if (!error && newBranchId && window.setSetting) {
+      await window.setSetting('restaurant_name', name, newBranchId);
+      await window.setSetting('phone', payload.phone, newBranchId);
+      await window.setSetting('address', payload.address, newBranchId);
+    }
+    
     document.getElementById('branchSaveBtn').disabled = false;
     
     if (error) { window.showToast('Error saving branch', error.message, 'error'); return; }
@@ -986,6 +997,11 @@
     // Subscribe to branch activity
     sb.channel('superadmin-activity')
       .on('postgres_changes',{event:'INSERT',schema:'public',table:'activity_log'}, async () => { await loadActivity(); })
+      .subscribe();
+      
+    // Subscribe to staff changes
+    sb.channel('superadmin-staff')
+      .on('postgres_changes',{event:'*',schema:'public',table:'staff'}, async () => { await loadStaff(); await loadDashboardStats(); })
       .subscribe();
   }
 

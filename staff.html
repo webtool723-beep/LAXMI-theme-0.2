@@ -365,7 +365,19 @@
     await loadStaff();
     window.startHeartbeat && window.startHeartbeat();
     window.listenToSettings && window.listenToSettings();
+    subscribeRealtime();
   };
+
+  // ── REALTIME
+  function subscribeRealtime() {
+    const sb = window.supabaseClient;
+    const bid = window.getActiveBranchId();
+    sb.channel('staff-changes')
+      .on('postgres_changes', {event:'*', schema:'public', table:'staff', filter:`branch_id=eq.${bid}`}, async () => {
+         await loadStaff();
+      })
+      .subscribe();
+  }
 
   // ── Load staff
   async function loadStaff() {
