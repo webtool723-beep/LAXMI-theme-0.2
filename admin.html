@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -247,9 +247,18 @@
       <div class="tab-panel" id="tab-tables">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
           <div class="section-title" style="margin:0;">🪑 Restaurant Tables & Rooms</div>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-secondary btn-sm" onclick="printAllQR()">🖨️ Print All QR</button>
-            <button class="btn btn-primary" onclick="openTableModal()">+ Add Table/Room</button>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <select id="tableTypeFilter" class="input" style="max-width:140px;height:38px;padding:0 12px;font-size:0.85rem;" onchange="renderTables()">
+              <option value="all">All Types</option>
+              <option value="table">Tables Only</option>
+              <option value="room">Rooms Only</option>
+            </select>
+            <div class="search-input-wrap" style="position:relative;">
+              <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-dim);font-size:0.85rem;">🔍</span>
+              <input type="text" id="tableSearch" class="input" placeholder="Search number..." oninput="renderTables()" style="padding-left:30px;max-width:150px;height:38px;font-size:0.85rem;">
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="printAllQR()" style="height:38px;">🖨️ Print All QR</button>
+            <button class="btn btn-primary btn-sm" onclick="openTableModal()" style="height:38px;">+ Add</button>
           </div>
         </div>
 
@@ -869,11 +878,30 @@
 
   function renderTables() {
     const grid = document.getElementById('tablesGrid');
-    if (!allTables.length) {
-      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-dim);">No tables yet. Add your first table!</div>`;
+    const typeFilter = document.getElementById('tableTypeFilter')?.value || 'all';
+    const searchQuery = document.getElementById('tableSearch')?.value.toLowerCase() || '';
+
+    let filtered = allTables || [];
+
+    if (typeFilter === 'room') {
+      filtered = filtered.filter(t => !!t.room_number);
+    } else if (typeFilter === 'table') {
+      filtered = filtered.filter(t => !t.room_number);
+    }
+
+    if (searchQuery) {
+      filtered = filtered.filter(t => {
+        const str = t.room_number ? String(t.room_number) : String(t.table_number);
+        return str.toLowerCase().includes(searchQuery);
+      });
+    }
+
+    if (!filtered.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-dim);">No tables or rooms match your filters.</div>`;
       return;
     }
-    grid.innerHTML = allTables.map(t => {
+
+    grid.innerHTML = filtered.map(t => {
       const isRoom = !!t.room_number;
       const numLabel = isRoom ? '🛏️ ' + t.room_number : '🪑 ' + t.table_number;
       return `
