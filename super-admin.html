@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -360,7 +360,6 @@
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
               <option value="preparing">Preparing</option>
-              <option value="done">Done</option>
               <option value="delivered">Delivered</option>
               <option value="rejected">Rejected</option>
               <option value="cancelled">Cancelled</option>
@@ -1140,7 +1139,7 @@
       filteredOrders = allOrders.filter(o => {
         const matchSearch = !search || o.order_id?.toLowerCase().includes(search) || o.customer_phone?.includes(search);
         const matchBranch = branch === 'all' || o.branch_id == branch;
-        const matchStatus = status === 'all' || o.status === status;
+        const matchStatus = status === 'all' || o.status === status || (status === 'delivered' && o.status === 'done');
         return matchSearch && matchBranch && matchStatus;
       });
 

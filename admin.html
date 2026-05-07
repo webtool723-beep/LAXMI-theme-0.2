@@ -207,7 +207,7 @@
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
             <option value="preparing">Preparing</option>
-            <option value="done">Done</option>
+            <option value="delivered">Delivered</option>
             <option value="rejected">Rejected</option>
             <option value="cancelled">Cancelled</option>
           </select>
@@ -710,7 +710,7 @@
         o.room_number?.toLowerCase().includes(search) ||
         o.customer_phone?.includes(search) ||
         o.customer_name?.toLowerCase().includes(search);
-      const matchStatus  = status === 'all' || o.status === status;
+      const matchStatus  = status === 'all' || o.status === status || (status === 'delivered' && o.status === 'done');
       const matchPayment = payment === 'all' || o.payment_status === payment;
       const matchType    = type === 'all' || (type === 'room' ? !!o.room_number : !o.room_number);
       return matchSearch && matchStatus && matchPayment && matchType;
