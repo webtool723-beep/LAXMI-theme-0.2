@@ -61,7 +61,12 @@ const pageRoles = {
   'waiter.html':           ['superadmin','admin','manager','waiter'],
   'payment-manager.html':  ['superadmin','admin','manager','payment_manager'],
 };
-const getCurrentPage = () => window.location.pathname.split('/').pop() || 'index.html';
+const getCurrentPage = () => {
+  let p = window.location.pathname.split('/').pop().split('?')[0];
+  if (!p || p === '/') return 'index.html';
+  if (!p.endsWith('.html')) p += '.html';
+  return p;
+};
 
 // ── STAFF LOOKUP
 async function lookupStaff(uid) {
@@ -447,7 +452,7 @@ onAuthStateChanged(auth, async (user) => {
 
   // Check role permission
   const allowed = pageRoles[page];
-  if (allowed && !allowed.includes(staff.role)) {
+  if (!allowed || !allowed.includes(staff.role)) {
     showAccessDenied(`Your role (<strong>${staff.role}</strong>) cannot access this page.`);
     return;
   }
