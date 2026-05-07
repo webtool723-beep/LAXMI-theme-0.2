@@ -258,7 +258,7 @@
 
         <!-- Top tables served -->
         <div class="card">
-          <div class="section-title" style="margin-bottom:12px;">🪑 Tables Served</div>
+          <div class="section-title" style="margin-bottom:12px;">🪑 Tables & Rooms served</div>
           <div id="repTables"></div>
         </div>
       </div>
@@ -984,10 +984,10 @@ console.log('Full staff:', window.currentStaff);
       </div>`;
     }).join('');
 
-    // Tables served
+    // Tables & Rooms served
     const tableMap = {};
     orders.filter(o=>o.status==='delivered'&&o.assigned_waiter_id===sid).forEach(o => {
-      const t = o.table_number||'—';
+      const t = o.room_number ? '🛏️ Room ' + o.room_number : '🪑 Table ' + (o.table_number||'—');
       if (!tableMap[t]) tableMap[t] = { count:0, revenue:0 };
       tableMap[t].count++;
       tableMap[t].revenue += parseFloat(o.total||0);
@@ -995,7 +995,7 @@ console.log('Full staff:', window.currentStaff);
     const tableSorted = Object.entries(tableMap).sort((a,b)=>b[1].count-a[1].count);
     document.getElementById('repTables').innerHTML = tableSorted.length
       ? tableSorted.map(([t,d]) => `<div class="report-row">
-          <span>Table <strong>${t}</strong></span>
+          <span><strong>${t}</strong></span>
           <div style="display:flex;gap:12px;">
             <span style="color:var(--text-dim);font-size:0.8rem;">${d.count} orders</span>
           </div>
