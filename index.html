@@ -2241,6 +2241,26 @@
     await loadSettings();
     await loadCategories();
     await loadMenuItems();
+    
+    // ── Listen for Realtime Setting Changes (Store Open/Close) ──
+    listenToSettings();
+  }
+
+  function listenToSettings() {
+    sb.channel('public:settings')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'settings', filter: `branch_id=eq.${BRANCH_ID}` },
+        async (payload) => {
+          if (payload.new && payload.new.key === 'store_open') {
+             updateStoreBanner(payload.new.value !== 'false');
+          }
+          if (payload.new && payload.new.key === 'restaurant_name') {
+             const uiName = document.getElementById('uiRestName');
+             if (uiName) uiName.textContent = '🍃 ' + payload.new.value;
+             document.title = payload.new.value + ' — Order Online';
+          }
+        }
+      )
+      .subscribe();
   }
   
   async function showBranchSelector() {
