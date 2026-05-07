@@ -128,6 +128,7 @@
         <button class="admin-tab" onclick="switchTab('branches',this)">🏪 Branches</button>
         <button class="admin-tab" onclick="switchTab('staff',this)">👥 All Staff</button>
         <button class="admin-tab" onclick="switchTab('orders',this)">📋 All Orders</button>
+        <button class="admin-tab" onclick="switchTab('reports',this)">📊 Reports</button>
         <button class="admin-tab" onclick="switchTab('activity',this)">📜 Activity Log</button>
         <button class="admin-tab" onclick="switchTab('system',this)">⚙️ System</button>
       </div>
@@ -252,6 +253,107 @@
           </table>
         </div>
         <div class="pagination" id="ordersPagination"></div>
+      </div>
+
+      <!-- ══ REPORTS TAB ══ -->
+      <div class="tab-panel" id="tab-reports">
+        <div class="section-title">📊 Advanced Analytics & Reports</div>
+        
+        <!-- Filter Bar -->
+        <div class="card" style="margin-bottom:20px; display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+          <div class="input-group" style="margin:0; flex:1; min-width:150px;">
+            <label class="input-label">Branch</label>
+            <select id="reportBranchFilter" class="input">
+              <option value="all">All Branches</option>
+            </select>
+          </div>
+          <div class="input-group" style="margin:0; flex:1; min-width:130px;">
+            <label class="input-label">Start Date</label>
+            <input type="date" id="reportStartDate" class="input">
+          </div>
+          <div class="input-group" style="margin:0; flex:1; min-width:130px;">
+            <label class="input-label">End Date</label>
+            <input type="date" id="reportEndDate" class="input">
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-secondary btn-sm" onclick="setReportRange('today')">Today</button>
+            <button class="btn btn-secondary btn-sm" onclick="setReportRange('week')">Week</button>
+            <button class="btn btn-secondary btn-sm" onclick="setReportRange('month')">Month</button>
+            <button class="btn btn-secondary btn-sm" onclick="setReportRange('year')">Year</button>
+          </div>
+          <button class="btn btn-primary" onclick="generateReport()" id="genReportBtn" style="height:42px;">Generate Report</button>
+        </div>
+
+        <!-- KPIs -->
+        <div class="stats-grid" style="margin-bottom:24px;">
+          <div class="stat-card">
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-value green" id="repTotalRevenue">₹0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Orders</div>
+            <div class="stat-value" id="repTotalOrders">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Avg Order Value</div>
+            <div class="stat-value gold" id="repAvgOrder">₹0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Avg Rating</div>
+            <div class="stat-value blue" id="repAvgRating">0.0 ⭐</div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(400px, 1fr)); gap:24px; margin-bottom:24px;">
+          <!-- Sales Trend Chart -->
+          <div class="chart-wrap">
+            <div class="chart-title">📈 Sales Trend</div>
+            <svg class="chart-svg" id="reportSalesTrendChart" height="200" viewBox="0 0 700 200"></svg>
+          </div>
+          <!-- Branch Leaderboard Chart -->
+          <div class="chart-wrap">
+            <div class="chart-title">🏆 Branch Leaderboard (Revenue)</div>
+            <svg class="chart-svg" id="reportBranchRankChart" height="200" viewBox="0 0 700 200"></svg>
+          </div>
+        </div>
+
+        <!-- Tables Grid -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(400px, 1fr)); gap:24px;">
+          <!-- Top Menu Items -->
+          <div class="card" style="padding:0; overflow:hidden;">
+            <div style="padding:16px; border-bottom:1px solid var(--border); font-weight:600;">🔥 Top Selling Items</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Item Name</th>
+                  <th style="text-align:right;">Qty Sold</th>
+                  <th style="text-align:right;">Revenue</th>
+                </tr>
+              </thead>
+              <tbody id="repTopItemsBody">
+                <tr><td colspan="3" style="text-align:center;color:var(--text-dim);padding:20px;">Generate report to view</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Top Branches Table -->
+          <div class="card" style="padding:0; overflow:hidden;">
+            <div style="padding:16px; border-bottom:1px solid var(--border); font-weight:600;">🏪 Branch Matrix</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Branch</th>
+                  <th style="text-align:right;">Orders</th>
+                  <th style="text-align:right;">Revenue</th>
+                  <th style="text-align:right;">Avg Rating</th>
+                </tr>
+              </thead>
+              <tbody id="repBranchMatrixBody">
+                <tr><td colspan="4" style="text-align:center;color:var(--text-dim);padding:20px;">Generate report to view</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <!-- ══ ACTIVITY TAB ══ -->
@@ -470,6 +572,7 @@
     document.getElementById('staffBranchFilter').innerHTML = `<option value="all">All Branches</option>` + options;
     document.getElementById('orderBranchFilter').innerHTML = `<option value="all">All Branches</option>` + options;
     document.getElementById('activityBranchFilter').innerHTML = `<option value="all">All Branches</option>` + options;
+    document.getElementById('reportBranchFilter').innerHTML = `<option value="all">All Branches</option>` + options;
     
     // Forms
     document.getElementById('smBranch').innerHTML = options;
@@ -1015,7 +1118,262 @@
     if(tab==='staff') loadStaff();
     if(tab==='overview') loadDashboardStats();
     if(tab==='activity') loadActivity();
+    if(tab==='reports' && !document.getElementById('reportStartDate').value) {
+       setReportRange('month'); // default to this month
+       generateReport();
+    }
   };
+
+  // ════════════════════════════════════════════════════════
+  // ── ADVANCED REPORTS ENGINE ──
+  // ════════════════════════════════════════════════════════
+  window.setReportRange = function(range) {
+    const start = document.getElementById('reportStartDate');
+    const end = document.getElementById('reportEndDate');
+    const today = new Date();
+    let s = new Date(), e = new Date();
+    
+    if (range === 'today') {
+      // already set to today
+    } else if (range === 'week') {
+      const day = s.getDay() || 7; // Get current day number, converting Sun. to 7
+      if (day !== 1) s.setHours(-24 * (day - 1)); // Set to Monday
+    } else if (range === 'month') {
+      s = new Date(today.getFullYear(), today.getMonth(), 1);
+    } else if (range === 'year') {
+      s = new Date(today.getFullYear(), 0, 1);
+    }
+    
+    // Convert to YYYY-MM-DD local time
+    start.value = s.toLocaleDateString('en-CA');
+    end.value = e.toLocaleDateString('en-CA');
+    generateReport();
+  };
+
+  window.generateReport = async function() {
+    const sb = window.supabaseClient;
+    const branchId = document.getElementById('reportBranchFilter').value;
+    const startStr = document.getElementById('reportStartDate').value;
+    const endStr = document.getElementById('reportEndDate').value;
+    const btn = document.getElementById('genReportBtn');
+
+    if (!startStr || !endStr) { window.showToast('Please select date range', '', 'error'); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+
+    const startTime = startStr + 'T00:00:00+05:30';
+    const endTime = endStr + 'T23:59:59+05:30';
+
+    try {
+      // 1. Fetch Orders
+      let q = sb.from('orders').select('*')
+        .gte('created_at', startTime)
+        .lte('created_at', endTime);
+      if (branchId !== 'all') q = q.eq('branch_id', branchId);
+      const { data: ordersData, error: ordersErr } = await q;
+      if (ordersErr) throw ordersErr;
+      const orders = ordersData || [];
+
+      // 2. Fetch Reviews
+      let rq = sb.from('reviews').select('*')
+        .gte('created_at', startTime)
+        .lte('created_at', endTime);
+      if (branchId !== 'all') rq = rq.eq('branch_id', branchId);
+      const { data: revData } = await rq;
+      const reviews = revData || [];
+
+      processReportData(orders, reviews, startStr, endStr);
+
+    } catch (err) {
+      window.showToast('Error generating report', err.message, 'error');
+    }
+    
+    btn.disabled = false;
+    btn.textContent = 'Generate Report';
+  };
+
+  function processReportData(orders, reviews, startStr, endStr) {
+    const doneOrders = orders.filter(o => o.status === 'done' || o.status === 'delivered');
+    
+    // --- 1. KPIs ---
+    const totalRev = doneOrders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0);
+    const totalOrds = doneOrders.length;
+    const avgOrd = totalOrds > 0 ? (totalRev / totalOrds) : 0;
+    const avgRating = reviews.length > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) : 0;
+
+    document.getElementById('repTotalRevenue').textContent = '₹' + totalRev.toFixed(0);
+    document.getElementById('repTotalOrders').textContent = totalOrds;
+    document.getElementById('repAvgOrder').textContent = '₹' + avgOrd.toFixed(0);
+    document.getElementById('repAvgRating').textContent = avgRating.toFixed(1) + ' ⭐';
+
+    // --- 2. Top Items Matrix ---
+    const itemMap = {};
+    doneOrders.forEach(o => {
+      let items = [];
+      try { items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items; } catch(e){}
+      items.forEach(i => {
+        if (!itemMap[i.id]) itemMap[i.id] = { name: i.name, qty: 0, rev: 0 };
+        itemMap[i.id].qty += parseInt(i.qty || 1);
+        itemMap[i.id].rev += parseFloat(i.price || 0) * parseInt(i.qty || 1);
+      });
+    });
+    const sortedItems = Object.values(itemMap).sort((a,b) => b.qty - a.qty).slice(0, 5); // top 5
+    
+    const itemsBody = document.getElementById('repTopItemsBody');
+    if (!sortedItems.length) {
+      itemsBody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-dim);padding:20px;">No sales data</td></tr>';
+    } else {
+      itemsBody.innerHTML = sortedItems.map(i => `
+        <tr>
+          <td style="font-weight:500;">${i.name}</td>
+          <td style="text-align:right;">${i.qty}</td>
+          <td style="text-align:right;color:var(--green-bright);">₹${i.rev.toFixed(0)}</td>
+        </tr>
+      `).join('');
+    }
+
+    // --- 3. Branch Leaderboard (Only if All Branches selected) ---
+    const branchMap = {};
+    allBranches.forEach(b => branchMap[b.id] = { name: b.name, rev: 0, ords: 0, ratingSum: 0, ratingCnt: 0 });
+    
+    doneOrders.forEach(o => {
+      if (branchMap[o.branch_id]) {
+        branchMap[o.branch_id].rev += parseFloat(o.total || 0);
+        branchMap[o.branch_id].ords++;
+      }
+    });
+    reviews.forEach(r => {
+      if (branchMap[r.branch_id]) {
+        branchMap[r.branch_id].ratingSum += r.rating;
+        branchMap[r.branch_id].ratingCnt++;
+      }
+    });
+
+    const branchArr = Object.values(branchMap).sort((a,b) => b.rev - a.rev);
+    
+    const branchBody = document.getElementById('repBranchMatrixBody');
+    if (!doneOrders.length) {
+      branchBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-dim);padding:20px;">No data in range</td></tr>';
+    } else {
+      branchBody.innerHTML = branchArr.filter(b=>b.ords>0).map(b => {
+        const avgR = b.ratingCnt > 0 ? (b.ratingSum / b.ratingCnt).toFixed(1) : '-';
+        return `
+        <tr>
+          <td style="font-weight:500;">${b.name}</td>
+          <td style="text-align:right;">${b.ords}</td>
+          <td style="text-align:right;color:var(--green-bright);">₹${b.rev.toFixed(0)}</td>
+          <td style="text-align:right;">${avgR} ${avgR!=='-'?'⭐':''}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    // --- 4. Render SVG Charts ---
+    drawReportSalesTrend(doneOrders, startStr, endStr);
+    drawReportBranchRank(branchArr.filter(b=>b.ords>0));
+  }
+
+  function drawReportSalesTrend(orders, startStr, endStr) {
+    const svg = document.getElementById('reportSalesTrendChart');
+    if (!orders.length) {
+      svg.innerHTML = `<text x="350" y="100" text-anchor="middle" fill="var(--text-dim)" font-size="14">No sales data for range</text>`;
+      return;
+    }
+
+    // Group by Day
+    const dayMap = {};
+    const d1 = new Date(startStr);
+    const d2 = new Date(endStr);
+    // Fill all days in range with 0
+    for(let d = new Date(d1); d <= d2; d.setDate(d.getDate()+1)){
+      dayMap[d.toLocaleDateString('en-CA')] = 0;
+    }
+
+    orders.forEach(o => {
+      const d = o.created_at.split('T')[0];
+      if (dayMap[d] !== undefined) dayMap[d] += parseFloat(o.total || 0);
+    });
+
+    const days = Object.keys(dayMap).sort();
+    const vals = days.map(d => dayMap[d]);
+    const maxVal = Math.max(...vals, 1);
+
+    const W = 700, H = 200, padX = 40, padY = 30;
+    const innerW = W - padX*2, innerH = H - padY*2;
+    
+    let pathD = '';
+    let circles = '';
+    let labels = '';
+    
+    days.forEach((day, i) => {
+      const x = padX + (innerW / Math.max(1, days.length - 1)) * i;
+      const y = H - padY - (vals[i] / maxVal) * innerH;
+      
+      if (i === 0) pathD += `M ${x} ${y} `;
+      else pathD += `L ${x} ${y} `;
+      
+      circles += `<circle cx="${x}" cy="${y}" r="4" fill="var(--green-accent)" stroke="var(--bg)" stroke-width="2"/>`;
+      
+      // Add labels if not too many points (limit to ~7 labels max)
+      if (days.length <= 10 || i % Math.ceil(days.length/7) === 0 || i === days.length-1) {
+         const dateLabel = new Date(day).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+         labels += `<text x="${x}" y="${H - 10}" font-size="10" fill="var(--text-dim)" text-anchor="middle">${dateLabel}</text>`;
+      }
+    });
+
+    // Background gradient for line
+    let bgPath = pathD + `L ${W - padX} ${H - padY} L ${padX} ${H - padY} Z`;
+    
+    svg.innerHTML = `
+      <defs>
+        <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--green-accent)" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="var(--green-accent)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <!-- Grid lines -->
+      <line x1="${padX}" y1="${padY}" x2="${W-padX}" y2="${padY}" stroke="var(--border)" stroke-dasharray="4"/>
+      <line x1="${padX}" y1="${H-padY}" x2="${W-padX}" y2="${H-padY}" stroke="var(--border)"/>
+      <text x="${padX - 5}" y="${padY + 4}" font-size="10" fill="var(--text-dim)" text-anchor="end">₹${maxVal >= 1000 ? (maxVal/1000).toFixed(1)+'k' : maxVal.toFixed(0)}</text>
+      
+      <!-- Chart Elements -->
+      <path d="${bgPath}" fill="url(#trendGrad)" />
+      <path d="${pathD}" fill="none" stroke="var(--green-accent)" stroke-width="3" />
+      ${circles}
+      ${labels}
+    `;
+  }
+
+  function drawReportBranchRank(branches) {
+    const svg = document.getElementById('reportBranchRankChart');
+    if (!branches.length) {
+      svg.innerHTML = `<text x="350" y="100" text-anchor="middle" fill="var(--text-dim)" font-size="14">Select 'All Branches' or No Data</text>`;
+      return;
+    }
+
+    const maxVal = Math.max(...branches.map(b => b.rev), 1);
+    const W = 700, H = 200, padX = 20, padY = 30;
+    const innerH = H - padY*2;
+    const barW = Math.min(80, (W - padX*2) / branches.length - 10);
+
+    let html = '';
+    branches.slice(0, 7).forEach((b, i) => { // Top 7 max to fit
+      const x = padX + i * ((W - padX*2) / Math.min(7, branches.length)) + ((W - padX*2) / Math.min(7, branches.length))/2 - barW/2;
+      const barH = (b.rev / maxVal) * innerH;
+      const y = H - padY - barH;
+      
+      html += `
+        <rect x="${x}" y="${y}" width="${barW}" height="${barH}" rx="4" fill="var(--gold)"/>
+        <text x="${x + barW/2}" y="${y - 8}" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="600">₹${b.rev>=1000 ? (b.rev/1000).toFixed(1)+'k' : b.rev.toFixed(0)}</text>
+        <text x="${x + barW/2}" y="${H - 12}" font-size="11" fill="var(--text-dim)" text-anchor="middle">${b.name.length > 10 ? b.name.slice(0,8)+'…' : b.name}</text>
+      `;
+    });
+    
+    // Base line
+    html += `<line x1="${padX}" y1="${H-padY}" x2="${W-padX}" y2="${H-padY}" stroke="var(--border)"/>`;
+    
+    svg.innerHTML = html;
+  }
 
 </script>
 <script>
