@@ -1570,7 +1570,7 @@
         </div>
         ${o.payment_status === 'paid' ? `
         <div style="margin-top:10px;">
-          <button onclick="downloadBill('${o.id}')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;width:100%;font-weight:600;">
+          <button onclick="downloadBill('${o.id}', this)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;width:100%;font-weight:600;">
             📄 Download Bill
           </button>
         </div>` : ''}
@@ -1578,7 +1578,7 @@
     }).join('');
   }
 
-  window.downloadBill = async function(orderId) {
+  window.downloadBill = async function(orderId, btn) {
     const o = window.myOrders.find(x => x.id === orderId || x.id == orderId);
     if (!o) return;
     
@@ -1685,10 +1685,12 @@
     
     try {
       const element = document.getElementById(`pdf-bill-${o.id}`);
-      const btn = event.target;
-      const oldText = btn.innerHTML;
-      btn.innerHTML = '⏳ Generating...';
-      btn.disabled = true;
+      let oldText = '📄 Download Bill';
+      if (btn) {
+        oldText = btn.innerHTML;
+        btn.innerHTML = '⏳ Generating...';
+        btn.disabled = true;
+      }
 
       const opt = {
         margin:       [0.1, 0, 0.1, 0],
@@ -1701,8 +1703,10 @@
       
       await window.html2pdf().set(opt).from(element).save();
       
-      btn.innerHTML = oldText;
-      btn.disabled = false;
+      if (btn) {
+        btn.innerHTML = oldText;
+        btn.disabled = false;
+      }
     } catch (err) {
       console.error('PDF generation error:', err);
       window.showToast('Failed to generate PDF', '', 'error');
