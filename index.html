@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -1063,66 +1063,79 @@
     btn.textContent = 'Save Changes';
   };
 
+  // ── Local order state cache (replaces payload.old which is unreliable without REPLICA IDENTITY FULL)
+  // Keyed by order_id → { status, payment_status, review_requested, rating }
+  window._orderCache = new Map();
+
+  function _getCache(orderId) {
+    return window._orderCache.get(orderId) || {};
+  }
+  function _setCache(o) {
+    window._orderCache.set(o.order_id, {
+      status:           o.status,
+      payment_status:   o.payment_status,
+      review_requested: o.review_requested,
+      rating:           o.rating
+    });
+  }
+
+  function _handleNotifications(o) {
+    const prev = _getCache(o.order_id);
+    updateOrderInHistory(o);
+
+    // ── Status changed
+    if (o.status !== prev.status) {
+
+      if (o.status === 'preparing') {
+        showToast(`👨‍🍳 Your order ${o.order_id} is now being prepared!`);
+        showStatusBanner('preparing', o);
+
+      } else if (o.status === 'done') {
+        const waiter = o.assigned_waiter_name || 'Our team';
+        showToast(`🍽️ Order ready! ${waiter} will pick it up shortly.`);
+        showStatusBanner('done', o);
+
+      } else if (o.status === 'picked_up') {
+        const waiter = o.assigned_waiter_name || 'Your waiter';
+        showToast(`🚵 ${waiter} is on the way to your table!`, 'success');
+        showWaiterNotification(o.assigned_waiter_name, o.table_number || o.room_number, 'ontheway');
+
+      } else if (o.status === 'delivered') {
+        // Only fires ONCE — subsequent PM actions won't change status, so cache blocks re-fire
+        const waiter = o.assigned_waiter_name || 'Our team';
+        showToast(`🎉 ${waiter} has delivered your order. Enjoy!`, 'success');
+        showWaiterNotification(o.assigned_waiter_name, o.table_number || o.room_number, 'delivered');
+
+      } else if (o.status === 'rejected') {
+        showToast(`❌ Order ${o.order_id} was rejected. Please contact staff.`, 'error');
+
+      } else if (o.status === 'cancelled') {
+        showToast(`❌ Order ${o.order_id} was cancelled.`, 'error');
+      }
+    }
+
+    // ── Payment confirmed (status unchanged, payment_status flipped to 'paid')
+    if (o.payment_status === 'paid' && prev.payment_status !== 'paid') {
+      showToast(`💳 Payment confirmed for ${o.order_id}. Thank you!`, 'success');
+    }
+
+    // ── Review requested by PM (fires once when flag first set)
+    if (o.review_requested === true && !o.rating && prev.review_requested !== true) {
+      showToast('⭐ We\'d love your feedback!');
+      setTimeout(() => openCustomerReviewPopup(o), 1000);
+    }
+
+    // Update cache AFTER comparisons
+    _setCache(o);
+  }
+
   // ── My Orders realtime (logged-in customers)
   let myOrdersChannel = null;
   function subscribeMyOrders(uid) {
     if (myOrdersChannel) sb.removeChannel(myOrdersChannel);
     myOrdersChannel = sb.channel('my-orders-' + uid)
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `firebase_uid=eq.${uid}` },
-        (payload) => {
-          const o    = payload.new;
-          const prev = payload.old;
-          updateOrderInHistory(o);
-
-          // ── STATUS-BASED MESSAGES ──
-          // Only fire when status actually changed (avoid re-fire on other column updates)
-          if (o.status !== prev.status) {
-
-            if (o.status === 'preparing') {
-              // Kitchen started preparing
-              showToast(`👨‍🍳 Your order ${o.order_id} is now being prepared!`);
-              showStatusBanner('preparing', o);
-
-            } else if (o.status === 'done') {
-              // Kitchen finished — waiter coming
-              const waiter = o.assigned_waiter_name || 'Our team';
-              showToast(`🍽️ Order ready! ${waiter} will pick it up shortly.`);
-              showStatusBanner('done', o);
-
-            } else if (o.status === 'picked_up') {
-              // Waiter picked up from kitchen
-              const waiter = o.assigned_waiter_name || 'Your waiter';
-              showToast(`🚵 ${waiter} is on the way to your table!`, 'success');
-              showWaiterNotification(o.assigned_waiter_name, o.table_number || o.room_number, 'ontheway');
-
-            } else if (o.status === 'delivered') {
-              // Waiter delivered at table
-              const waiter = o.assigned_waiter_name || 'Your order';
-              showToast(`🎉 ${waiter} has delivered your order. Enjoy!`, 'success');
-              showWaiterNotification(o.assigned_waiter_name, o.table_number || o.room_number, 'delivered');
-
-            } else if (o.status === 'rejected') {
-              showToast(`❌ Order ${o.order_id} was rejected. Please contact staff.`, 'error');
-
-            } else if (o.status === 'cancelled') {
-              showToast(`❌ Order ${o.order_id} was cancelled.`, 'error');
-            }
-
-          } else {
-            // Status did NOT change — check for other meaningful updates
-
-            if (o.payment_status === 'paid' && prev.payment_status !== 'paid') {
-              // Payment confirmed by PM
-              showToast(`💳 Payment confirmed for ${o.order_id}. Thank you!`, 'success');
-            }
-
-            if (o.review_requested === true && !o.rating && prev.review_requested !== true) {
-              // PM assigned review task to customer
-              showToast('⭐ We’d love your feedback!');
-              setTimeout(() => openCustomerReviewPopup(o), 1000);
-            }
-          }
-        })
+        (payload) => _handleNotifications(payload.new))
       .subscribe();
   }
 
@@ -1135,48 +1148,14 @@
         event: 'UPDATE', schema: 'public', table: 'orders',
         filter: `table_number=eq.${tableNum}`
       }, (payload) => {
-        const o    = payload.new;
-        const prev = payload.old;
-
-        // Confirm this order belongs to guest by checking localStorage
-        const guestHistory = (() => { try { return JSON.parse(localStorage.getItem('rms_guest_history') || '[]'); } catch(e){ return []; } })();
-        const isMyOrder = guestHistory.some(h => h.id === o.order_id);
-        if (!isMyOrder) return;
-
-        if (o.status !== prev.status) {
-
-          if (o.status === 'preparing') {
-            showToast(`👨‍🍳 Your order ${o.order_id} is being prepared!`);
-
-          } else if (o.status === 'done') {
-            const waiter = o.assigned_waiter_name || 'Our team';
-            showToast(`🍽️ Order ready! ${waiter} is on the way.`);
-
-          } else if (o.status === 'picked_up') {
-            const waiter = o.assigned_waiter_name || 'Your waiter';
-            showToast(`🚵 ${waiter} is on the way to your table!`, 'success');
-            showWaiterNotification(o.assigned_waiter_name, tableNum, 'ontheway');
-
-          } else if (o.status === 'delivered') {
-            showToast(`🎉 Your order has been delivered. Enjoy!`, 'success');
-            showWaiterNotification(o.assigned_waiter_name, tableNum, 'delivered');
-
-          } else if (o.status === 'rejected') {
-            showToast(`❌ Your order was rejected. Please contact staff.`, 'error');
-          }
-
-        } else {
-          if (o.payment_status === 'paid' && prev.payment_status !== 'paid') {
-            showToast(`💳 Payment confirmed. Thank you!`, 'success');
-          }
-          if (o.review_requested === true && !o.rating && prev.review_requested !== true) {
-            showToast('⭐ We’d love your feedback!');
-            setTimeout(() => openCustomerReviewPopup(o), 1000);
-          }
-        }
+        const o = payload.new;
+        const gh = (() => { try { return JSON.parse(localStorage.getItem('rms_guest_history') || '[]'); } catch(e) { return []; } })();
+        if (!gh.some(h => h.id === o.order_id)) return;
+        _handleNotifications(o);
       })
       .subscribe();
   }
+
 
   // ── Status banner (subtle top notification, auto-dismisses)
   function showStatusBanner(status, order) {
