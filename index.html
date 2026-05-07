@@ -1590,7 +1590,7 @@
     const locStr = o.room_number ? 'Room ' + o.room_number : 'Table ' + (o.table_number || '—');
     
     let itemsHtml = items.map(i => `
-      <tr>
+      <tr style="page-break-inside: avoid;">
         <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">
           <div style="font-weight: 600; color: #1a2e1a; font-size: 13px;">${i.name}</div>
         </td>
@@ -1648,7 +1648,7 @@
         </table>
 
         <!-- Totals -->
-        <div style="margin-left: auto; width: 220px;">
+        <div style="margin-left: auto; width: 220px; page-break-inside: avoid;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: #666;">
             <span>Subtotal</span>
             <span style="font-family: 'DM Mono', monospace;">₹${parseFloat(o.subtotal).toFixed(2)}</span>
@@ -1681,11 +1681,12 @@
       btn.disabled = true;
 
       const opt = {
-        margin:       0,
+        margin:       [0.1, 0, 0.1, 0],
         filename:     `Bill_${o.order_id}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'in', format: [4.16, Math.max(6, 4 + (items.length * 0.4))], orientation: 'portrait' }
+        jsPDF:        { unit: 'in', format: [4.16, 8], orientation: 'portrait' },
+        pagebreak:    { mode: ['css', 'legacy'] }
       };
       
       await window.html2pdf().set(opt).from(element).save();
