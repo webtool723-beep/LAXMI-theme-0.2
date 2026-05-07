@@ -7,6 +7,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
+  <style>
+    /* Fullscreen Mode */
+    body.kitchen-fullscreen .sidebar { display: none !important; }
+    body.kitchen-fullscreen .main-content { margin-left: 0 !important; width: 100% !important; max-width: 100% !important; }
+    body.kitchen-fullscreen .hamburger { display: none !important; }
+  </style>
 </head>
 <body>
 
@@ -99,6 +105,10 @@
           <!-- Bell toggle -->
           <button class="btn btn-secondary btn-sm" id="bellBtn" onclick="toggleBell()" title="Toggle sound">
             🔔 Sound On
+          </button>
+          <!-- Fullscreen toggle -->
+          <button class="btn btn-secondary btn-sm" id="fullscreenBtn" onclick="toggleFullscreen()" title="Full Screen">
+            🖥️ Full Screen
           </button>
           <!-- Print summary -->
           <button class="btn btn-secondary btn-sm" onclick="printDailySummary()">🖨️ Print Summary</button>
@@ -880,6 +890,30 @@
     `;
     window.print();
   };
+
+  // ── Full Screen Mode
+  window.toggleFullscreen = function() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        window.showToast('Error', 'Cannot enable full screen mode', 'error');
+      });
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  document.addEventListener('fullscreenchange', () => {
+    const isFullscreen = !!document.fullscreenElement;
+    document.body.classList.toggle('kitchen-fullscreen', isFullscreen);
+    const btn = document.getElementById('fullscreenBtn');
+    if (btn) {
+      btn.innerHTML = isFullscreen ? '❌ Exit Full Screen' : '🖥️ Full Screen';
+      btn.classList.toggle('btn-primary', isFullscreen);
+      btn.classList.toggle('btn-secondary', !isFullscreen);
+    }
+  });
 
   // ── Export Excel
   window.exportExcel = function() {
