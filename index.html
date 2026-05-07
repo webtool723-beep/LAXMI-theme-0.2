@@ -1567,9 +1567,56 @@
           <div class="ho-total">₹${parseFloat(o.total).toFixed(2)}</div>
           <div class="ho-time">${date}</div>
         </div>
+        ${o.payment_status === 'paid' ? `
+        <div style="margin-top:10px;">
+          <button onclick="downloadBill('${o.id}')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;width:100%;font-weight:600;">
+            📄 Download Bill
+          </button>
+        </div>` : ''}
       </div>`;
     }).join('');
   }
+
+  window.downloadBill = function(orderId) {
+    const o = window.myOrders.find(x => x.id === orderId || x.id == orderId);
+    if (!o) return;
+    
+    let items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
+    
+    let text = `================================\n`;
+    text += `         LAXMI RESTAURANT       \n`;
+    text += `================================\n`;
+    text += `Order ID : ${o.order_id}\n`;
+    if (o.invoice_no) text += `Invoice  : ${o.invoice_no}\n`;
+    text += `Date     : ${new Date(o.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}\n`;
+    text += `Location : ${o.room_number ? 'Room ' + o.room_number : 'Table ' + (o.table_number || '—')}\n`;
+    text += `Status   : PAID\n`;
+    text += `--------------------------------\n`;
+    items.forEach(i => {
+      let line = `${i.name} x${i.qty}`;
+      let price = `Rs.${(i.price * i.qty).toFixed(2)}`;
+      let spaces = 32 - line.length - price.length;
+      if (spaces < 1) spaces = 1;
+      text += line + " ".repeat(spaces) + price + "\n";
+    });
+    text += `--------------------------------\n`;
+    text += `Subtotal : Rs.${parseFloat(o.subtotal).toFixed(2).padStart(12)}\n`;
+    text += `GST      : Rs.${parseFloat(o.gst).toFixed(2).padStart(12)}\n`;
+    text += `TOTAL    : Rs.${parseFloat(o.total).toFixed(2).padStart(12)}\n`;
+    text += `================================\n`;
+    text += `      Thank you, visit again!   \n`;
+    text += `================================\n`;
+
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Bill_${o.order_id}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   window.updateOrderInHistory = function(order) {
     if (window.myOrders) {
