@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -930,8 +930,9 @@
       const code = name.toUpperCase().charCodeAt(0);
       avatar.textContent = (code >= 65 && code <= 90) ? _avatars[code - 65] : '👤';
       avatar.style.background = 'var(--surface2)';
-      avatar.style.border = '1px solid var(--border)';
-      avatar.style.fontSize = '1rem';
+      avatar.style.border = 'none'; // removed border to maximize space
+      avatar.style.fontSize = '1.4rem';
+      avatar.style.lineHeight = '1';
       avatar.title = name;
       guestBanner.classList.add('hidden');
     } else {
