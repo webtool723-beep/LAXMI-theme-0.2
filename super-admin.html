@@ -492,18 +492,23 @@
   // ── BRANCHES
   async function loadBranches() {
     const sb = window.supabaseClient;
-    const { data } = await sb.from('branches').select('*').order('created_at');
+    let { data, error } = await sb.from('branches').select('*').order('created_at');
+    if (error) { window.showToast('Error loading branches', error.message, 'error'); console.error(error); }
     allBranches = data || [];
     
     // Fetch basic counts (tables & staff per branch) to display in the table
-    // A more advanced query would join, but multiple queries is fine for an admin panel
     for (let b of allBranches) {
-      const [{count:tCount}, {count:sCount}] = await Promise.all([
-        sb.from('restaurant_tables').select('id', {count:'exact', head:true}).eq('branch_id', b.id),
-        sb.from('staff').select('id', {count:'exact', head:true}).eq('branch_id', b.id)
-      ]);
-      b._tableCount = tCount || 0;
-      b._staffCount = sCount || 0;
+      try {
+        const [{count:tCount}, {count:sCount}] = await Promise.all([
+          sb.from('restaurant_tables').select('id', {count:'exact', head:true}).eq('branch_id', b.id),
+          sb.from('staff').select('id', {count:'exact', head:true}).eq('branch_id', b.id)
+        ]);
+        b._tableCount = tCount || 0;
+        b._staffCount = sCount || 0;
+      } catch (e) {
+        b._tableCount = 0;
+        b._staffCount = 0;
+      }
     }
     
     populateBranchSelects();
@@ -677,7 +682,11 @@
   async function loadStaff() {
     const sb = window.supabaseClient;
     // Get all staff across all branches
-    const { data } = await sb.from('staff').select('*, branches(name)').order('created_at', {ascending:false});
+    let { data, error } = await sb.from('staff').select('*, branches(name)').order('created_at', {ascending:false});
+    if (error) {
+       console.warn("Staff branches join failed, falling back to flat query", error);
+       ({ data, error } = await sb.from('staff').select('*').order('created_at', {ascending:false}));
+    }
     allStaff = data || [];
     document.getElementById('statActiveStaff').textContent = allStaff.filter(s=>s.is_active).length;
     filterStaff();
@@ -783,11 +792,20 @@
     const date = dateVal || new Date().toLocaleDateString('en-CA', { timeZone:'Asia/Kolkata' });
 
     // Join with branches to get branch name
-    const { data } = await sb.from('orders')
+    let { data, error } = await sb.from('orders')
       .select('*, branches(name)')
       .gte('created_at', date + 'T00:00:00+05:30')
       .lte('created_at', date + 'T23:59:59+05:30')
       .order('created_at', { ascending:false });
+
+    if (error) {
+       console.warn("Orders branches join failed, falling back to flat query", error);
+       ({ data, error } = await sb.from('orders')
+         .select('*')
+         .gte('created_at', date + 'T00:00:00+05:30')
+         .lte('created_at', date + 'T23:59:59+05:30')
+         .order('created_at', { ascending:false }));
+    }
 
     allOrders = data || [];
     filterOrders();
@@ -868,7 +886,11 @@
   // ── ACTIVITY LOG (CROSS-BRANCH)
   window.loadActivity = async function() {
     const sb = window.supabaseClient;
-    const { data } = await sb.from('activity_log').select('*, branches(name)').order('created_at', { ascending:false }).limit(300);
+    let { data, error } = await sb.from('activity_log').select('*, branches(name)').order('created_at', { ascending:false }).limit(300);
+    if (error) {
+       console.warn("Activity branches join failed, falling back to flat query", error);
+       ({ data, error } = await sb.from('activity_log').select('*').order('created_at', { ascending:false }).limit(300));
+    }
     allActivity = data || [];
     filterActivity();
   };
@@ -924,10 +946,20 @@
   window.actGoPage = function(p) { activityPage=p; renderActivity(); renderActivityPagination(); };
 
   // ── SYSTEM SETTINGS & DANGER
-  window.saveSystemSettings = function() {
-    // In a real system, these would go to a global `chain_settings` table.
-    // For now, it's just visual completeness as requested.
-    window.showToast('✅ Chain settings saved','','success');
+  window.saveSystemSettings = async function() {
+    const appName = document.getElementById('sysAppName')?.value.trim();
+    if (appName && allBranches.length > 0) {
+      const btn = document.querySelector('#tab-system .btn-primary');
+      if(btn) { btn.disabled=true; btn.textContent='Saving...'; }
+      
+      // Update restaurant_name for all branches so realtime listeners on those pages catch it
+      for (let b of allBranches) {
+        if(window.setSetting) await window.setSetting('restaurant_name', appName, b.id);
+      }
+      
+      if(btn) { btn.disabled=false; btn.textContent='💾 Save Settings'; }
+    }
+    window.showToast('✅ Chain settings applied to all branches','','success');
     window.logActivity && window.logActivity('settings', 'Updated chain settings', window.currentStaff?.name || '', null);
   };
 
