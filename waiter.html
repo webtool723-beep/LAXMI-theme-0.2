@@ -80,6 +80,11 @@
       .assign-card  { padding:12px; }
       .waiter-tab   { font-size:0.75rem; padding:8px 4px; }
     }
+
+    /* picked_up badge */
+    .badge-picked_up { background: rgba(66,165,245,0.15); color: var(--blue); border: 1px solid rgba(66,165,245,0.3); }
+    /* on-the-way card highlight */
+    .assign-card.on-the-way { border-left-color: #42a5f5; }
   </style>
 </head>
 <body>
@@ -441,8 +446,8 @@ console.log('Full staff:', window.currentStaff);
     const list = document.getElementById('assignmentsList');
     let filtered = myAssignments;
 
-    if (assignFilter === 'active')     filtered = filtered.filter(o => ['pending','preparing','done'].includes(o.status) || (o.status === 'delivered' && o.collect_by_waiter_id === window.currentStaff?.staff_id && o.payment_status === 'unpaid'));
-    if (assignFilter === 'delivering') filtered = filtered.filter(o => o.status === 'done');
+    if (assignFilter === 'active')     filtered = filtered.filter(o => ['pending','preparing','done','picked_up'].includes(o.status) || (o.status === 'delivered' && o.collect_by_waiter_id === window.currentStaff?.staff_id && o.payment_status === 'unpaid'));
+    if (assignFilter === 'delivering') filtered = filtered.filter(o => o.status === 'done' || o.status === 'picked_up');
     if (assignFilter === 'delivered')  filtered = filtered.filter(o => o.status === 'delivered' && o.payment_status === 'unpaid');
 
     if (!filtered.length) {
@@ -454,18 +459,29 @@ console.log('Full staff:', window.currentStaff);
       const items   = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
       const summary = items.map(i => `${i.emoji||''}${i.name} ×${i.qty}`).join(', ');
       const elapsed = getElapsed(order.assigned_at || order.created_at);
-      const isDone  = order.status === 'done';
-      const isPending = order.status === 'pending' || order.status === 'preparing';
+      const isDone      = order.status === 'done';
+      const isPickedUp  = order.status === 'picked_up';
+      const isPending   = order.status === 'pending' || order.status === 'preparing';
+      const isDelivered = order.status === 'delivered';
 
       const needsCollection = order.collect_by_waiter_id === window.currentStaff?.staff_id && order.payment_status === 'unpaid';
-    return `<div class="assign-card ${isDone?'delivered':isPending?'delivering':''} ${needsCollection?'collect-blink':''}">
+
+      // Determine card accent class
+      let cardClass = 'assign-card';
+      if (isPending)   cardClass += ' delivering';
+      if (isDone)      cardClass += ' delivering';
+      if (isPickedUp)  cardClass += ' on-the-way';
+      if (isDelivered) cardClass += ' delivered';
+      if (needsCollection) cardClass += ' collect-blink';
+
+      return `<div class="${cardClass}">
         <div class="assign-card-head">
           <div>
             <div class="assign-order-id">${order.order_id}</div>
             <div class="assign-table">${order.room_number ? '🛏️ Room ' + order.room_number : '🪑 Table ' + (order.table_number || '—')}</div>
             <div class="assign-time">⏱ ${elapsed}</div>
           </div>
-          <span class="badge badge-${order.status}">${order.status}</span>
+          <span class="badge badge-${order.status}">${order.status === 'picked_up' ? 'On the Way' : order.status}</span>
         </div>
         <div class="assign-items">${summary}</div>
         ${order.note ? `<div class="order-note" style="margin-bottom:8px;">📝 ${order.note}</div>` : ''}
@@ -474,31 +490,67 @@ console.log('Full staff:', window.currentStaff);
           <div style="font-size:0.72rem;color:var(--text-dim);">${order.customer_phone||''}</div>
         </div>
         <div class="assign-actions">
-          ${order.status === 'done' ? `
-            <button class="btn btn-primary btn-sm" onclick="markDelivered('${order.id}')">🛎️ Mark Delivered</button>
-            <button class="btn btn-gold btn-sm" onclick="openTransferModal('${order.id}')">🔄 Transfer</button>
+          ${isDone ? `
+            <button class="btn btn-blue btn-sm" onclick="markPickedUp('${order.id}')"
+              style="background:rgba(66,165,245,0.2);border:1px solid rgba(66,165,245,0.4);color:#42a5f5;">
+              📦 Picked Up from Kitchen
+            </button>
+            <button class="btn btn-ghost btn-sm" onclick="openTransferModal('${order.id}')">&#x1f504; Transfer</button>
           ` : ''}
-          ${order.status === 'delivered' && order.payment_status === 'unpaid' ? `
+          ${isPickedUp ? `
+            <div style="font-size:0.78rem;color:#42a5f5;margin-bottom:6px;">&#x1f6f4; Customer notified: &ldquo;Your order is on the way&hellip;&rdquo;</div>
+            <button class="btn btn-primary btn-sm" onclick="markDelivered('${order.id}')">✅ Mark Delivered</button>
+            <button class="btn btn-ghost btn-sm" onclick="openTransferModal('${order.id}')">&#x1f504; Transfer</button>
+          ` : ''}
+          ${isDelivered && order.payment_status === 'unpaid' ? `
             <span style="font-size:0.78rem;color:var(--gold);">⏳ Awaiting payment confirmation</span>
           ` : ''}
-          ${order.status === 'delivered' && order.payment_status === 'paid' ? `
+          ${isDelivered && order.payment_status === 'paid' ? `
             <span style="font-size:0.78rem;color:var(--green-bright);">✅ Payment confirmed — Credit added!</span>
           ` : ''}
           ${needsCollection ? `
-            <button class="btn btn-primary btn-sm" onclick="notifyPaymentCollected('${order.id}')">💰 Payment Collected</button>
+            <button class="btn btn-primary btn-sm" onclick="notifyPaymentCollected('${order.id}')">&#x1f4b0; Payment Collected</button>
           ` : ''}
         </div>
       </div>`;
     }).join('');
   }
 
-  // ── Mark delivered
+  // ── Step 1: Waiter picks up from kitchen → status = picked_up
+  window.markPickedUp = async function(orderId) {
+    const sb    = window.supabaseClient;
+    const order = myAssignments.find(o => o.id === orderId);
+    const btn   = event?.currentTarget;
+    if (btn) { btn.disabled = true; btn.textContent = 'Notifying…'; }
+
+    const { error } = await sb.from('orders').update({
+      status:       'picked_up',
+      picked_up_at: new Date().toISOString(),
+      updated_at:   new Date().toISOString()
+    }).eq('id', orderId);
+
+    if (btn) { btn.disabled = false; btn.textContent = '📦 Picked Up from Kitchen'; }
+
+    if (error) { window.showToast('Error', error.message, 'error'); return; }
+
+    window.showToast('📦 Picked up! Customer notified.', '', 'success');
+    window.logActivity && window.logActivity(
+      'order_status',
+      `Order picked up by ${window.currentStaff?.name}`,
+      window.currentStaff?.name || '',
+      window.getActiveBranchId()
+    );
+    await loadAssignments();
+    await loadHistory();
+  };
+
+  // ── Step 2: Waiter delivers → status = delivered
   window.markDelivered = async function(orderId) {
     const sb = window.supabaseClient;
     const { error } = await sb.from('orders').update({
-      status: 'delivered',
+      status:       'delivered',
       delivered_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at:   new Date().toISOString()
     }).eq('id', orderId);
 
     if (!error) {

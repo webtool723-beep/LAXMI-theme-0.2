@@ -1063,7 +1063,6 @@
     btn.textContent = 'Save Changes';
   };
 
-  // ── My Orders realtime
   let myOrdersChannel = null;
   function subscribeMyOrders(uid) {
     if (myOrdersChannel) sb.removeChannel(myOrdersChannel);
@@ -1072,10 +1071,17 @@
         (payload) => {
           const o = payload.new;
           updateOrderInHistory(o);
-          // Waiter assignment notification
-          if (o.assigned_waiter_name) {
-            showToast(`🛎️ ${o.assigned_waiter_name} is coming with your order!`, `Table ${o.table_number}`, 'success');
-            showWaiterNotification(o.assigned_waiter_name, o.table_number);
+
+          if (o.status === 'picked_up') {
+            // Waiter picked up from kitchen
+            const waiter = o.assigned_waiter_name ? `${o.assigned_waiter_name} is` : 'Your order is';
+            showToast(`🛯️ ${waiter} on the way!`, 'success');
+            showWaiterNotification(o.assigned_waiter_name || 'Your order', o.table_number || o.room_number, 'ontheway');
+          } else if (o.status === 'delivered') {
+            // Order physically delivered
+            const waiter = o.assigned_waiter_name || 'Your order';
+            showToast(`🎉 Order delivered by ${waiter}!`, 'success');
+            showWaiterNotification(o.assigned_waiter_name || 'Order', o.table_number || o.room_number, 'delivered');
           } else if (o.review_requested === true && !o.rating) {
             // Payment Manager assigned review to customer
             showToast('⭐ Your feedback is requested!', 'success');
@@ -1179,33 +1185,52 @@
     window._custRating = 0;
   };
 
-  function showWaiterNotification(waiterName, tableNum) {
+  function showWaiterNotification(waiterName, tableNum, type) {
     // Remove existing if any
     const existing = document.getElementById('waiterNotifBanner');
     if (existing) existing.remove();
 
+    const isDelivered = type === 'delivered';
     const banner = document.createElement('div');
     banner.id = 'waiterNotifBanner';
     banner.style.cssText = `
       position:fixed; top:72px; left:50%; transform:translateX(-50%);
-      z-index:9999; background:#1a2e1a; border:1px solid rgba(200,169,110,0.4);
+      z-index:9999; background:${isDelivered ? '#0f2e1a' : '#1a2e1a'};
+      border:1px solid ${isDelivered ? 'rgba(76,175,80,0.4)' : 'rgba(200,169,110,0.4)'};
       border-radius:12px; padding:14px 20px; text-align:center;
       box-shadow:0 8px 32px rgba(0,0,0,0.4); min-width:280px; max-width:90vw;
       animation:slideUp 0.3s ease;
     `;
-    banner.innerHTML = `
-      <div style="font-size:1.8rem;margin-bottom:6px;">🛎️</div>
-      <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:#c8a96e;margin-bottom:4px;">
-        ${waiterName} is on the way!
-      </div>
-      <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);">
-        Your order for Table ${tableNum} is being delivered
-      </div>
-      <button onclick="this.parentElement.remove()" style="
-        margin-top:10px; background:rgba(200,169,110,0.2); border:1px solid rgba(200,169,110,0.3);
-        color:#c8a96e; padding:4px 14px; border-radius:20px; font-size:0.78rem; cursor:pointer;
-      ">Got it ✓</button>
-    `;
+
+    if (isDelivered) {
+      banner.innerHTML = `
+        <div style="font-size:1.8rem;margin-bottom:6px;">🎉</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:#4caf50;margin-bottom:4px;">
+          Order Delivered!
+        </div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);">
+          ${waiterName ? waiterName + ' has delivered' : 'Your order has arrived'} at ${tableNum ? 'Table ' + tableNum : 'your table'}
+        </div>
+        <button onclick="this.parentElement.remove()" style="
+          margin-top:10px; background:rgba(76,175,80,0.2); border:1px solid rgba(76,175,80,0.3);
+          color:#4caf50; padding:4px 14px; border-radius:20px; font-size:0.78rem; cursor:pointer;
+        ">Enjoy! 🍽️</button>
+      `;
+    } else {
+      banner.innerHTML = `
+        <div style="font-size:1.8rem;margin-bottom:6px;">🛵</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:#c8a96e;margin-bottom:4px;">
+          ${waiterName ? waiterName + ' is on the way!' : 'Your order is on the way!'}
+        </div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);">
+          Your order is being delivered to ${tableNum ? 'Table ' + tableNum : 'your table'}
+        </div>
+        <button onclick="this.parentElement.remove()" style="
+          margin-top:10px; background:rgba(200,169,110,0.2); border:1px solid rgba(200,169,110,0.3);
+          color:#c8a96e; padding:4px 14px; border-radius:20px; font-size:0.78rem; cursor:pointer;
+        ">Got it ✓</button>
+      `;
+    }
     document.body.appendChild(banner);
     // Auto remove after 10 seconds
     setTimeout(() => { if(banner.parentElement) banner.remove(); }, 10000);
