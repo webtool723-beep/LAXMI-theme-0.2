@@ -926,7 +926,12 @@
       guestActions.style.display = 'none';
       userActions.style.display  = 'flex';
       const name = user.displayName || user.email || '?';
-      avatar.textContent = name[0].toUpperCase();
+      const _avatars = ['🦊','🐼','🐰','🐯','🐸','🐷','🐵','🐻','🦄','🐧','🐶','🐨','🐲','🐙','🦁','🦦','🦥','🦝','🦖','🐢','🐝','🐞','🦋','🐡','🐳','🦉'];
+      const code = name.toUpperCase().charCodeAt(0);
+      avatar.textContent = (code >= 65 && code <= 90) ? _avatars[code - 65] : '👤';
+      avatar.style.background = 'var(--surface2)';
+      avatar.style.border = '1px solid var(--border)';
+      avatar.style.fontSize = '1rem';
       avatar.title = name;
       guestBanner.classList.add('hidden');
     } else {
