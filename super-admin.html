@@ -412,7 +412,6 @@
             </div>
             <div style="display:flex; gap:8px;">
               <button class="btn btn-secondary btn-sm" onclick="setReportRange('today')">Today</button>
-              <button class="btn btn-secondary btn-sm" onclick="setReportRange('week')">Week</button>
               <button class="btn btn-secondary btn-sm" onclick="setReportRange('month')">Month</button>
               <button class="btn btn-secondary btn-sm" onclick="setReportRange('year')">Year</button>
             </div>
@@ -492,6 +491,25 @@
                 <tbody id="repBranchMatrixBody">
                   <tr>
                     <td colspan="4" style="text-align:center;color:var(--text-dim);padding:20px;">Generate report to
+                      view</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Best Waiter Table -->
+            <div class="card" style="padding:0; overflow:hidden;">
+              <div style="padding:16px; border-bottom:1px solid var(--border); font-weight:600;">🤵 Best Waiters</div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Waiter Name</th>
+                    <th style="text-align:right;">Orders</th>
+                    <th style="text-align:right;">Revenue</th>
+                  </tr>
+                </thead>
+                <tbody id="repBestWaitersBody">
+                  <tr>
+                    <td colspan="3" style="text-align:center;color:var(--text-dim);padding:20px;">Generate report to
                       view</td>
                   </tr>
                 </tbody>
@@ -1341,9 +1359,6 @@
 
       if (range === 'today') {
         // already set to today
-      } else if (range === 'week') {
-        const day = s.getDay() || 7; // Get current day number, converting Sun. to 7
-        if (day !== 1) s.setHours(-24 * (day - 1)); // Set to Monday
       } else if (range === 'month') {
         s = new Date(today.getFullYear(), today.getMonth(), 1);
       } else if (range === 'year') {
@@ -1472,6 +1487,43 @@
           <td style="text-align:right;">${avgR} ${avgR !== '-' ? '⭐' : ''}</td>
         </tr>`;
         }).join('');
+      }
+
+      // --- Best Waiter Matrix ---
+      const waiterPerf = {};
+      doneOrders.forEach(o => {
+        let wid = null;
+        let wname = null;
+        if (o.assigned_waiter_id) {
+          wid = o.assigned_waiter_id;
+          wname = o.assigned_waiter_name || 'Unknown';
+        } else if (o.firebase_uid) {
+          const w = allStaff.find(s => s.uid === o.firebase_uid || s.id === o.firebase_uid);
+          if (w && w.role === 'waiter') {
+            wid = w.id;
+            wname = w.name;
+          }
+        }
+        if (wid) {
+          if (!waiterPerf[wid]) {
+            waiterPerf[wid] = { name: wname, ords: 0, rev: 0 };
+          }
+          waiterPerf[wid].ords++;
+          waiterPerf[wid].rev += parseFloat(o.total || 0);
+        }
+      });
+      
+      const sortedWaiters = Object.values(waiterPerf).sort((a,b) => b.rev - a.rev).slice(0, 10);
+      const waitersBody = document.getElementById('repBestWaitersBody');
+      if (!sortedWaiters.length) {
+        waitersBody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-dim);padding:20px;">No waiter data in range</td></tr>';
+      } else {
+        waitersBody.innerHTML = sortedWaiters.map(w => `
+        <tr>
+          <td style="font-weight:500;">${w.name}</td>
+          <td style="text-align:right;">${w.ords}</td>
+          <td style="text-align:right;color:var(--green-bright);">Rs. ${w.rev.toFixed(0)}</td>
+        </tr>`).join('');
       }
 
       // --- 4. Render SVG Charts ---
