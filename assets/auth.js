@@ -58,6 +58,7 @@ const pageRoles = {
   'staff.html':            ['superadmin','admin'],
   'reports.html':          ['superadmin','admin','manager'],
   'superadmin.html':       ['superadmin'],
+  'super-admin.html':      ['superadmin'],
   'waiter.html':           ['superadmin','admin','manager','waiter'],
   'payment-manager.html':  ['superadmin','admin','manager','payment_manager'],
 };
