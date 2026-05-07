@@ -522,6 +522,29 @@
     @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
     @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateX(20px); } }
     @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes reviewPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(200,169,110,0); opacity: 1; }
+      50% { box-shadow: 0 0 0 6px rgba(200,169,110,0.25); opacity: 0.9; }
+    }
+
+    /* ── REVIEW PENDING CARD ── */
+    .review-pending-card {
+      border-color: rgba(200,169,110,0.6) !important;
+      background: linear-gradient(180deg, #fffef9 0%, var(--surface) 100%) !important;
+    }
+
+    /* ── STAR RATING (customer review modal) ── */
+    #customerReviewModal .star { color: #ddd; transition: color 0.15s, transform 0.15s; display: inline-block; }
+    #customerReviewModal .star:hover { transform: scale(1.2); }
+    #customerReviewModal .star.active { color: #f59e0b; }
+
+    /* ── BTN GHOST (used in customer review modal) ── */
+    .btn-ghost {
+      padding: 10px; background: var(--cream); color: var(--text-mid);
+      border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-ghost:hover { background: var(--border-light); }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 600px) {
@@ -781,21 +804,23 @@
 
 <!-- ── CUSTOMER REVIEW MODAL ── -->
 <div class="modal-overlay" id="customerReviewModal" style="display:none;" onclick="if(event.target===this)skipCustomerReview()">
-  <div class="auth-modal" style="text-align:center;padding:30px 20px;">
-    <div style="font-size:3rem;margin-bottom:10px;">⭐</div>
-    <div class="success-title" style="margin-bottom:5px;">How was your experience?</div>
-    <div class="success-msg" style="margin-bottom:20px;">We value your feedback.</div>
-    <div style="display:flex;justify-content:center;gap:15px;margin-bottom:20px;font-size:2rem;cursor:pointer;">
+  <div class="auth-modal" style="text-align:center;padding:30px 24px;position:relative;">
+    <button onclick="skipCustomerReview()" style="position:absolute;top:12px;right:12px;background:var(--cream);border:none;color:var(--text-dim);width:30px;height:30px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
+    <div style="font-size:3rem;margin-bottom:6px;">⭐</div>
+    <div class="success-title" style="margin-bottom:4px;font-size:1.2rem;">How was your experience?</div>
+    <div class="success-msg" style="margin-bottom:6px;font-size:0.82rem;">The restaurant requested your feedback.</div>
+    <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:18px;background:var(--green-light);padding:6px 10px;border-radius:6px;">📌 If you skip, this reminder will stay on your order card.</div>
+    <div style="display:flex;justify-content:center;gap:10px;margin-bottom:18px;font-size:2.2rem;cursor:pointer;" id="reviewStarsRow">
       <span class="star" data-val="1" onclick="setCustomerRating(1)">★</span>
       <span class="star" data-val="2" onclick="setCustomerRating(2)">★</span>
       <span class="star" data-val="3" onclick="setCustomerRating(3)">★</span>
       <span class="star" data-val="4" onclick="setCustomerRating(4)">★</span>
       <span class="star" data-val="5" onclick="setCustomerRating(5)">★</span>
     </div>
-    <textarea id="customerReviewNote" class="form-input" rows="3" placeholder="Tell us more (optional)..." style="margin-bottom:20px;resize:none;"></textarea>
+    <textarea id="customerReviewNote" class="form-input" rows="3" placeholder="Tell us more (optional)…" style="margin-bottom:16px;resize:none;text-align:left;"></textarea>
     <div style="display:flex;gap:10px;">
-      <button class="btn-ghost" onclick="skipCustomerReview()" style="flex:1;">Skip for now</button>
-      <button class="btn-submit" id="custRevSubmitBtn" onclick="submitCustomerReview()" style="flex:1;">Submit Review</button>
+      <button class="btn-ghost" onclick="skipCustomerReview()" style="flex:1;font-size:0.82rem;">⏰ Later</button>
+      <button class="btn-submit" id="custRevSubmitBtn" onclick="submitCustomerReview()" style="flex:1;">⭐ Submit</button>
     </div>
   </div>
 </div>
@@ -1051,9 +1076,12 @@
           if (o.assigned_waiter_name) {
             showToast(`🛎️ ${o.assigned_waiter_name} is coming with your order!`, `Table ${o.table_number}`, 'success');
             showWaiterNotification(o.assigned_waiter_name, o.table_number);
+          } else if (o.review_requested === true && !o.rating) {
+            // Payment Manager assigned review to customer
+            showToast('⭐ Your feedback is requested!', 'success');
+            setTimeout(() => openCustomerReviewPopup(o), 1000);
           } else if (o.payment_status === 'paid' && !o.rating && !o.rated_by) {
             showToast(`📦 Order ${o.order_id}: ${o.status}`);
-            // Show customer rating prompt
             showCustomerRatingPrompt(o);
           } else {
             showToast(`📦 Order ${o.order_id}: ${o.status}`);
@@ -1062,7 +1090,7 @@
       .subscribe();
   }
 
-  // Guest table subscription — shows waiter notification without login
+  // Guest table subscription — shows waiter notification & review prompts without login
   let guestTableChannel = null;
   function subscribeGuestTable(tableNum) {
     if (guestTableChannel) sb.removeChannel(guestTableChannel);
@@ -1074,6 +1102,15 @@
         const o = payload.new;
         if (o.assigned_waiter_name && o.status === 'done') {
           showWaiterNotification(o.assigned_waiter_name, tableNum);
+        }
+        // Guest: detect review assignment by payment manager
+        if (o.review_requested === true && !o.rating) {
+          const guestHistory = (() => { try { return JSON.parse(localStorage.getItem('rms_guest_history') || '[]'); } catch(e){ return []; } })();
+          const isMyOrder = guestHistory.some(h => h.id === o.order_id);
+          if (isMyOrder) {
+            showToast('⭐ Please rate your experience!');
+            setTimeout(() => openCustomerReviewPopup(o), 1000);
+          }
         }
       })
       .subscribe();
@@ -1608,11 +1645,14 @@
       return;
     }
 
-    // Save guest history
+    // Save guest history (3-day retention)
     if (!uid) {
       let guestHistory = [];
       try { guestHistory = JSON.parse(localStorage.getItem('rms_guest_history') || '[]'); } catch(e){}
-      guestHistory.push({ id: orderId, time: Date.now() });
+      // Purge entries older than 3 days before saving
+      const threeDaysAgo = Date.now() - (3 * 24 * 60 * 60 * 1000);
+      guestHistory = guestHistory.filter(h => h.time >= threeDaysAgo);
+      guestHistory.push({ id: orderId, time: Date.now(), phone });
       localStorage.setItem('rms_guest_history', JSON.stringify(guestHistory));
     }
 
@@ -1637,53 +1677,92 @@
 
   // ── CUSTOMER REVIEWS
   window.currentReviewOrderId = null;
+  window.currentReviewOrderObj = null;
   window.selectedCustomerRating = 0;
+
   window.setCustomerRating = function(val) {
-    selectedCustomerRating = val;
+    window.selectedCustomerRating = val;
     document.querySelectorAll('#customerReviewModal .star').forEach(s => {
       s.classList.toggle('active', parseInt(s.dataset.val) <= val);
     });
   };
+
   window.skipCustomerReview = function() {
     document.getElementById('customerReviewModal').style.display = 'none';
-    currentReviewOrderId = null;
-  };
-  window.submitCustomerReview = async function() {
-    if (!selectedCustomerRating) { window.showToast('Please select a star rating', 'error'); return; }
-    if (!currentReviewOrderId) return;
-    const btn = document.getElementById('custRevSubmitBtn');
-    btn.disabled = true; btn.textContent = 'Submitting...';
-    
-    const note = document.getElementById('customerReviewNote').value.trim();
-    const { error } = await window.supabaseClient.from('orders').update({
-      rating: selectedCustomerRating,
-      rating_note: note || null,
-      review_requested: false
-    }).eq('order_id', currentReviewOrderId); // using order_id to match guest auth too
-    
-    btn.disabled = false; btn.textContent = 'Submit Review';
-    if (error) {
-      window.showToast('❌ Failed to submit review', 'error');
-    } else {
-      window.showToast('⭐ Thank you for your review!', 'success');
-      document.getElementById('customerReviewModal').style.display = 'none';
-      await loadOrderHistory();
+    window.currentReviewOrderId = null;
+    window.currentReviewOrderObj = null;
+    // Keep review_requested=true so it shows on order card later
+    showToast('⏰ Reminder saved on your order card.');
+    if (document.getElementById('historyDrawer').classList.contains('open')) {
+      window.loadOrderHistory && window.loadOrderHistory();
     }
   };
+
+  window.submitCustomerReview = async function() {
+    if (!window.selectedCustomerRating) { window.showToast('Please select a star rating', 'error'); return; }
+    if (!window.currentReviewOrderId) return;
+    const btn = document.getElementById('custRevSubmitBtn');
+    btn.disabled = true; btn.textContent = 'Submitting...';
+
+    const note = document.getElementById('customerReviewNote').value.trim();
+    const user = window.currentUser;
+    const order = window.currentReviewOrderObj || (window.myOrders || []).find(o => o.order_id === window.currentReviewOrderId);
+
+    // 1. Update order row
+    await sb.from('orders').update({
+      rating: window.selectedCustomerRating,
+      rating_note: note || null,
+      rated_at: new Date().toISOString(),
+      rated_by: 'customer',
+      review_requested: false
+    }).eq('order_id', window.currentReviewOrderId);
+
+    // 2. Insert into reviews table so PM sees it
+    await sb.from('reviews').insert({
+      branch_id: BRANCH_ID,
+      order_id:  window.currentReviewOrderId,
+      customer_name:  user?.displayName || order?.customer_name || 'Customer',
+      customer_phone: order?.customer_phone || null,
+      firebase_uid:   user?.uid || order?.firebase_uid || null,
+      rating:         window.selectedCustomerRating,
+      note:           note || null
+    });
+
+    btn.disabled = false; btn.textContent = 'Submit Review';
+    window.showToast('⭐ Thank you for your review! It means a lot 🙏', 'success');
+    document.getElementById('customerReviewModal').style.display = 'none';
+    window.currentReviewOrderId = null;
+    window.currentReviewOrderObj = null;
+    window.selectedCustomerRating = 0;
+    await loadOrderHistory();
+  };
+
+  // Open review modal from order card (called by "Leave Review" button)
   window.openCustomerReview = function(orderId) {
-    currentReviewOrderId = orderId;
-    selectedCustomerRating = 0;
+    window.currentReviewOrderId = orderId;
+    window.currentReviewOrderObj = (window.myOrders || []).find(o => o.order_id === orderId) || null;
+    window.selectedCustomerRating = 0;
     document.querySelectorAll('#customerReviewModal .star').forEach(s => s.classList.remove('active'));
     document.getElementById('customerReviewNote').value = '';
     document.getElementById('customerReviewModal').style.display = 'flex';
   };
-  
+
+  // Open review popup from realtime event (has full order object)
+  window.openCustomerReviewPopup = function(order) {
+    window.currentReviewOrderId = order.order_id;
+    window.currentReviewOrderObj = order;
+    window.selectedCustomerRating = 0;
+    document.querySelectorAll('#customerReviewModal .star').forEach(s => s.classList.remove('active'));
+    document.getElementById('customerReviewNote').value = '';
+    document.getElementById('customerReviewModal').style.display = 'flex';
+  };
+
   function checkForRequestedReviews(orders) {
     const pending = orders.find(o => o.review_requested === true && !o.rating);
     if (pending) {
       if (!sessionStorage.getItem('review_prompted_' + pending.order_id)) {
         sessionStorage.setItem('review_prompted_' + pending.order_id, 'true');
-        openCustomerReview(pending.order_id);
+        openCustomerReviewPopup(pending);
       }
     }
   }
@@ -1745,28 +1824,37 @@
       const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
       const itemSummary = items.map(i => `${i.emoji || ''} ${i.name} ×${i.qty}`).join(', ');
       const date = new Date(o.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-      return `<div class="history-order" id="ho-${o.id}">
+      const hasReviewPending = o.review_requested === true && !o.rating;
+      const hasPaidNoReview = o.payment_status === 'paid' && !o.rating && !o.review_requested;
+      const hasRating = !!o.rating;
+      const starHtml = hasRating ? [1,2,3,4,5].map(i => `<span style="color:${i<=o.rating?'#f59e0b':'#ccc'};font-size:0.9rem;">★</span>`).join('') : '';
+
+      return `<div class="history-order${hasReviewPending ? ' review-pending-card' : ''}" id="ho-${o.id}">
         <div class="ho-head">
           <div>
             <div style="font-weight:700;font-size:0.95rem;">${o.order_id}</div>
             <div class="ho-id">${o.room_number ? '🛏️ Room ' + o.room_number : '🪑 Table ' + (o.table_number || '—')}</div>
           </div>
-          <span class="status-badge status-${o.status}">${o.status}</span>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+            <span class="status-badge status-${o.status}">${o.status}</span>
+            ${hasRating ? `<div style="display:flex;align-items:center;gap:2px;">${starHtml}</div>` : ''}
+          </div>
         </div>
         <div class="ho-items">${itemSummary}</div>
         <div class="ho-foot">
           <div class="ho-total">₹${parseFloat(o.total).toFixed(2)}</div>
           <div class="ho-time">${date}</div>
         </div>
-        ${o.review_requested && !o.rating ? `
-        <div style="margin-top:10px;">
-          <button onclick="openCustomerReview('${o.order_id}')" style="background:var(--gold);border:none;color:#000;padding:6px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;width:100%;font-weight:600;margin-bottom:8px;">
-            ⭐ Leave Review
+        ${hasReviewPending ? `
+        <div style="margin-top:10px;background:linear-gradient(135deg,rgba(200,169,110,0.15),rgba(200,169,110,0.05));border:1.5px solid rgba(200,169,110,0.5);border-radius:8px;padding:10px;">
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:6px;">⭐ The restaurant has requested your feedback!</div>
+          <button onclick="openCustomerReview('${o.order_id}')" style="background:var(--gold);border:none;color:var(--green-dark);padding:8px 14px;border-radius:8px;font-size:0.82rem;cursor:pointer;width:100%;font-weight:700;letter-spacing:0.03em;animation:reviewPulse 2s ease infinite;">
+            ⭐ Leave Your Review
           </button>
         </div>` : ''}
         ${o.payment_status === 'paid' ? `
-        <div style="margin-top:10px;">
-          <button onclick="downloadBill('${o.id}', this)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;width:100%;font-weight:600;">
+        <div style="margin-top:8px;">
+          <button onclick="downloadBill('${o.id}', this)" style="background:var(--surface);border:1.5px solid var(--border);color:var(--text-mid);padding:6px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;width:100%;font-weight:600;">
             📄 Download Bill
           </button>
         </div>` : ''}
@@ -2015,6 +2103,15 @@
 
   // ── Init
   async function loadAll() {
+    // Purge expired guest history on every page load (3-day retention)
+    try {
+      const threeDaysAgo = Date.now() - (3 * 24 * 60 * 60 * 1000);
+      let gh = JSON.parse(localStorage.getItem('rms_guest_history') || '[]');
+      const before = gh.length;
+      gh = gh.filter(h => h.time >= threeDaysAgo);
+      if (gh.length !== before) localStorage.setItem('rms_guest_history', JSON.stringify(gh));
+    } catch(e) {}
+
     await loadAutoTagData();
     await loadSettings();
     await loadCategories();

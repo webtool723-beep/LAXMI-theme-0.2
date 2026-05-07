@@ -274,7 +274,9 @@
     </div>
 
     <div style="display:flex;gap:10px;">
-      <button class="btn btn-ghost w-full" onclick="assignReviewToCustomer()">Assign to Customer</button>
+      <button class="btn btn-ghost w-full" onclick="assignReviewToCustomer()" id="assignToCustomerBtn" style="position:relative;">
+        📲 Assign to Customer
+      </button>
       <button class="btn btn-primary w-full" onclick="submitRating()" id="ratingSubmitBtn">Submit Rating</button>
     </div>
   </div>
@@ -649,19 +651,25 @@
 
   window.assignReviewToCustomer = async function() {
     if (!currentRatingOrderId) return;
-    const btn = document.querySelector('#ratingModal .btn-ghost');
-    btn.disabled = true; btn.textContent = 'Assigning...';
-    
-    await window.supabaseClient.from('orders').update({
+    const btn = document.getElementById('assignToCustomerBtn');
+    btn.disabled = true; btn.textContent = 'Assigning…';
+
+    const { error } = await window.supabaseClient.from('orders').update({
       review_requested: true
     }).eq('id', currentRatingOrderId);
-    
-    btn.disabled = false; btn.textContent = 'Assign to Customer';
-    
+
+    btn.disabled = false; btn.innerHTML = '📲 Assign to Customer';
+
+    if (error) {
+      window.showToast('Error assigning review', error.message, 'error');
+      return;
+    }
+
     document.getElementById('ratingModal').style.display = 'none';
-    window.showToast('⭐ Assigned to Customer!', 'They will see a prompt to rate', 'info');
+    window.showToast('📲 Review assigned!', 'Customer will see a pop-up to rate.', 'success');
     currentRatingOrderId = null;
     selectedRating = 0;
+    await loadOrders();
   };
 
   window.openRatingForPaid = function(orderId) {
@@ -744,11 +752,19 @@
     tbody.innerHTML = filtered.map(r => {
       const stars = [1,2,3,4,5].map(i => `<span class="review-star ${i<=r.rating?'filled':'empty'}">★</span>`).join('');
       const dt    = new Date(r.created_at).toLocaleString('en-IN', { timeZone:'Asia/Kolkata', day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+      // Cross-reference rated_by from allOrders (rated_by lives on orders table)
+      const matchOrder = allOrders.find(o => o.order_id === r.order_id);
+      const ratedByVal = matchOrder?.rated_by || r.rated_by || null;
+      const ratedBy = ratedByVal === 'customer'
+        ? `<span style="font-size:0.68rem;background:#e8f0e8;color:#2d7a2d;padding:2px 6px;border-radius:10px;font-weight:600;">📲 Customer</span>`
+        : ratedByVal
+          ? `<span style="font-size:0.68rem;background:var(--surface2);color:var(--text-dim);padding:2px 6px;border-radius:10px;font-weight:600;">👤 Staff</span>`
+          : '';
       return `<tr>
         <td style="font-family:var(--font-mono);font-size:0.8rem;">${r.order_id||'—'}</td>
         <td>—</td>
-        <td style="font-size:0.875rem;">${r.customer_name||'Guest'} ${r.customer_phone?`<div style="font-size:0.72rem;color:var(--text-dim);">📱${r.customer_phone}</div>`:''}</td>
-        <td><div class="review-stars">${stars}</div></td>
+        <td style="font-size:0.875rem;">${r.customer_name||'Guest'} ${r.customer_phone?`<div style="font-size:0.72rem;color:var(--text-dim);">&#128241;${r.customer_phone}</div>`:''}</td>
+        <td><div class="review-stars">${stars}</div>${ratedBy ? '<div style="margin-top:3px;">'+ratedBy+'</div>' : ''}</td>
         <td style="font-size:0.8rem;color:var(--text-dim);">${r.note||'—'}</td>
         <td style="font-size:0.78rem;color:var(--text-dim);white-space:nowrap;">${dt}</td>
       </tr>`;
