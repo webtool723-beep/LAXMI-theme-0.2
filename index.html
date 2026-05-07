@@ -929,9 +929,10 @@
       const _avatars = ['🦊','🐼','🐰','🐯','🐸','🐷','🐵','🐻','🦄','🐧','🐶','🐨','🐲','🐙','🦁','🦦','🦥','🦝','🦖','🐢','🐝','🐞','🦋','🐡','🐳','🦉'];
       const code = name.toUpperCase().charCodeAt(0);
       avatar.textContent = (code >= 65 && code <= 90) ? _avatars[code - 65] : '👤';
-      avatar.style.background = 'var(--surface2)';
-      avatar.style.border = 'none'; // removed border to maximize space
-      avatar.style.fontSize = '1.4rem';
+      avatar.style.background = 'rgba(255, 255, 255, 0.1)';
+      avatar.style.border = '1px solid rgba(255, 255, 255, 0.2)'; // creates a distinct transparent layer
+      avatar.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+      avatar.style.fontSize = '1.3rem'; // slightly dialed back to accommodate border
       avatar.style.lineHeight = '1';
       avatar.title = name;
       guestBanner.classList.add('hidden');
