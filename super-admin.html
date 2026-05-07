@@ -476,7 +476,7 @@
 
     // Sidebar Jump Links
     const jumpHtml = allBranches.map(b => `
-      <a class="nav-item" href="#" onclick="jumpToBranch(${b.id}, event)">
+      <a class="nav-item" href="#" onclick="jumpToBranch('${b.id}', event)">
         <span class="nav-item-icon">🏪</span> ${b.name} <span style="margin-left:auto;opacity:0.5;">→</span>
       </a>
     `).join('');
@@ -524,8 +524,8 @@
         <td>${b._tableCount}</td>
         <td>${b._staffCount}</td>
         <td>
-          <button class="btn btn-secondary btn-sm" onclick="openBranchModal(${b.id})">Edit</button>
-          <button class="btn btn-secondary btn-sm" onclick="jumpToBranch(${b.id})">Enter →</button>
+          <button class="btn btn-secondary btn-sm" onclick="openBranchModal('${b.id}')">Edit</button>
+          <button class="btn btn-secondary btn-sm" onclick="jumpToBranch('${b.id}')">Enter →</button>
         </td>
       </tr>
     `).join('');
@@ -638,7 +638,7 @@
           <div><span>Orders</span><span>${st.orders}</span></div>
           <div><span>Pending</span><span style="${st.pending>0?'color:var(--gold)':''}">${st.pending}</span></div>
         </div>
-        <button class="btn btn-secondary btn-sm" style="width:100%;margin-top:auto;" onclick="jumpToBranch(${b.id})">Enter Branch →</button>
+        <button class="btn btn-secondary btn-sm" style="width:100%;margin-top:auto;" onclick="jumpToBranch('${b.id}')">Enter Branch →</button>
       </div>`;
     }).join('');
   }
@@ -704,7 +704,7 @@
         <td><span class="badge" style="background:var(--surface2); border:1px solid var(--border); color:var(--text);">${s.role}</span></td>
         <td><span class="badge ${s.is_active?'badge-paid':'badge-rejected'}">${s.is_active?'Active':'Inactive'}</span></td>
         <td>
-          <button class="btn btn-secondary btn-sm" onclick="openStaffModal(${s.id})">Edit</button>
+          <button class="btn btn-secondary btn-sm" onclick="openStaffModal('${s.id}')">Edit</button>
         </td>
       </tr>
     `).join('');
