@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -123,10 +123,10 @@
       <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:20px;">
         <div class="stat-card"><div class="stat-label">Pending Payment</div><div class="stat-value gold" id="statPending">0</div></div>
         <div class="stat-card"><div class="stat-label">Collected Today</div><div class="stat-value green" id="statCollected">0</div></div>
-        <div class="stat-card"><div class="stat-label">Revenue Today</div><div class="stat-value green" id="statRevenue">₹0</div></div>
-        <div class="stat-card"><div class="stat-label">Cash</div><div class="stat-value" id="statCash">₹0</div></div>
-        <div class="stat-card"><div class="stat-label">UPI</div><div class="stat-value blue" id="statUpi">₹0</div></div>
-        <div class="stat-card"><div class="stat-label">Card/Other</div><div class="stat-value" id="statCard">₹0</div></div>
+        <div class="stat-card"><div class="stat-label">Revenue Today</div><div class="stat-value green" id="statRevenue">Rs. 0</div></div>
+        <div class="stat-card"><div class="stat-label">Cash</div><div class="stat-value" id="statCash">Rs. 0</div></div>
+        <div class="stat-card"><div class="stat-label">UPI</div><div class="stat-value blue" id="statUpi">Rs. 0</div></div>
+        <div class="stat-card"><div class="stat-label">Card/Other</div><div class="stat-value" id="statCard">Rs. 0</div></div>
       </div>
 
       <!-- Tabs -->
@@ -223,7 +223,7 @@
     <!-- Amount display -->
     <div style="background:var(--green-dim);border:1px solid rgba(76,175,80,0.3);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
       <span style="color:var(--text-mid);font-weight:600;">Amount to Collect</span>
-      <span style="font-family:var(--font-mono);font-size:1.4rem;color:var(--green-bright);font-weight:700;" id="payAmount">₹0</span>
+      <span style="font-family:var(--font-mono);font-size:1.4rem;color:var(--green-bright);font-weight:700;" id="payAmount">Rs. 0</span>
     </div>
 
     <!-- Send to waiter option -->
@@ -392,10 +392,10 @@
 
     document.getElementById('statPending').textContent   = unpaid.length;
     document.getElementById('statCollected').textContent = paid.length;
-    document.getElementById('statRevenue').textContent   = '₹' + revenue.toFixed(0);
-    document.getElementById('statCash').textContent      = '₹' + cash.toFixed(0);
-    document.getElementById('statUpi').textContent       = '₹' + upi.toFixed(0);
-    document.getElementById('statCard').textContent      = '₹' + card.toFixed(0);
+    document.getElementById('statRevenue').textContent   = 'Rs. ' + revenue.toFixed(0);
+    document.getElementById('statCash').textContent      = 'Rs. ' + cash.toFixed(0);
+    document.getElementById('statUpi').textContent       = 'Rs. ' + upi.toFixed(0);
+    document.getElementById('statCard').textContent      = 'Rs. ' + card.toFixed(0);
 
     // Badges
     const pb = document.getElementById('pendingBadge');
@@ -462,7 +462,7 @@
       ${o.waiter_note ? `<div style="font-size:0.78rem;color:var(--blue);margin-bottom:6px;">🛎️ ${o.waiter_note}</div>` : ''}
       ${hasCollector ? `<div style="font-size:0.78rem;color:var(--blue);margin-bottom:6px;">🚶 Sent to: ${o.collect_by_waiter_name}</div>` : ''}
       <div style="display:flex;justify-content:space-between;align-items:center;">
-        <div class="pay-total">₹${parseFloat(o.total).toFixed(2)}</div>
+        <div class="pay-total">Rs. ${parseFloat(o.total).toFixed(2)}</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           ${type !== 'done' ? `
             <button class="btn btn-primary btn-sm" onclick="openPaymentModal('${o.id}')">💳 Collect</button>
@@ -500,10 +500,10 @@
       </div>
       <div style="font-size:0.8rem;color:var(--text-dim);margin-bottom:6px;">${items.map(i=>`${i.emoji||''}${i.name}×${i.qty}`).join(', ')}</div>
       <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-dim);">
-        <span>Subtotal: ₹${parseFloat(o.subtotal).toFixed(2)}</span>
-        <span>GST: ₹${(parseFloat(o.cgst||0)+parseFloat(o.sgst||0)).toFixed(2)}</span>
+        <span>Subtotal: Rs. ${parseFloat(o.subtotal).toFixed(2)}</span>
+        <span>GST: Rs. ${(parseFloat(o.cgst||0)+parseFloat(o.sgst||0)).toFixed(2)}</span>
       </div>`;
-    document.getElementById('payAmount').textContent = '₹' + parseFloat(o.total).toFixed(2);
+    document.getElementById('payAmount').textContent = 'Rs. ' + parseFloat(o.total).toFixed(2);
     document.getElementById('payNote').value = '';
     document.getElementById('sendToWaiter').checked = false;
     document.getElementById('waiterSelectWrap').style.display = 'none';
@@ -594,7 +594,7 @@
     currentRatingOrderId = orderId;
     selectedRating = 0;
     const order = allOrders.find(o => o.id === orderId) || currentPayOrder;
-    document.getElementById('ratingOrderInfo').textContent = `${order.order_id} · Table ${order.table_number||'—'} · ₹${parseFloat(order.total).toFixed(2)}`;
+    document.getElementById('ratingOrderInfo').textContent = `${order.order_id} · Table ${order.table_number||'—'} · Rs. ${parseFloat(order.total).toFixed(2)}`;
     document.getElementById('ratingNote').value = '';
     document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
     document.getElementById('ratingLabel').textContent = 'Tap to rate';
@@ -689,7 +689,7 @@
     const o = allOrders.find(x => x.id === orderId);
     document.getElementById('assignCollectInfo').innerHTML = `
       <strong>${o?.order_id}</strong> — ${o?.room_number ? 'Room ' + o.room_number : 'Table ' + (o?.table_number||'—')}<br>
-      Amount: <strong style="color:var(--green-bright)">₹${parseFloat(o?.total||0).toFixed(2)}</strong>
+      Amount: <strong style="color:var(--green-bright)">Rs. ${parseFloat(o?.total||0).toFixed(2)}</strong>
     `;
     document.getElementById('assignCollectModal').style.display = 'flex';
   };
@@ -819,3 +819,4 @@
 </script>
 </body>
 </html>
+

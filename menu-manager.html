@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -230,7 +230,7 @@
         <select id="itemCategory" class="input"></select>
       </div>
       <div class="input-group">
-        <label class="input-label">Price (₹) *</label>
+        <label class="input-label">Price (Rs. ) *</label>
         <input type="number" id="itemPrice" class="input" placeholder="0.00" min="0" step="0.01">
       </div>
       <div class="input-group" style="grid-column:1/-1;">
@@ -492,7 +492,7 @@ window.appInit = async function() {
           </div>
         </td>
         <td>${cat ? `<span class="chip">${cat.emoji} ${cat.name}</span>` : '<span style="color:var(--text-dim)">—</span>'}</td>
-        <td><span style="font-family:var(--font-mono);color:var(--green-bright);">₹${parseFloat(item.price).toFixed(2)}</span></td>
+        <td><span style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${parseFloat(item.price).toFixed(2)}</span></td>
         <td>
           <div style="display:flex;align-items:center;gap:5px;">
             <div class="veg-dot ${item.is_veg ? 'veg' : 'nonveg'}"></div>
@@ -960,3 +960,4 @@ window.appInit = async function() {
 </script>
 </body>
 </html>
+

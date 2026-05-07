@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -783,7 +783,7 @@
       `<tr>
         <td>${i.emoji || '🍽️'} ${i.name}</td>
         <td style="text-align:center;">×${i.qty}</td>
-        <td style="text-align:right;font-family:var(--font-mono);">₹${(i.price * i.qty).toFixed(2)}</td>
+        <td style="text-align:right;font-family:var(--font-mono);">Rs. ${(i.price * i.qty).toFixed(2)}</td>
       </tr>`
     ).join('');
 
@@ -808,14 +808,14 @@
       </div>
       <div style="background:var(--surface2);border-radius:8px;padding:14px;font-size:0.875rem;">
         <div style="display:flex;justify-content:space-between;padding:3px 0;color:var(--text-dim);">
-          <span>Subtotal</span><span>₹${parseFloat(order.subtotal).toFixed(2)}</span></div>
+          <span>Subtotal</span><span>Rs. ${parseFloat(order.subtotal).toFixed(2)}</span></div>
         <div style="display:flex;justify-content:space-between;padding:3px 0;color:var(--text-dim);">
-          <span>CGST @ ${half}%</span><span>₹${parseFloat(order.cgst).toFixed(2)}</span></div>
+          <span>CGST @ ${half}%</span><span>Rs. ${parseFloat(order.cgst).toFixed(2)}</span></div>
         <div style="display:flex;justify-content:space-between;padding:3px 0;color:var(--text-dim);">
-          <span>SGST @ ${half}%</span><span>₹${parseFloat(order.sgst).toFixed(2)}</span></div>
+          <span>SGST @ ${half}%</span><span>Rs. ${parseFloat(order.sgst).toFixed(2)}</span></div>
         <div style="display:flex;justify-content:space-between;padding:6px 0 0;font-weight:700;font-size:1rem;border-top:1px solid var(--border);margin-top:6px;">
           <span>Total</span>
-          <span style="font-family:var(--font-mono);color:var(--green-bright);">₹${parseFloat(order.total).toFixed(2)}</span>
+          <span style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${parseFloat(order.total).toFixed(2)}</span>
         </div>
       </div>
       ${order.note ? `<div class="order-note" style="margin-top:12px;">📝 ${order.note}</div>` : ''}
@@ -862,7 +862,7 @@
         <td>${o.order_id}</td>
         <td>T${o.table_number}</td>
         <td>${items.map(i => `${i.name}×${i.qty}`).join(', ')}</td>
-        <td style="text-align:right">₹${parseFloat(o.total).toFixed(2)}</td>
+        <td style="text-align:right">Rs. ${parseFloat(o.total).toFixed(2)}</td>
       </tr>`;
     }).join('');
 
@@ -884,7 +884,7 @@
         <hr style="margin:12px 0;border:none;border-top:1px dashed #999;">
         <div style="display:flex;justify-content:space-between;font-weight:700;font-size:13px;">
           <span>Total Orders: ${done.length}</span>
-          <span>Revenue: ₹${revenue.toFixed(2)}</span>
+          <span>Revenue: Rs. ${revenue.toFixed(2)}</span>
         </div>
       </div>
     `;
@@ -1046,3 +1046,4 @@
 </script>
 </body>
 </html>
+

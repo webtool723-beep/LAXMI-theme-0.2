@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -213,7 +213,7 @@
           <div class="cart-bar-info">
             <span id="qoCartCount">0 items</span>
           </div>
-          <div class="cart-bar-total" id="qoCartTotal">₹0</div>
+          <div class="cart-bar-total" id="qoCartTotal">Rs. 0</div>
           <button class="cart-bar-btn" onclick="openQOReview()">Review Order →</button>
         </div>
       </div>
@@ -785,7 +785,7 @@ console.log('Full staff:', window.currentStaff);
           <div class="quick-item-emoji">${item.emoji||'🍽️'}</div>
           <div class="quick-item-info">
             <div class="quick-item-name">${item.name}</div>
-            <div class="quick-item-price">₹${parseFloat(item.price).toFixed(2)}</div>
+            <div class="quick-item-price">Rs. ${parseFloat(item.price).toFixed(2)}</div>
           </div>
         </div>
         <div class="quick-item-ctrl">
@@ -838,7 +838,7 @@ console.log('Full staff:', window.currentStaff);
     const count = qoCart.reduce((s,i) => s+i.qty, 0);
     const total = qoCart.reduce((s,i) => s+(i.price*i.qty), 0);
     document.getElementById('qoCartCount').textContent = count + ' item' + (count!==1?'s':'');
-    document.getElementById('qoCartTotal').textContent = '₹' + total.toFixed(2);
+    document.getElementById('qoCartTotal').textContent = 'Rs. ' + total.toFixed(2);
     bar.classList.toggle('show', count > 0);
   }
 
@@ -863,16 +863,16 @@ console.log('Full staff:', window.currentStaff);
         <table>
           <thead><tr><th>Item</th><th style="text-align:center">Qty</th><th style="text-align:right">Amount</th></tr></thead>
           <tbody>
-            ${qoCart.map(i=>`<tr><td>${i.emoji} ${i.name}</td><td style="text-align:center">×${i.qty}</td><td style="text-align:right;font-family:var(--font-mono)">₹${(i.price*i.qty).toFixed(2)}</td></tr>`).join('')}
+            ${qoCart.map(i=>`<tr><td>${i.emoji} ${i.name}</td><td style="text-align:center">×${i.qty}</td><td style="text-align:right;font-family:var(--font-mono)">Rs. ${(i.price*i.qty).toFixed(2)}</td></tr>`).join('')}
           </tbody>
         </table>
       </div>
       <div style="background:var(--surface2);border-radius:8px;padding:14px;font-size:0.875rem;">
-        <div style="display:flex;justify-content:space-between;color:var(--text-dim);padding:2px 0;"><span>Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
-        <div style="display:flex;justify-content:space-between;color:var(--text-dim);padding:2px 0;"><span>CGST @ ${half}%</span><span>₹${cgst.toFixed(2)}</span></div>
-        <div style="display:flex;justify-content:space-between;color:var(--text-dim);padding:2px 0;"><span>SGST @ ${half}%</span><span>₹${sgst.toFixed(2)}</span></div>
+        <div style="display:flex;justify-content:space-between;color:var(--text-dim);padding:2px 0;"><span>Subtotal</span><span>Rs. ${subtotal.toFixed(2)}</span></div>
+        <div style="display:flex;justify-content:space-between;color:var(--text-dim);padding:2px 0;"><span>CGST @ ${half}%</span><span>Rs. ${cgst.toFixed(2)}</span></div>
+        <div style="display:flex;justify-content:space-between;color:var(--text-dim);padding:2px 0;"><span>SGST @ ${half}%</span><span>Rs. ${sgst.toFixed(2)}</span></div>
         <div style="display:flex;justify-content:space-between;font-weight:700;font-size:1rem;border-top:1px solid var(--border);padding-top:8px;margin-top:6px;">
-          <span>Total</span><span style="font-family:var(--font-mono);color:var(--green-bright);">₹${total.toFixed(2)}</span>
+          <span>Total</span><span style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${total.toFixed(2)}</span>
         </div>
       </div>`;
     document.getElementById('qoReviewModal').style.display = 'flex';
@@ -1092,7 +1092,7 @@ console.log('Full staff:', window.currentStaff);
         filter: `collect_by_waiter_id=eq.${sid}`
       }, async (payload) => {
         playBell();
-        window.showToast('💰 Collect Payment!', `Table ${payload.new.table_number} — ₹${parseFloat(payload.new.total).toFixed(2)}`, 'warning', 10000);
+        window.showToast('💰 Collect Payment!', `Table ${payload.new.table_number} — Rs. ${parseFloat(payload.new.total).toFixed(2)}`, 'warning', 10000);
         await loadAssignments();
       })
       .subscribe();
@@ -1154,3 +1154,4 @@ console.log('Full staff:', window.currentStaff);
 </script>
 </body>
 </html>
+

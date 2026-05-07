@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // RMS — Supabase Client
 // assets/supabase-client.js
 // ============================================================
@@ -263,7 +263,7 @@ window.printBill = function (order, restaurantInfo = {}) {
       <tr>
         <td>${it.emoji || ''} ${it.name}</td>
         <td style="text-align:center">×${it.qty}</td>
-        <td style="text-align:right">₹${lineTotal}</td>
+        <td style="text-align:right">Rs. ${lineTotal}</td>
       </tr>`;
   });
 
@@ -289,11 +289,11 @@ window.printBill = function (order, restaurantInfo = {}) {
       <tbody>${itemsHtml}</tbody>
     </table>
     <hr class="bill-divider">
-    <div class="bill-row"><span>Subtotal:</span><span>₹${parseFloat(order.subtotal).toFixed(2)}</span></div>
-    <div class="bill-row"><span>CGST @ ${half}%:</span><span>₹${parseFloat(order.cgst).toFixed(2)}</span></div>
-    <div class="bill-row"><span>SGST @ ${half}%:</span><span>₹${parseFloat(order.sgst).toFixed(2)}</span></div>
+    <div class="bill-row"><span>Subtotal:</span><span>Rs. ${parseFloat(order.subtotal).toFixed(2)}</span></div>
+    <div class="bill-row"><span>CGST @ ${half}%:</span><span>Rs. ${parseFloat(order.cgst).toFixed(2)}</span></div>
+    <div class="bill-row"><span>SGST @ ${half}%:</span><span>Rs. ${parseFloat(order.sgst).toFixed(2)}</span></div>
     <hr class="bill-divider">
-    <div class="bill-row bill-total"><span>Grand Total:</span><span>₹${parseFloat(order.total).toFixed(2)}</span></div>
+    <div class="bill-row bill-total"><span>Grand Total:</span><span>Rs. ${parseFloat(order.total).toFixed(2)}</span></div>
     <hr class="bill-divider">
     <div class="bill-footer">Payment at counter · Thank you 🌿</div>
   `;
@@ -307,3 +307,4 @@ window.printBill = function (order, restaurantInfo = {}) {
 window.rmsChannel = new BroadcastChannel('rms_orders');
 
 console.log('✅ RMS Supabase client initialized');
+

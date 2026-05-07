@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -117,11 +117,11 @@
 
       <!-- KPI Cards -->
       <div class="kpi-grid" id="kpiGrid">
-        <div class="kpi-card"><div class="kpi-label">Total Revenue</div><div class="kpi-value green" id="kpiRevenue">₹0</div></div>
+        <div class="kpi-card"><div class="kpi-label">Total Revenue</div><div class="kpi-value green" id="kpiRevenue">Rs. 0</div></div>
         <div class="kpi-card"><div class="kpi-label">Total Orders</div><div class="kpi-value" id="kpiOrders">0</div></div>
-        <div class="kpi-card"><div class="kpi-label">Avg Order Value</div><div class="kpi-value blue" id="kpiAvg">₹0</div></div>
+        <div class="kpi-card"><div class="kpi-label">Avg Order Value</div><div class="kpi-value blue" id="kpiAvg">Rs. 0</div></div>
         <div class="kpi-card"><div class="kpi-label">Completion Rate</div><div class="kpi-value green" id="kpiCompletion">0%</div></div>
-        <div class="kpi-card"><div class="kpi-label">Total GST</div><div class="kpi-value gold" id="kpiGst">₹0</div></div>
+        <div class="kpi-card"><div class="kpi-label">Total GST</div><div class="kpi-value gold" id="kpiGst">Rs. 0</div></div>
         <div class="kpi-card"><div class="kpi-label">Rejected Orders</div><div class="kpi-value red" id="kpiRejected">0</div></div>
         <div class="kpi-card"><div class="kpi-label">Paid Orders</div><div class="kpi-value green" id="kpiPaid">0</div></div>
         <div class="kpi-card"><div class="kpi-label">Unpaid Orders</div><div class="kpi-value gold" id="kpiUnpaid">0</div></div>
@@ -141,7 +141,7 @@
         <div class="chart-wrap">
           <div class="chart-title">
             <span>📈 Daily Revenue</span>
-            <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--green-bright);" id="revChartTotal">₹0</span>
+            <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--green-bright);" id="revChartTotal">Rs. 0</span>
           </div>
           <svg class="chart-svg" id="dailyRevenueChart" height="200" viewBox="0 0 700 200"></svg>
         </div>
@@ -333,11 +333,11 @@
     const unpaid   = done.filter(o => o.payment_status==='unpaid').length;
     const rejected = orders.filter(o => o.status==='rejected').length;
 
-    document.getElementById('kpiRevenue').textContent    = '₹' + revenue.toFixed(0);
+    document.getElementById('kpiRevenue').textContent    = 'Rs. ' + revenue.toFixed(0);
     document.getElementById('kpiOrders').textContent     = orders.length;
-    document.getElementById('kpiAvg').textContent        = '₹' + avg.toFixed(0);
+    document.getElementById('kpiAvg').textContent        = 'Rs. ' + avg.toFixed(0);
     document.getElementById('kpiCompletion').textContent = compRate + '%';
-    document.getElementById('kpiGst').textContent        = '₹' + gst.toFixed(0);
+    document.getElementById('kpiGst').textContent        = 'Rs. ' + gst.toFixed(0);
     document.getElementById('kpiRejected').textContent   = rejected;
     document.getElementById('kpiPaid').textContent       = paid;
     document.getElementById('kpiUnpaid').textContent     = unpaid;
@@ -370,10 +370,10 @@
         fill="${color}" style="cursor:pointer;transition:fill 0.2s"
         onmouseover="this.setAttribute('fill','${hoverColor}')"
         onmouseout="this.setAttribute('fill','${color}')">
-        <title>${lbl}: ${val >= 1000 ? '₹'+(val/1000).toFixed(1)+'k' : '₹'+val.toFixed(0)}</title>
+        <title>${lbl}: ${val >= 1000 ? 'Rs. '+(val/1000).toFixed(1)+'k' : 'Rs. '+val.toFixed(0)}</title>
       </rect>`;
       if (val > 0) {
-        const dispVal = val>=1000 ? '₹'+(val/1000).toFixed(1)+'k' : '₹'+val.toFixed(0);
+        const dispVal = val>=1000 ? 'Rs. '+(val/1000).toFixed(1)+'k' : 'Rs. '+val.toFixed(0);
         html += `<text x="${x+barW/2}" y="${y-4}" fill="var(--green-bright)" font-size="9" text-anchor="middle" font-family="DM Mono">${dispVal}</text>`;
       }
       // Label — rotate if many bars
@@ -403,7 +403,7 @@
     const labels = days.map(d => d.slice(5)); // MM-DD
     const values = days.map(d => byDay[d]);
     const total  = values.reduce((s,v)=>s+v,0);
-    document.getElementById('revChartTotal').textContent = '₹' + total.toFixed(0);
+    document.getElementById('revChartTotal').textContent = 'Rs. ' + total.toFixed(0);
     buildBarChart('dailyRevenueChart', labels, values, 700, 200);
   }
 
@@ -489,8 +489,8 @@
       return `<tr>
         <td><strong>${table}</strong></td>
         <td style="font-family:var(--font-mono);">${data.orders}</td>
-        <td style="font-family:var(--font-mono);color:var(--green-bright);">₹${data.revenue.toFixed(2)}</td>
-        <td style="font-family:var(--font-mono);">₹${avg}</td>
+        <td style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${data.revenue.toFixed(2)}</td>
+        <td style="font-family:var(--font-mono);">Rs. ${avg}</td>
         <td>
           <div style="display:flex;align-items:center;gap:8px;">
             <div style="flex:1;background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;">
@@ -534,7 +534,7 @@
           <div style="flex:1;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
               <span class="top-item-name">${item.emoji} ${item.name}</span>
-              <span class="top-item-stats">${prefix}${valKey==='qty'?item.qty+'×':'₹'+item.revenue.toFixed(0)}</span>
+              <span class="top-item-stats">${prefix}${valKey==='qty'?item.qty+'×':'Rs. '+item.revenue.toFixed(0)}</span>
             </div>
             <div class="top-item-bar-bg">
               <div class="top-item-bar-fill" style="width:${Math.floor((item[valKey]/maxVal)*100)}%"></div>
@@ -553,8 +553,8 @@
           <td><span style="margin-right:6px;">${item.emoji}</span>${item.name}</td>
           <td><span class="chip">—</span></td>
           <td style="font-family:var(--font-mono);">${item.qty}</td>
-          <td style="font-family:var(--font-mono);color:var(--green-bright);">₹${item.revenue.toFixed(2)}</td>
-          <td style="font-family:var(--font-mono);">₹${item.avgPrice.toFixed(2)}</td>
+          <td style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${item.revenue.toFixed(2)}</td>
+          <td style="font-family:var(--font-mono);">Rs. ${item.avgPrice.toFixed(2)}</td>
           <td style="font-family:var(--font-mono);">${item.orders}</td>
         </tr>`).join('')
       : `<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-dim);">No data for selected range.</td></tr>`;
@@ -598,9 +598,9 @@
         <td style="font-family:var(--font-mono);font-size:0.75rem;color:var(--text-dim);">${o.invoice_no||'—'}</td>
         <td>${o.room_number ? '🛏️ R' + o.room_number : (o.table_number ? '🪑 T' + o.table_number : '—')}</td>
         <td style="font-size:0.8rem;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${summary}</td>
-        <td style="font-family:var(--font-mono);">₹${parseFloat(o.subtotal).toFixed(2)}</td>
-        <td style="font-family:var(--font-mono);color:var(--gold);">₹${gst}</td>
-        <td style="font-family:var(--font-mono);color:var(--green-bright);">₹${parseFloat(o.total).toFixed(2)}</td>
+        <td style="font-family:var(--font-mono);">Rs. ${parseFloat(o.subtotal).toFixed(2)}</td>
+        <td style="font-family:var(--font-mono);color:var(--gold);">Rs. ${gst}</td>
+        <td style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${parseFloat(o.total).toFixed(2)}</td>
         <td><span class="badge badge-${o.status}">${o.status}</span></td>
         <td><span class="badge ${o.payment_status==='paid'?'badge-paid':'badge-unpaid'}">${o.payment_status}</span></td>
         <td style="font-size:0.78rem;color:var(--text-dim);white-space:nowrap;">${dt}</td>
@@ -677,3 +677,4 @@
 </script>
 </body>
 </html>
+

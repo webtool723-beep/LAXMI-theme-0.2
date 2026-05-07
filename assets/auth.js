@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // RMS — Firebase Auth Module (Fixed v2)
 // assets/auth.js
 // ============================================================
@@ -264,13 +264,13 @@ window.printBill = (order, info={}) => {
     <div style="display:flex;justify-content:space-between"><span>Table:</span><span>${order.table_number||'—'}</span></div>
     <hr style="border:none;border-top:1px dashed #999;margin:8px 0">
     <table width="100%" cellspacing="0">
-      <tbody>${items.map(i=>`<tr><td>${i.emoji||''} ${i.name}</td><td style="text-align:center">×${i.qty}</td><td style="text-align:right">₹${(i.price*i.qty).toFixed(2)}</td></tr>`).join('')}</tbody>
+      <tbody>${items.map(i=>`<tr><td>${i.emoji||''} ${i.name}</td><td style="text-align:center">×${i.qty}</td><td style="text-align:right">Rs. ${(i.price*i.qty).toFixed(2)}</td></tr>`).join('')}</tbody>
     </table>
     <hr style="border:none;border-top:1px dashed #999;margin:8px 0">
-    <div style="display:flex;justify-content:space-between"><span>Subtotal:</span><span>₹${parseFloat(order.subtotal).toFixed(2)}</span></div>
-    <div style="display:flex;justify-content:space-between"><span>CGST @${half}%:</span><span>₹${parseFloat(order.cgst).toFixed(2)}</span></div>
-    <div style="display:flex;justify-content:space-between"><span>SGST @${half}%:</span><span>₹${parseFloat(order.sgst).toFixed(2)}</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:700;font-size:14px;border-top:1px dashed #999;padding-top:6px;margin-top:6px"><span>Total:</span><span>₹${parseFloat(order.total).toFixed(2)}</span></div>
+    <div style="display:flex;justify-content:space-between"><span>Subtotal:</span><span>Rs. ${parseFloat(order.subtotal).toFixed(2)}</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CGST @${half}%:</span><span>Rs. ${parseFloat(order.cgst).toFixed(2)}</span></div>
+    <div style="display:flex;justify-content:space-between"><span>SGST @${half}%:</span><span>Rs. ${parseFloat(order.sgst).toFixed(2)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:700;font-size:14px;border-top:1px dashed #999;padding-top:6px;margin-top:6px"><span>Total:</span><span>Rs. ${parseFloat(order.total).toFixed(2)}</span></div>
     <div style="text-align:center;font-size:11px;margin-top:10px">Thank you! 🌿</div>
   </div>`;
   window.print();
@@ -481,3 +481,4 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 console.log('✅ RMS Auth v2 loaded');
+

@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    RMS — Restaurant Management System
    Global Stylesheet — assets/style.css
    ============================================================ */
@@ -1532,7 +1532,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   color: var(--green-bright);
 }
 
-.rupee::before { content: '₹'; }
+.rupee::before { content: 'Rs. '; }
 
 .sr-only {
   position: absolute;

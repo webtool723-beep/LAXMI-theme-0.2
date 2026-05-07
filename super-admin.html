@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -221,7 +221,7 @@
         <div class="stats-grid" id="statsGrid">
           <div class="stat-card">
             <div class="stat-label">Total Revenue Today</div>
-            <div class="stat-value green" id="statTotalRev">₹0</div>
+            <div class="stat-value green" id="statTotalRev">Rs. 0</div>
             <div class="stat-dot" style="background:var(--green-accent);"></div>
           </div>
           <div class="stat-card">
@@ -425,7 +425,7 @@
           <div class="stats-grid" style="margin-bottom:24px;">
             <div class="stat-card">
               <div class="stat-label">Total Revenue</div>
-              <div class="stat-value green" id="repTotalRevenue">₹0</div>
+              <div class="stat-value green" id="repTotalRevenue">Rs. 0</div>
             </div>
             <div class="stat-card">
               <div class="stat-label">Total Orders</div>
@@ -433,7 +433,7 @@
             </div>
             <div class="stat-card">
               <div class="stat-label">Avg Order Value</div>
-              <div class="stat-value gold" id="repAvgOrder">₹0</div>
+              <div class="stat-value gold" id="repAvgOrder">Rs. 0</div>
             </div>
             <div class="stat-card">
               <div class="stat-label">Avg Rating</div>
@@ -933,7 +933,7 @@
       const topBranchObj = allBranches.find(b => b.id === topBId);
 
       // Update Cards
-      document.getElementById('statTotalRev').textContent = '₹' + totalRev.toFixed(0);
+      document.getElementById('statTotalRev').textContent = 'Rs. ' + totalRev.toFixed(0);
       document.getElementById('statTotalOrders').textContent = orders.length;
       document.getElementById('statActiveBranches').textContent = allBranches.filter(b => b.is_active).length;
       document.getElementById('statTopBranch').textContent = topBranchObj && maxRev > 0 ? topBranchObj.name : '—';
@@ -960,7 +960,7 @@
           <span class="badge ${b.is_active ? 'badge-paid' : 'badge-rejected'}">${b.is_active ? 'Active' : 'Inactive'}</span>
         </div>
         <div class="branch-card-stats">
-          <div><span>Revenue</span><span style="color:var(--green-bright)">₹${st.rev.toFixed(0)}</span></div>
+          <div><span>Revenue</span><span style="color:var(--green-bright)">Rs. ${st.rev.toFixed(0)}</span></div>
           <div><span>Orders</span><span>${st.orders}</span></div>
           <div><span>Pending</span><span style="${st.pending > 0 ? 'color:var(--gold)' : ''}">${st.pending}</span></div>
         </div>
@@ -994,7 +994,7 @@
 
         svgContent += `<rect class="chart-bar" x="${x}" y="${y}" width="${barW}" height="${barH}" rx="4" />`;
         svgContent += `<text class="chart-label" x="${x + barW / 2}" y="${H - 14}" text-anchor="middle">${shortName}</text>`;
-        svgContent += `<text class="chart-value" x="${x + barW / 2}" y="${y - 4}" text-anchor="middle">₹${val >= 1000 ? (val / 1000).toFixed(1) + 'k' : val.toFixed(0)}</text>`;
+        svgContent += `<text class="chart-value" x="${x + barW / 2}" y="${y - 4}" text-anchor="middle">Rs. ${val >= 1000 ? (val / 1000).toFixed(1) + 'k' : val.toFixed(0)}</text>`;
       });
       svg.innerHTML = svgContent;
     }
@@ -1167,7 +1167,7 @@
         <td style="font-size:0.85rem;color:var(--text-dim);">${o.branches?.name || '—'}</td>
         <td><span style="font-family:var(--font-mono);font-size:0.8rem;">${o.order_id}</span></td>
         <td style="font-size:0.8rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${summary}</td>
-        <td><span style="font-family:var(--font-mono);color:var(--green-bright);">₹${parseFloat(o.total).toFixed(2)}</span></td>
+        <td><span style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${parseFloat(o.total).toFixed(2)}</span></td>
         <td><span class="badge badge-${o.status}">${o.status}</span></td>
         <td><span class="badge ${o.payment_status === 'paid' ? 'badge-paid' : 'badge-unpaid'}">${o.payment_status}</span></td>
         <td style="color:var(--text-dim);font-size:0.8rem;">${time}</td>
@@ -1409,9 +1409,9 @@
       const avgOrd = totalOrds > 0 ? (totalRev / totalOrds) : 0;
       const avgRating = reviews.length > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) : 0;
 
-      document.getElementById('repTotalRevenue').textContent = '₹' + totalRev.toFixed(0);
+      document.getElementById('repTotalRevenue').textContent = 'Rs. ' + totalRev.toFixed(0);
       document.getElementById('repTotalOrders').textContent = totalOrds;
-      document.getElementById('repAvgOrder').textContent = '₹' + avgOrd.toFixed(0);
+      document.getElementById('repAvgOrder').textContent = 'Rs. ' + avgOrd.toFixed(0);
       document.getElementById('repAvgRating').textContent = avgRating.toFixed(1) + ' ⭐';
 
       // --- 2. Top Items Matrix ---
@@ -1435,7 +1435,7 @@
         <tr>
           <td style="font-weight:500;">${i.name}</td>
           <td style="text-align:right;">${i.qty}</td>
-          <td style="text-align:right;color:var(--green-bright);">₹${i.rev.toFixed(0)}</td>
+          <td style="text-align:right;color:var(--green-bright);">Rs. ${i.rev.toFixed(0)}</td>
         </tr>
       `).join('');
       }
@@ -1469,7 +1469,7 @@
         <tr>
           <td style="font-weight:500;">${b.name}</td>
           <td style="text-align:right;">${b.ords}</td>
-          <td style="text-align:right;color:var(--green-bright);">₹${b.rev.toFixed(0)}</td>
+          <td style="text-align:right;color:var(--green-bright);">Rs. ${b.rev.toFixed(0)}</td>
           <td style="text-align:right;">${avgR} ${avgR !== '-' ? '⭐' : ''}</td>
         </tr>`;
         }).join('');
@@ -1541,7 +1541,7 @@
       <!-- Grid lines -->
       <line x1="${padX}" y1="${padY}" x2="${W - padX}" y2="${padY}" stroke="var(--border)" stroke-dasharray="4"/>
       <line x1="${padX}" y1="${H - padY}" x2="${W - padX}" y2="${H - padY}" stroke="var(--border)"/>
-      <text x="${padX - 5}" y="${padY + 4}" font-size="10" fill="var(--text-dim)" text-anchor="end">₹${maxVal >= 1000 ? (maxVal / 1000).toFixed(1) + 'k' : maxVal.toFixed(0)}</text>
+      <text x="${padX - 5}" y="${padY + 4}" font-size="10" fill="var(--text-dim)" text-anchor="end">Rs. ${maxVal >= 1000 ? (maxVal / 1000).toFixed(1) + 'k' : maxVal.toFixed(0)}</text>
       
       <!-- Chart Elements -->
       <path d="${bgPath}" fill="url(#trendGrad)" />
@@ -1571,7 +1571,7 @@
 
         html += `
         <rect x="${x}" y="${y}" width="${barW}" height="${barH}" rx="4" fill="var(--gold)"/>
-        <text x="${x + barW / 2}" y="${y - 8}" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="600">₹${b.rev >= 1000 ? (b.rev / 1000).toFixed(1) + 'k' : b.rev.toFixed(0)}</text>
+        <text x="${x + barW / 2}" y="${y - 8}" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="600">Rs. ${b.rev >= 1000 ? (b.rev / 1000).toFixed(1) + 'k' : b.rev.toFixed(0)}</text>
         <text x="${x + barW / 2}" y="${H - 12}" font-size="11" fill="var(--text-dim)" text-anchor="middle">${b.name.length > 10 ? b.name.slice(0, 8) + '…' : b.name}</text>
       `;
       });

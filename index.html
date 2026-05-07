@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -1515,7 +1515,7 @@
         </div>
         ${item.description ? `<div class="card-desc">${item.description}</div>` : ''}
         <div class="card-footer">
-          <div class="card-price">₹${parseFloat(item.price).toFixed(2)}</div>
+          <div class="card-price">Rs. ${parseFloat(item.price).toFixed(2)}</div>
           <div class="card-actions">
             <button class="btn-fav${isFav ? ' active' : ''}" onclick="toggleFav(${item.id}, this)" title="Favourite">
               ${isFav ? '❤️' : '🤍'}
@@ -1662,7 +1662,7 @@
         <div class="ci-emoji">${item.emoji}</div>
         <div class="ci-info">
           <div class="ci-name">${item.name}</div>
-          <div class="ci-price">₹${item.price.toFixed(2)} × ${item.qty} = ₹${(item.price * item.qty).toFixed(2)}</div>
+          <div class="ci-price">Rs. ${item.price.toFixed(2)} × ${item.qty} = Rs. ${(item.price * item.qty).toFixed(2)}</div>
         </div>
         <div class="ci-controls">
           <button class="ci-qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
@@ -1682,10 +1682,10 @@
     const sgst = (subtotal * half / 100);
     const total = subtotal + cgst + sgst;
     document.getElementById('billSummary').innerHTML = `
-      <div class="bill-row"><span>Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
-      <div class="bill-row"><span>CGST @ ${half}%</span><span>₹${cgst.toFixed(2)}</span></div>
-      <div class="bill-row"><span>SGST @ ${half}%</span><span>₹${sgst.toFixed(2)}</span></div>
-      <div class="bill-row total"><span>Grand Total</span><span class="amount">₹${total.toFixed(2)}</span></div>
+      <div class="bill-row"><span>Subtotal</span><span>Rs. ${subtotal.toFixed(2)}</span></div>
+      <div class="bill-row"><span>CGST @ ${half}%</span><span>Rs. ${cgst.toFixed(2)}</span></div>
+      <div class="bill-row"><span>SGST @ ${half}%</span><span>Rs. ${sgst.toFixed(2)}</span></div>
+      <div class="bill-row total"><span>Grand Total</span><span class="amount">Rs. ${total.toFixed(2)}</span></div>
     `;
   };
 
@@ -1970,7 +1970,7 @@
         </div>
         <div class="ho-items">${itemSummary}</div>
         <div class="ho-foot">
-          <div class="ho-total">₹${parseFloat(o.total).toFixed(2)}</div>
+          <div class="ho-total">Rs. ${parseFloat(o.total).toFixed(2)}</div>
           <div class="ho-time">${date}</div>
         </div>
         ${hasReviewPending ? `
@@ -2018,7 +2018,7 @@
           <div style="font-weight: 600; color: #1a2e1a; font-size: 13px;">${i.name}</div>
         </td>
         <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; text-align: center; color: #555; font-size: 13px;">x${i.qty}</td>
-        <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; text-align: right; font-family: 'DM Mono', monospace; color: #1a2e1a; font-size: 13px;">₹${(i.price * i.qty).toFixed(2)}</td>
+        <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; text-align: right; font-family: 'DM Mono', monospace; color: #1a2e1a; font-size: 13px;">Rs. ${(i.price * i.qty).toFixed(2)}</td>
       </tr>
     `).join('');
 
@@ -2074,15 +2074,15 @@
         <div style="margin-left: auto; width: 220px; page-break-inside: avoid;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: #666;">
             <span>Subtotal</span>
-            <span style="font-family: 'DM Mono', monospace;">₹${parseFloat(o.subtotal).toFixed(2)}</span>
+            <span style="font-family: 'DM Mono', monospace;">Rs. ${parseFloat(o.subtotal).toFixed(2)}</span>
           </div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; color: #666;">
             <span>GST (${window.gstRate || 5}%)</span>
-            <span style="font-family: 'DM Mono', monospace;">₹${parseFloat(o.gst).toFixed(2)}</span>
+            <span style="font-family: 'DM Mono', monospace;">Rs. ${parseFloat(o.gst).toFixed(2)}</span>
           </div>
           <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; color: #1a2e1a; padding-top: 12px; border-top: 2px solid #1a2e1a;">
             <span>Total</span>
-            <span style="font-family: 'DM Mono', monospace;">₹${parseFloat(o.total).toFixed(2)}</span>
+            <span style="font-family: 'DM Mono', monospace;">Rs. ${parseFloat(o.total).toFixed(2)}</span>
           </div>
         </div>
 
@@ -2510,3 +2510,4 @@
 
 </body>
 </html>
+
