@@ -216,7 +216,7 @@
             <option value="paid">Paid</option>
             <option value="unpaid">Unpaid</option>
           </select>
-          <input type="date" id="orderDateFilter" class="input" style="max-width:160px;" onchange="filterOrders()">
+          <input type="date" id="orderDateFilter" class="input" style="max-width:160px;" onchange="loadAllOrders()">
           <button class="btn btn-secondary btn-sm" onclick="exportOrdersCSV()">📥 Export</button>
           <button class="btn btn-secondary btn-sm" onclick="loadAllOrders()">🔄 Refresh</button>
         </div>
