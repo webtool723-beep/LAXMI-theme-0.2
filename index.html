@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -577,11 +577,14 @@
 
 <!-- ── HEADER ── -->
 <header class="header">
-  <div class="header-logo">
+  <div class="header-logo" style="display:flex; align-items:center; gap:16px;">
     <div>
-      <div class="logo-text">🍃 LAXMI</div>
+      <div class="logo-text" id="uiRestName">🍃 LAXMI</div>
       <span class="logo-tag">Fine Dining</span>
     </div>
+    <button onclick="window.location.href=window.location.pathname" style="background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.9); border:1px solid rgba(255,255,255,0.2); padding:6px 12px; border-radius:8px; font-size:0.75rem; font-weight:600; display:flex; align-items:center; gap:6px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'" title="Change Location">
+      📍 <span id="uiLocationName" style="max-width:100px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Location</span> ▾
+    </button>
   </div>
   <div class="header-actions">
     <!-- Guest: show login button -->
@@ -872,7 +875,9 @@
   };
   const SUPABASE_URL = 'https://bedvsnlhgkoloucoiwuk.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlZHZzbmxoZ2tvbG91Y29pd3VrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MDgzNzEsImV4cCI6MjA5MzM4NDM3MX0.92jGZGoKnsl8fcmYxBTTuZCWSBX0ND2bcNuoF1yO14s';
-  const BRANCH_ID = '7d9b6af2-c169-4961-9529-a992041ab970';
+  const urlParams = new URLSearchParams(window.location.search);
+  let BRANCH_ID = urlParams.get('branch');
+  const tableParam = urlParams.get('table');
 
   const fbApp = initializeApp(firebaseConfig);
   const auth  = getAuth(fbApp);
@@ -880,7 +885,7 @@
   const googleProvider = new GoogleAuthProvider();
 
   window.supabaseClient    = sb;
-  window.DEFAULT_BRANCH_ID = BRANCH_ID;
+  window.DEFAULT_BRANCH_ID = '7d9b6af2-c169-4961-9529-a992041ab970'; // Fallback
   window.firebaseAuth      = auth;
   window.rmsSignOut        = async () => { await signOut(auth); location.reload(); };
 
@@ -1322,7 +1327,17 @@
     window.restaurantSettings = s;
     if (s.restaurant_name) {
       document.title = s.restaurant_name + ' — Order Online';
+      const uiName = document.getElementById('uiRestName');
+      if (uiName) uiName.textContent = '🍃 ' + s.restaurant_name;
     }
+    
+    // Also update Location Button using branch info
+    const { data: bData } = await sb.from('branches').select('name,city').eq('id', BRANCH_ID).maybeSingle();
+    if (bData) {
+      const locBtn = document.getElementById('uiLocationName');
+      if (locBtn) locBtn.textContent = bData.city || bData.name;
+    }
+
     updateStoreBanner(s.store_open !== 'false');
     window.gstRate = parseFloat(s.gst_rate || '5');
   }
@@ -2194,6 +2209,25 @@
 
   // ── Init
   async function loadAll() {
+    // If no branch parameter in URL, force the Location Selector
+    if (!BRANCH_ID) {
+      await showBranchSelector();
+      return; // Stop initialization until they select a branch
+    }
+
+    // Set Table from URL if present
+    if (tableParam) {
+      setTimeout(() => {
+        const ts = document.getElementById('tableSelect');
+        const tt = document.getElementById('tableNumberTop');
+        if (ts) ts.value = tableParam;
+        if (tt) {
+          tt.textContent = `Table ${tableParam}`;
+          tt.style.display = 'block';
+        }
+      }, 500);
+    }
+
     // Purge expired guest history on every page load (3-day retention)
     try {
       const threeDaysAgo = Date.now() - (3 * 24 * 60 * 60 * 1000);
@@ -2208,6 +2242,45 @@
     await loadCategories();
     await loadMenuItems();
   }
+  
+  async function showBranchSelector() {
+    // Inject modal HTML
+    document.body.insertAdjacentHTML('beforeend', `
+      <div class="modal-overlay show" id="branchSelectorModal" style="background:var(--bg); z-index:999999; justify-content:flex-start; padding-top:60px;">
+        <div style="max-width:500px; width:90%; margin:0 auto; padding:30px; text-align:center;">
+          <div style="font-size:3.5rem; margin-bottom:16px;">🍽️</div>
+          <h1 style="font-size:2rem; font-weight:800; color:var(--text); margin-bottom:12px; letter-spacing:-0.02em;">Select Location</h1>
+          <p style="color:var(--text-dim); margin-bottom:30px; font-size:1.1rem; line-height:1.5;">Please select your nearest branch to view the local menu and pricing.</p>
+          <div id="branchSelectorList" style="display:flex; flex-direction:column; gap:16px; text-align:left;">
+            <div style="color:var(--text-dim); text-align:center;">Loading locations...</div>
+          </div>
+        </div>
+      </div>
+    `);
+    document.body.style.overflow = 'hidden';
+
+    // Fetch branches
+    const { data: branches, error } = await sb.from('branches').select('*').eq('is_active', true).order('created_at');
+    const list = document.getElementById('branchSelectorList');
+    
+    if (error || !branches || branches.length === 0) {
+      list.innerHTML = `<div style="color:var(--red);text-align:center;padding:20px;background:rgba(239,68,68,0.1);border-radius:12px;">No active locations available at the moment. Please try again later.</div>`;
+      return;
+    }
+
+    list.innerHTML = branches.map(b => `
+      <button onclick="window.location.href='?branch=${b.id}'" 
+              style="display:flex; flex-direction:column; align-items:flex-start; padding:20px; background:var(--surface); border:1px solid rgba(255,255,255,0.08); border-radius:16px; cursor:pointer; transition:all 0.3s; width:100%; text-align:left;"
+              onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateY(-2px)';" 
+              onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'; this.style.transform='translateY(0)';">
+        <span style="font-size:1.3rem; font-weight:700; color:var(--text); margin-bottom:6px; display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.5rem;">📍</span> ${b.name}
+        </span>
+        <span style="font-size:0.95rem; color:var(--text-dim); padding-left:32px;">${b.city} ${b.address ? '• '+b.address : ''}</span>
+      </button>
+    `).join('');
+  }
+
   loadAll();
 </script>
 
