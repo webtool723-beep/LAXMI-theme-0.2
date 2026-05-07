@@ -1363,22 +1363,39 @@
     // Keep "All" tab
     const allTab = tabs.querySelector('[data-cat="all"]');
     tabs.innerHTML = '';
-    tabs.appendChild(allTab);
+    if (allTab) tabs.appendChild(allTab);
+    
+    if (window.userFavSet && window.userFavSet.size > 0) {
+      const favBtn = document.createElement('button');
+      favBtn.className = 'cat-tab';
+      favBtn.dataset.cat = 'favorites';
+      favBtn.textContent = `⭐ Favorites`;
+      favBtn.onclick = () => filterCategory('favorites', favBtn);
+      if(window._activeCategory === 'favorites') favBtn.classList.add('active');
+      tabs.appendChild(favBtn);
+    }
+
     cats.forEach(c => {
       const btn = document.createElement('button');
       btn.className = 'cat-tab';
       btn.dataset.cat = c.id;
       btn.textContent = `${c.emoji} ${c.name}`;
       btn.onclick = () => filterCategory(c.id, btn);
+      if(window._activeCategory === c.id) btn.classList.add('active');
       tabs.appendChild(btn);
     });
 
     // Render Mobile Categories
     const mobileList = document.getElementById('mobileCatList');
     if (mobileList) {
-      mobileList.innerHTML = `<button class="mobile-cat-item active" data-cat="all" onclick="filterCategory('all', this, true)">🍽️ All</button>`;
+      mobileList.innerHTML = `<button class="mobile-cat-item ${window._activeCategory==='all'||!window._activeCategory?'active':''}" data-cat="all" onclick="filterCategory('all', this, true)">🍽️ All</button>`;
+      
+      if (window.userFavSet && window.userFavSet.size > 0) {
+         mobileList.innerHTML += `<button class="mobile-cat-item ${window._activeCategory==='favorites'?'active':''}" data-cat="favorites" onclick="filterCategory('favorites', this, true)">⭐ Favorites</button>`;
+      }
+
       cats.forEach(c => {
-        mobileList.innerHTML += `<button class="mobile-cat-item" data-cat="${c.id}" onclick="filterCategory('${c.id}', this, true)">${c.emoji} ${c.name}</button>`;
+        mobileList.innerHTML += `<button class="mobile-cat-item ${window._activeCategory===c.id?'active':''}" data-cat="${c.id}" onclick="filterCategory('${c.id}', this, true)">${c.emoji} ${c.name}</button>`;
       });
     }
   }
@@ -2116,21 +2133,59 @@
   };
 
   // ── FAVORITES
-  function getFavKey() { return window.currentUser ? `favs_${window.currentUser.uid}` : 'favs_guest'; }
-  function isFavorite(itemId) { return (JSON.parse(localStorage.getItem(getFavKey()) || '[]')).includes(itemId); }
-  function loadFavorites() { /* favorites are read per-item */ }
+  window.userFavSet = new Set();
+  function getFavKey() { return 'rms_favorites_guest'; }
+  function isFavorite(itemId) { return window.userFavSet.has(itemId); }
+  
+  async function loadFavorites() {
+    if (window.currentUser) {
+      const { data, error } = await sb.from('user_favorites')
+                                      .select('item_id')
+                                      .eq('firebase_uid', window.currentUser.uid)
+                                      .eq('branch_id', BRANCH_ID);
+      if (!error && data) {
+        window.userFavSet = new Set(data.map(d => d.item_id));
+      } else {
+        window.userFavSet = new Set();
+      }
+    } else {
+      window.userFavSet = new Set(JSON.parse(localStorage.getItem(getFavKey()) || '[]'));
+    }
+  }
 
-  window.toggleFav = function(itemId, btn) {
-    const key = getFavKey();
-    let favs = JSON.parse(localStorage.getItem(key) || '[]');
-    if (favs.includes(itemId)) {
-      favs = favs.filter(f => f !== itemId);
+  window.toggleFav = async function(itemId, btn) {
+    const wasEmpty = window.userFavSet.size === 0;
+
+    if (window.userFavSet.has(itemId)) {
+      window.userFavSet.delete(itemId);
       btn.textContent = '🤍'; btn.classList.remove('active');
     } else {
-      favs.push(itemId);
+      window.userFavSet.add(itemId);
       btn.textContent = '❤️'; btn.classList.add('active');
     }
-    localStorage.setItem(key, JSON.stringify(favs));
+
+    const isEmptyNow = window.userFavSet.size === 0;
+
+    // Update Storage
+    if (!window.currentUser) {
+      localStorage.setItem(getFavKey(), JSON.stringify([...window.userFavSet]));
+    } else {
+      if (window.userFavSet.has(itemId)) {
+        sb.from('user_favorites').insert({ firebase_uid: window.currentUser.uid, item_id: itemId, branch_id: BRANCH_ID }).then();
+      } else {
+        sb.from('user_favorites').delete().eq('firebase_uid', window.currentUser.uid).eq('item_id', itemId).eq('branch_id', BRANCH_ID).then();
+      }
+    }
+
+    // Refresh Category Tabs if needed (showing/hiding Fav filter)
+    if (wasEmpty !== isEmptyNow && window.categories) {
+      renderCategoryTabs(window.categories);
+    }
+    
+    // Refresh Menu if viewing Favorites
+    if (window._activeCategory === 'favorites') {
+       filterCategory('favorites');
+    }
   };
 
   // ── FILTER
@@ -2147,7 +2202,13 @@
 
     const search = document.getElementById('searchInput').value.toLowerCase();
     let items = window.allMenuItems || [];
-    if (catId !== 'all') items = items.filter(i => i.category_id == catId);
+    
+    if (catId === 'favorites') {
+      items = items.filter(i => window.userFavSet.has(i.id));
+    } else if (catId !== 'all') {
+      items = items.filter(i => i.category_id == catId);
+    }
+    
     if (search) items = items.filter(i => i.name.toLowerCase().includes(search));
     window.renderMenu(items);
     window._activeCategory = catId;
@@ -2157,7 +2218,13 @@
     const search = document.getElementById('searchInput').value.toLowerCase();
     const catId = window._activeCategory || 'all';
     let items = window.allMenuItems || [];
-    if (catId !== 'all') items = items.filter(i => i.category_id == catId);
+    
+    if (catId === 'favorites') {
+      items = items.filter(i => window.userFavSet.has(i.id));
+    } else if (catId !== 'all') {
+      items = items.filter(i => i.category_id == catId);
+    }
+    
     if (search) items = items.filter(i => i.name.toLowerCase().includes(search) || (i.description || '').toLowerCase().includes(search));
     window.renderMenu(items);
   };
@@ -2239,6 +2306,7 @@
 
     await loadAutoTagData();
     await loadSettings();
+    await loadFavorites();
     await loadCategories();
     await loadMenuItems();
     
