@@ -779,6 +779,27 @@
   </div>
 </div>
 
+<!-- ── CUSTOMER REVIEW MODAL ── -->
+<div class="modal-overlay" id="customerReviewModal" style="display:none;" onclick="if(event.target===this)skipCustomerReview()">
+  <div class="auth-modal" style="text-align:center;padding:30px 20px;">
+    <div style="font-size:3rem;margin-bottom:10px;">⭐</div>
+    <div class="success-title" style="margin-bottom:5px;">How was your experience?</div>
+    <div class="success-msg" style="margin-bottom:20px;">We value your feedback.</div>
+    <div style="display:flex;justify-content:center;gap:15px;margin-bottom:20px;font-size:2rem;cursor:pointer;">
+      <span class="star" data-val="1" onclick="setCustomerRating(1)">★</span>
+      <span class="star" data-val="2" onclick="setCustomerRating(2)">★</span>
+      <span class="star" data-val="3" onclick="setCustomerRating(3)">★</span>
+      <span class="star" data-val="4" onclick="setCustomerRating(4)">★</span>
+      <span class="star" data-val="5" onclick="setCustomerRating(5)">★</span>
+    </div>
+    <textarea id="customerReviewNote" class="form-input" rows="3" placeholder="Tell us more (optional)..." style="margin-bottom:20px;resize:none;"></textarea>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-ghost" onclick="skipCustomerReview()" style="flex:1;">Skip for now</button>
+      <button class="btn-submit" id="custRevSubmitBtn" onclick="submitCustomerReview()" style="flex:1;">Submit Review</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── TOAST ── -->
 <div id="toastContainer"></div>
 
@@ -1587,6 +1608,14 @@
       return;
     }
 
+    // Save guest history
+    if (!uid) {
+      let guestHistory = [];
+      try { guestHistory = JSON.parse(localStorage.getItem('rms_guest_history') || '[]'); } catch(e){}
+      guestHistory.push({ id: orderId, time: Date.now() });
+      localStorage.setItem('rms_guest_history', JSON.stringify(guestHistory));
+    }
+
     // BroadcastChannel fallback
     try { new BroadcastChannel('rms_orders').postMessage(orderData); } catch(e) {}
 
@@ -1606,19 +1635,96 @@
     btn.disabled = false; btn.textContent = '🌿 Place Order';
   };
 
+  // ── CUSTOMER REVIEWS
+  window.currentReviewOrderId = null;
+  window.selectedCustomerRating = 0;
+  window.setCustomerRating = function(val) {
+    selectedCustomerRating = val;
+    document.querySelectorAll('#customerReviewModal .star').forEach(s => {
+      s.classList.toggle('active', parseInt(s.dataset.val) <= val);
+    });
+  };
+  window.skipCustomerReview = function() {
+    document.getElementById('customerReviewModal').style.display = 'none';
+    currentReviewOrderId = null;
+  };
+  window.submitCustomerReview = async function() {
+    if (!selectedCustomerRating) { window.showToast('Please select a star rating', 'error'); return; }
+    if (!currentReviewOrderId) return;
+    const btn = document.getElementById('custRevSubmitBtn');
+    btn.disabled = true; btn.textContent = 'Submitting...';
+    
+    const note = document.getElementById('customerReviewNote').value.trim();
+    const { error } = await window.supabaseClient.from('orders').update({
+      rating: selectedCustomerRating,
+      rating_note: note || null,
+      review_requested: false
+    }).eq('order_id', currentReviewOrderId); // using order_id to match guest auth too
+    
+    btn.disabled = false; btn.textContent = 'Submit Review';
+    if (error) {
+      window.showToast('❌ Failed to submit review', 'error');
+    } else {
+      window.showToast('⭐ Thank you for your review!', 'success');
+      document.getElementById('customerReviewModal').style.display = 'none';
+      await loadOrderHistory();
+    }
+  };
+  window.openCustomerReview = function(orderId) {
+    currentReviewOrderId = orderId;
+    selectedCustomerRating = 0;
+    document.querySelectorAll('#customerReviewModal .star').forEach(s => s.classList.remove('active'));
+    document.getElementById('customerReviewNote').value = '';
+    document.getElementById('customerReviewModal').style.display = 'flex';
+  };
+  
+  function checkForRequestedReviews(orders) {
+    const pending = orders.find(o => o.review_requested === true && !o.rating);
+    if (pending) {
+      if (!sessionStorage.getItem('review_prompted_' + pending.order_id)) {
+        sessionStorage.setItem('review_prompted_' + pending.order_id, 'true');
+        openCustomerReview(pending.order_id);
+      }
+    }
+  }
+
   // ── ORDER HISTORY
   window.loadOrderHistory = async function() {
     const user = window.currentUser;
     const body = document.getElementById('historyBody');
+    body.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-dim);">Loading…</div>`;
+
     if (!user) {
-      body.innerHTML = `<div class="cart-empty">
-        <div class="cart-empty-icon">🔒</div>
-        <p style="margin-bottom:12px;">Sign in to view order history</p>
-        <button onclick="openAuthModal()" style="padding:8px 20px;background:var(--green-dark);color:var(--gold);border:none;border-radius:20px;cursor:pointer;font-weight:700;">Sign In</button>
-      </div>`;
+      // Guest User Flow
+      let guestHistory = [];
+      try { guestHistory = JSON.parse(localStorage.getItem('rms_guest_history') || '[]'); } catch(e){}
+      
+      const threeDaysAgo = Date.now() - (3 * 24 * 60 * 60 * 1000);
+      guestHistory = guestHistory.filter(h => h.time >= threeDaysAgo);
+      localStorage.setItem('rms_guest_history', JSON.stringify(guestHistory));
+
+      if (guestHistory.length === 0) {
+        body.innerHTML = `<div class="cart-empty">
+          <div class="cart-empty-icon">📋</div>
+          <p style="margin-bottom:12px;">No recent orders</p>
+          <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:12px;">Guest history is kept for 3 days. Sign in to save permanently.</p>
+          <button onclick="openAuthModal()" style="padding:8px 20px;background:var(--green-dark);color:var(--gold);border:none;border-radius:20px;cursor:pointer;font-weight:700;">Sign In</button>
+        </div>`;
+        return;
+      }
+      
+      const orderIds = guestHistory.map(h => h.id);
+      const { data, error } = await sb.from('orders').select('*').in('order_id', orderIds).order('created_at', { ascending: false }).limit(30);
+      if (error || !data || data.length === 0) {
+        body.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">📋</div><p>No recent orders</p></div>`;
+        return;
+      }
+      window.myOrders = data;
+      renderHistory(data);
+      setTimeout(() => checkForRequestedReviews(data), 500);
       return;
     }
-    body.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-dim);">Loading…</div>`;
+
     const { data, error } = await sb.from('orders').select('*').eq('firebase_uid', user.uid).order('created_at', { ascending: false }).limit(30);
     if (error || !data || data.length === 0) {
       body.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">📋</div><p>No orders yet</p></div>`;
@@ -1626,6 +1732,7 @@
     }
     window.myOrders = data;
     renderHistory(data);
+    setTimeout(() => checkForRequestedReviews(data), 500);
   };
 
   function renderHistory(orders) {
@@ -1651,6 +1758,12 @@
           <div class="ho-total">₹${parseFloat(o.total).toFixed(2)}</div>
           <div class="ho-time">${date}</div>
         </div>
+        ${o.review_requested && !o.rating ? `
+        <div style="margin-top:10px;">
+          <button onclick="openCustomerReview('${o.order_id}')" style="background:var(--gold);border:none;color:#000;padding:6px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;width:100%;font-weight:600;margin-bottom:8px;">
+            ⭐ Leave Review
+          </button>
+        </div>` : ''}
         ${o.payment_status === 'paid' ? `
         <div style="margin-top:10px;">
           <button onclick="downloadBill('${o.id}', this)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;width:100%;font-weight:600;">
