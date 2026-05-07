@@ -1100,15 +1100,8 @@ console.log('Full staff:', window.currentStaff);
 
   function playBell() {
     try {
-      const ctx  = new (window.AudioContext || window.webkitAudioContext)();
-      const osc  = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.frequency.setValueAtTime(880, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.5);
-      gain.gain.setValueAtTime(0.4, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
-      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.8);
+      const audio = new Audio('bell.mp3');
+      audio.play().catch(e => console.log('Audio blocked', e));
     } catch(e) {}
   }
 
@@ -1154,4 +1147,5 @@ console.log('Full staff:', window.currentStaff);
 </script>
 </body>
 </html>
+
 

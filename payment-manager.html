@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -780,6 +780,9 @@
       .on('postgres_changes', { event:'UPDATE', schema:'public', table:'orders', filter:`branch_id=eq.${bid}` },
         async (payload) => {
           console.log('Order update received:', payload.new?.status, payload.new?.order_id);
+          if ((payload.new?.status === 'delivered' || payload.new?.status === 'done') && payload.new?.payment_status === 'unpaid') {
+            if (payload.old?.status !== payload.new?.status) playBell();
+          }
           await loadOrders();
         })
       .on('postgres_changes', { event:'INSERT', schema:'public', table:'orders', filter:`branch_id=eq.${bid}` },
@@ -799,6 +802,13 @@
     if (el) el.classList.add('active');
     document.getElementById(`tab-${tab}`).classList.add('active');
   };
+
+  function playBell() {
+    try {
+      const audio = new Audio('bell.mp3');
+      audio.play().catch(e => console.log('Audio blocked', e));
+    } catch(e) {}
+  }
 
 </script>
 
