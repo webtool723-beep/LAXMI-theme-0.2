@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -556,6 +556,7 @@
       payment_status:  'paid',
       payment_method:  selectedMethod,
       payment_note:    note || null,
+        waiter_note:     null,
       payment_done_at: new Date().toISOString(),
       payment_done_by: window.currentStaff?.name || '',
       updated_at:      new Date().toISOString()
@@ -829,6 +830,7 @@
 </script>
 </body>
 </html>
+
 
 
 
