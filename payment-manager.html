@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LAXMI — Payment Manager</title>
+  <title>LAXMI � Payment Manager</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
@@ -28,7 +28,7 @@
     .pay-order-id  { font-family:var(--font-mono); font-size:0.8rem; color:var(--text-mid); }
     .pay-table     { font-size:1.1rem; font-weight:700; color:var(--text); }
     .pay-items     { font-size:0.8rem; color:var(--text-dim); margin-bottom:8px; line-height:1.6; }
-    .pay-total     { font-family:var(--font-mono); font-size:1.1rem; color:var(--green-bright); font-weight:600; }
+    .pay-total     { font-family:var(--font-mono); font-size:1.1rem; color:var(--accent); font-weight:600; }
     .pay-actions   { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
 
     /* Star rating */
@@ -45,7 +45,7 @@
       cursor:pointer; text-align:center; transition:all 0.2s;
     }
     .pay-method-btn:hover { border-color:var(--border-light); color:var(--text); }
-    .pay-method-btn.active { border-color:var(--green-accent); background:var(--green-dim); color:var(--green-bright); }
+    .pay-method-btn.active { border-color:var(--accent); background:var(--accent-dim); color:var(--accent); box-shadow: 0 0 10px rgba(255,106,0,0.15); }
 
     /* Review stars display */
     .review-stars { display:flex; gap:2px; }
@@ -63,59 +63,59 @@
 </head>
 <body>
 
-<div class="offline-banner" id="offlineBanner">⚠️ Connection lost — reconnecting…</div>
+<div class="offline-banner" id="offlineBanner">?? Connection lost � reconnecting�</div>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <div class="auth-gate" id="authGate" style="display:none;"></div>
 
 <div id="appContent" style="display:none;">
   <div class="app-layout">
 
-    <!-- ── SIDEBAR ── -->
+    <!-- -- SIDEBAR -- -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-logo">
-        <div class="sidebar-logo-name">🍃 LAXMI</div>
+        <div class="sidebar-logo-name">?? LAXMI</div>
         <div class="sidebar-logo-sub">Payment Manager</div>
       </div>
       <nav class="sidebar-nav">
         <div class="nav-section-label">Operations</div>
-        <a class="nav-item" href="kitchen.html"><span class="nav-item-icon">🍳</span> Kitchen</a>
-        <a class="nav-item active" href="payment-manager.html"><span class="nav-item-icon">💳</span> Payments</a>
-        <a class="nav-item" href="admin.html"><span class="nav-item-icon">📊</span> Admin Panel</a>
-        <a class="nav-item" href="menu-manager.html"><span class="nav-item-icon">📋</span> Menu Manager</a>
-        <a class="nav-item" href="reports.html"><span class="nav-item-icon">📈</span> Reports</a>
+        <a class="nav-item" href="kitchen.html"><span class="nav-item-icon">??</span> Kitchen</a>
+        <a class="nav-item active" href="payment-manager.html"><span class="nav-item-icon">??</span> Payments</a>
+        <a class="nav-item" href="admin.html"><span class="nav-item-icon">??</span> Admin Panel</a>
+        <a class="nav-item" href="menu-manager.html"><span class="nav-item-icon">??</span> Menu Manager</a>
+        <a class="nav-item" href="reports.html"><span class="nav-item-icon">??</span> Reports</a>
         <div class="nav-section-label" style="margin-top:8px;">Management</div>
-        <a class="nav-item" href="staff.html"><span class="nav-item-icon">👥</span> Staff</a>
-        <a class="nav-item" href="waiter.html"><span class="nav-item-icon">🛎️</span> Waiter</a>
+        <a class="nav-item" href="staff.html"><span class="nav-item-icon">??</span> Staff</a>
+        <a class="nav-item" href="waiter.html"><span class="nav-item-icon">???</span> Waiter</a>
         <div class="nav-section-label" style="margin-top:8px;">Customer</div>
-        <a class="nav-item" href="index.html" target="_blank"><span class="nav-item-icon">🛒</span> Order Page ↗</a>
+        <a class="nav-item" href="index.html" target="_blank"><span class="nav-item-icon">??</span> Order Page ?</a>
       </nav>
       <div class="sidebar-footer">
         <div class="sidebar-user">
           <div class="sidebar-avatar" id="sidebarAvatar">?</div>
           <div class="sidebar-user-info">
-            <div class="sidebar-user-name" id="sidebarUserName">Loading…</div>
-            <div class="sidebar-user-role" id="sidebarUserRole">—</div>
+            <div class="sidebar-user-name" id="sidebarUserName">Loading�</div>
+            <div class="sidebar-user-role" id="sidebarUserRole">�</div>
           </div>
         </div>
-        <button class="btn btn-ghost w-full btn-sm" onclick="window.rmsSignOut()">⏏ Sign Out</button>
+        <button class="btn btn-ghost w-full btn-sm" onclick="window.rmsSignOut()">? Sign Out</button>
       </div>
     </aside>
 
-    <!-- ── MAIN ── -->
+    <!-- -- MAIN -- -->
     <main class="main-content">
 
       <div class="page-header">
         <div style="display:flex;align-items:center;gap:10px;">
           <button class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></button>
           <div>
-            <h1 class="page-title">💳 Payment Manager</h1>
-            <div class="page-subtitle" id="pmDate">—</div>
+            <h1 class="page-title">?? Payment Manager</h1>
+            <div class="page-subtitle" id="pmDate">�</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           <span class="live-dot" id="liveDot"></span>
           <span id="liveText" style="font-size:0.8rem;color:var(--text-dim);">Live</span>
-          <button class="btn btn-secondary btn-sm" onclick="loadOrders()">🔄 Refresh</button>
+          <button class="btn btn-secondary btn-sm" onclick="loadOrders()">?? Refresh</button>
         </div>
       </div>
 
@@ -131,46 +131,46 @@
 
       <!-- Tabs -->
       <div class="pm-tabs">
-        <button class="pm-tab active" onclick="switchTab('pending',this)">⏳ Pending <span class="notif-badge" id="pendingBadge" style="display:none;">0</span></button>
-        <button class="pm-tab" onclick="switchTab('collection',this)">📦 Collection <span class="notif-badge" id="collectBadge" style="display:none;">0</span></button>
-        <button class="pm-tab" onclick="switchTab('done',this)">✅ Paid Today</button>
-        <button class="pm-tab" onclick="switchTab('reviews',this)">⭐ Reviews</button>
+        <button class="pm-tab active" onclick="switchTab('pending',this)">? Pending <span class="notif-badge" id="pendingBadge" style="display:none;">0</span></button>
+        <button class="pm-tab" onclick="switchTab('collection',this)">?? Collection <span class="notif-badge" id="collectBadge" style="display:none;">0</span></button>
+        <button class="pm-tab" onclick="switchTab('done',this)">? Paid Today</button>
+        <button class="pm-tab" onclick="switchTab('reviews',this)">? Reviews</button>
       </div>
 
-      <!-- ══ PENDING TAB ══ -->
+      <!-- -- PENDING TAB -- -->
       <div class="tab-panel active" id="tab-pending">
         <div id="pendingList">
-          <div class="empty-state"><div class="empty-state-icon">💳</div><div class="empty-state-title">No pending payments</div></div>
+          <div class="empty-state"><div class="empty-state-icon">??</div><div class="empty-state-title">No pending payments</div></div>
         </div>
       </div>
 
-      <!-- ══ COLLECTION TAB ══ -->
+      <!-- -- COLLECTION TAB -- -->
       <div class="tab-panel" id="tab-collection">
         <div id="collectionList">
-          <div class="empty-state"><div class="empty-state-icon">🚶</div><div class="empty-state-title">No collection requests</div></div>
+          <div class="empty-state"><div class="empty-state-icon">??</div><div class="empty-state-title">No collection requests</div></div>
         </div>
       </div>
 
-      <!-- ══ PAID TAB ══ -->
+      <!-- -- PAID TAB -- -->
       <div class="tab-panel" id="tab-done">
         <div id="doneList">
-          <div class="empty-state"><div class="empty-state-icon">✅</div><div class="empty-state-title">No payments yet today</div></div>
+          <div class="empty-state"><div class="empty-state-icon">?</div><div class="empty-state-title">No payments yet today</div></div>
         </div>
       </div>
 
-      <!-- ══ REVIEWS TAB ══ -->
+      <!-- -- REVIEWS TAB -- -->
       <div class="tab-panel" id="tab-reviews">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
-          <div class="section-title" style="margin:0;">⭐ Customer Reviews</div>
+          <div class="section-title" style="margin:0;">? Customer Reviews</div>
           <div style="display:flex;gap:8px;align-items:center;">
-            <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--gold);" id="avgRating">Avg: —</span>
+            <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--gold);" id="avgRating">Avg: �</span>
             <select id="ratingFilter" class="input" style="max-width:140px;" onchange="filterReviews()">
               <option value="all">All Ratings</option>
-              <option value="5">⭐⭐⭐⭐⭐ 5</option>
-              <option value="4">⭐⭐⭐⭐ 4</option>
-              <option value="3">⭐⭐⭐ 3</option>
-              <option value="2">⭐⭐ 2</option>
-              <option value="1">⭐ 1</option>
+              <option value="5">????? 5</option>
+              <option value="4">???? 4</option>
+              <option value="3">??? 3</option>
+              <option value="2">?? 2</option>
+              <option value="1">? 1</option>
             </select>
           </div>
         </div>
@@ -190,12 +190,12 @@
   </div>
 </div>
 
-<!-- ── PAYMENT MODAL ── -->
+<!-- -- PAYMENT MODAL -- -->
 <div class="modal-overlay" id="paymentModal" style="display:none;" onclick="if(event.target===this)closePaymentModal()">
   <div class="modal modal-lg">
     <div class="modal-header">
-      <h2 class="modal-title" id="payModalTitle">💳 Collect Payment</h2>
-      <button class="modal-close" onclick="closePaymentModal()">×</button>
+      <h2 class="modal-title" id="payModalTitle">?? Collect Payment</h2>
+      <button class="modal-close" onclick="closePaymentModal()">�</button>
     </div>
 
     <!-- Order summary -->
@@ -205,12 +205,12 @@
     <div class="input-group" style="margin-bottom:16px;">
       <label class="input-label">Payment Method *</label>
       <div class="pay-methods">
-        <button class="pay-method-btn active" data-method="cash" onclick="selectMethod('cash',this)">💵 Cash</button>
-        <button class="pay-method-btn" data-method="upi" onclick="selectMethod('upi',this)">📱 UPI</button>
-        <button class="pay-method-btn" data-method="card" onclick="selectMethod('card',this)">💳 Card</button>
-        <button class="pay-method-btn" data-method="bank_transfer" onclick="selectMethod('bank_transfer',this)">🏦 Bank Transfer</button>
-        <button class="pay-method-btn" data-method="complimentary" onclick="selectMethod('complimentary',this)">🎁 Complimentary</button>
-        <button class="pay-method-btn" data-method="other" onclick="selectMethod('other',this)">✏️ Other</button>
+        <button class="pay-method-btn active" data-method="cash" onclick="selectMethod('cash',this)">?? Cash</button>
+        <button class="pay-method-btn" data-method="upi" onclick="selectMethod('upi',this)">?? UPI</button>
+        <button class="pay-method-btn" data-method="card" onclick="selectMethod('card',this)">?? Card</button>
+        <button class="pay-method-btn" data-method="bank_transfer" onclick="selectMethod('bank_transfer',this)">?? Bank Transfer</button>
+        <button class="pay-method-btn" data-method="complimentary" onclick="selectMethod('complimentary',this)">?? Complimentary</button>
+        <button class="pay-method-btn" data-method="other" onclick="selectMethod('other',this)">?? Other</button>
       </div>
     </div>
 
@@ -221,9 +221,9 @@
     </div>
 
     <!-- Amount display -->
-    <div style="background:var(--green-dim);border:1px solid rgba(76,175,80,0.3);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+    <div style="background:var(--accent-dim);border:1px solid rgba(255,106,0,0.3);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
       <span style="color:var(--text-mid);font-weight:600;">Amount to Collect</span>
-      <span style="font-family:var(--font-mono);font-size:1.4rem;color:var(--green-bright);font-weight:700;" id="payAmount">Rs. 0</span>
+      <span style="font-family:var(--font-mono);font-size:1.4rem;color:var(--accent);font-weight:700;" id="payAmount">Rs. 0</span>
     </div>
 
     <!-- Send to waiter option -->
@@ -233,71 +233,71 @@
           <input type="checkbox" id="sendToWaiter" onchange="toggleWaiterSelect(this.checked)">
           <span class="toggle-slider"></span>
         </label>
-        <span style="font-size:0.875rem;color:var(--text-mid);">🚶 Send waiter to collect payment</span>
+        <span style="font-size:0.875rem;color:var(--text-mid);">?? Send waiter to collect payment</span>
       </div>
       <div id="waiterSelectWrap" style="display:none;">
         <select id="payWaiterSelect" class="input">
-          <option value="">Select waiter…</option>
+          <option value="">Select waiter�</option>
         </select>
       </div>
     </div>
 
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closePaymentModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="confirmPayment()" id="payConfirmBtn">✅ Confirm Payment</button>
+      <button class="btn btn-primary" onclick="confirmPayment()" id="payConfirmBtn">? Confirm Payment</button>
     </div>
   </div>
 </div>
 
-<!-- ── RATING MODAL ── -->
+<!-- -- RATING MODAL -- -->
 <div class="modal-overlay" id="ratingModal" style="display:none;">
   <div class="modal" style="max-width:420px;text-align:center;">
-    <div style="font-size:2.5rem;margin-bottom:8px;">🎉</div>
+    <div style="font-size:2.5rem;margin-bottom:8px;">??</div>
     <h2 class="modal-title" style="margin-bottom:4px;">Payment Confirmed!</h2>
     <p style="color:var(--text-dim);font-size:0.875rem;margin-bottom:20px;" id="ratingOrderInfo">Order confirmed</p>
 
     <div style="margin-bottom:20px;">
       <div style="font-size:0.875rem;font-weight:600;color:var(--text-mid);margin-bottom:10px;">Rate Customer Experience</div>
       <div class="stars" style="justify-content:center;" id="starsContainer">
-        <span class="star" data-r="1" onclick="setRating(1)">★</span>
-        <span class="star" data-r="2" onclick="setRating(2)">★</span>
-        <span class="star" data-r="3" onclick="setRating(3)">★</span>
-        <span class="star" data-r="4" onclick="setRating(4)">★</span>
-        <span class="star" data-r="5" onclick="setRating(5)">★</span>
+        <span class="star" data-r="1" onclick="setRating(1)">?</span>
+        <span class="star" data-r="2" onclick="setRating(2)">?</span>
+        <span class="star" data-r="3" onclick="setRating(3)">?</span>
+        <span class="star" data-r="4" onclick="setRating(4)">?</span>
+        <span class="star" data-r="5" onclick="setRating(5)">?</span>
       </div>
       <div style="font-size:0.78rem;color:var(--text-dim);margin-top:6px;" id="ratingLabel">Tap to rate</div>
     </div>
 
     <div class="input-group" style="text-align:left;margin-bottom:16px;">
       <label class="input-label">Customer Feedback (optional)</label>
-      <textarea id="ratingNote" class="input" rows="2" placeholder="Any feedback from customer…"></textarea>
+      <textarea id="ratingNote" class="input" rows="2" placeholder="Any feedback from customer�"></textarea>
     </div>
 
     <div style="display:flex;gap:10px;">
       <button class="btn btn-ghost w-full" onclick="assignReviewToCustomer()" id="assignToCustomerBtn" style="position:relative;">
-        📲 Assign to Customer
+        ?? Assign to Customer
       </button>
       <button class="btn btn-primary w-full" onclick="submitRating()" id="ratingSubmitBtn">Submit Rating</button>
     </div>
   </div>
 </div>
 
-<!-- ── ASSIGN COLLECTION MODAL ── -->
+<!-- -- ASSIGN COLLECTION MODAL -- -->
 <div class="modal-overlay" id="assignCollectModal" style="display:none;" onclick="if(event.target===this)closeAssignCollect()">
   <div class="modal" style="max-width:380px;">
     <div class="modal-header">
-      <h2 class="modal-title">🚶 Send Waiter to Collect</h2>
-      <button class="modal-close" onclick="closeAssignCollect()">×</button>
+      <h2 class="modal-title">?? Send Waiter to Collect</h2>
+      <button class="modal-close" onclick="closeAssignCollect()">�</button>
     </div>
     <div id="assignCollectInfo" style="background:var(--surface2);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px;font-size:0.875rem;color:var(--text-dim);"></div>
     <div class="input-group">
       <label class="input-label">Select Waiter *</label>
       <select id="collectWaiterSelect" class="input">
-        <option value="">Choose waiter…</option>
+        <option value="">Choose waiter�</option>
       </select>
     </div>
     <div style="background:var(--blue-dim);border:1px solid rgba(66,165,245,0.2);border-radius:var(--radius-sm);padding:10px 12px;margin-top:12px;font-size:0.78rem;color:var(--blue);">
-      ℹ️ The waiter will see a blinking collection request on their dashboard.
+      ?? The waiter will see a blinking collection request on their dashboard.
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeAssignCollect()">Cancel</button>
@@ -312,7 +312,7 @@
 <script type="module" src="assets/auth.js?v=3"></script>
 <script type="module">
 
-  // ── State
+  // -- State
   let allOrders    = [];
   let allWaiters   = [];
   let allReviews   = [];
@@ -322,7 +322,7 @@
   let selectedMethod = 'cash';
   let assignCollectOrderId = null;
 
-  // ── appInit
+  // -- appInit
   window.appInit = async function() {
     window.renderStaffUI && window.renderStaffUI();
     initDate();
@@ -341,7 +341,7 @@
     });
   }
 
-  // ── Load waiters
+  // -- Load waiters
   async function loadWaiters() {
     const sb  = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -351,13 +351,13 @@
     allWaiters = data || [];
 
     // Populate dropdowns
-    const opts = '<option value="">Select waiter…</option>' +
+    const opts = '<option value="">Select waiter�</option>' +
       allWaiters.map(w => `<option value="${w.id}" data-name="${w.name}">${w.name} (${w.role})</option>`).join('');
     document.getElementById('payWaiterSelect').innerHTML       = opts;
     document.getElementById('collectWaiterSelect').innerHTML   = opts;
   }
 
-  // ── Load orders
+  // -- Load orders
   window.loadOrders = async function() {
     const sb   = window.supabaseClient;
     const bid  = window.getActiveBranchId();
@@ -380,7 +380,7 @@
     window.setConnectionStatus('online');
   };
 
-  // ── Stats
+  // -- Stats
   function updateStats() {
     const done    = allOrders.filter(o => o.status === 'delivered' || o.status === 'done');
     const unpaid  = done.filter(o => o.payment_status === 'unpaid');
@@ -405,34 +405,34 @@
     cb.textContent = collectCount;  cb.style.display = collectCount  ? 'inline-flex' : 'none';
   }
 
-  // ── Render pending payments
+  // -- Render pending payments
   function renderPending() {
     const list = document.getElementById('pendingList');
     const orders = allOrders.filter(o => (o.status === 'delivered' || o.status === 'done') && o.payment_status === 'unpaid');
     if (!orders.length) {
-      list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">💳</div><div class="empty-state-title">No pending payments</div></div>`;
+      list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">??</div><div class="empty-state-title">No pending payments</div></div>`;
       return;
     }
     list.innerHTML = orders.map(o => renderPayCard(o, 'pending')).join('');
   }
 
-  // ── Render collection requests
+  // -- Render collection requests
   function renderCollection() {
     const list = document.getElementById('collectionList');
     const orders = allOrders.filter(o => o.collect_by_waiter_id && o.payment_status === 'unpaid' && (o.status === 'delivered' || o.status === 'done'));
     if (!orders.length) {
-      list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🚶</div><div class="empty-state-title">No collection requests</div></div>`;
+      list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">??</div><div class="empty-state-title">No collection requests</div></div>`;
       return;
     }
     list.innerHTML = orders.map(o => renderPayCard(o, 'collection')).join('');
   }
 
-  // ── Render done payments
+  // -- Render done payments
   function renderDone() {
     const list = document.getElementById('doneList');
     const orders = allOrders.filter(o => o.payment_status === 'paid' && (o.status === 'delivered' || o.status === 'done'));
     if (!orders.length) {
-      list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">✅</div><div class="empty-state-title">No payments yet today</div></div>`;
+      list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">?</div><div class="empty-state-title">No payments yet today</div></div>`;
       return;
     }
     list.innerHTML = orders.map(o => renderPayCard(o, 'done')).join('');
@@ -440,36 +440,36 @@
 
   function renderPayCard(o, type) {
     const items   = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
-    const summary = items.map(i => `${i.emoji||''}${i.name} ×${i.qty}`).join(', ');
+    const summary = items.map(i => `${i.emoji||''}${i.name} �${i.qty}`).join(', ');
     const time    = new Date(o.created_at).toLocaleTimeString('en-IN', { timeZone:'Asia/Kolkata', hour:'2-digit', minute:'2-digit' });
     const hasCollector = o.collect_by_waiter_name;
 
     return `<div class="pay-card ${type === 'done' ? 'paid' : 'unpaid'}">
       <div class="pay-card-head">
         <div>
-          <div class="pay-order-id">${o.order_id} ${o.invoice_no ? '· ' + o.invoice_no : ''}</div>
-          <div class="pay-table">${o.room_number ? '🛏️ Room ' + o.room_number : '🪑 Table ' + (o.table_number || '—')}</div>
-          <div style="font-size:0.72rem;color:var(--text-dim);margin-top:2px;">🕐 ${time} ${o.customer_name ? '· ' + o.customer_name : ''} ${o.customer_phone ? '· 📱' + o.customer_phone : ''}</div>
+          <div class="pay-order-id">${o.order_id} ${o.invoice_no ? '� ' + o.invoice_no : ''}</div>
+          <div class="pay-table">${o.room_number ? '??? Room ' + o.room_number : '?? Table ' + (o.table_number || '�')}</div>
+          <div style="font-size:0.72rem;color:var(--text-dim);margin-top:2px;">?? ${time} ${o.customer_name ? '� ' + o.customer_name : ''} ${o.customer_phone ? '� ??' + o.customer_phone : ''}</div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
           <span class="badge ${o.payment_status === 'paid' ? 'badge-paid' : 'badge-unpaid'}">${o.payment_status}</span>
           ${o.payment_method && o.payment_status === 'paid' ? `<span style="font-size:0.72rem;color:var(--text-dim);">${methodIcon(o.payment_method)} ${o.payment_method}</span>` : ''}
-          ${o.rating ? `<div class="review-stars">${[1,2,3,4,5].map(i=>`<span class="review-star ${i<=o.rating?'filled':'empty'}">★</span>`).join('')}</div>` : ''}
+          ${o.rating ? `<div class="review-stars">${[1,2,3,4,5].map(i=>`<span class="review-star ${i<=o.rating?'filled':'empty'}">?</span>`).join('')}</div>` : ''}
         </div>
       </div>
       <div class="pay-items">${summary}</div>
-      ${o.payment_note ? `<div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:6px;">📝 ${o.payment_note}</div>` : ''}
-      ${o.waiter_note ? `<div style="font-size:0.78rem;color:var(--blue);margin-bottom:6px;">🛎️ ${o.waiter_note}</div>` : ''}
-      ${hasCollector ? `<div style="font-size:0.78rem;color:var(--blue);margin-bottom:6px;">🚶 Sent to: ${o.collect_by_waiter_name}</div>` : ''}
+      ${o.payment_note ? `<div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:6px;">?? ${o.payment_note}</div>` : ''}
+      ${o.waiter_note ? `<div style="font-size:0.78rem;color:var(--blue);margin-bottom:6px;">??? ${o.waiter_note}</div>` : ''}
+      ${hasCollector ? `<div style="font-size:0.78rem;color:var(--blue);margin-bottom:6px;">?? Sent to: ${o.collect_by_waiter_name}</div>` : ''}
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div class="pay-total">Rs. ${parseFloat(o.total).toFixed(2)}</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           ${type !== 'done' ? `
-            <button class="btn btn-primary btn-sm" onclick="openPaymentModal('${o.id}')">💳 Collect</button>
-            <button class="btn btn-blue btn-sm" onclick="openAssignCollect('${o.id}')">🚶 Send Waiter</button>
+            <button class="btn btn-primary btn-sm" onclick="openPaymentModal('${o.id}')">?? Collect</button>
+            <button class="btn btn-blue btn-sm" onclick="openAssignCollect('${o.id}')">?? Send Waiter</button>
           ` : `
-            <button class="btn btn-secondary btn-sm" onclick="printBillById('${o.id}')">🖨️ Bill</button>
-            ${!o.rating ? `<button class="btn btn-gold btn-sm" onclick="openRatingForPaid('${o.id}')">⭐ Rate</button>` : ''}
+            <button class="btn btn-secondary btn-sm" onclick="printBillById('${o.id}')">??? Bill</button>
+            ${!o.rating ? `<button class="btn btn-gold btn-sm" onclick="openRatingForPaid('${o.id}')">? Rate</button>` : ''}
           `}
         </div>
       </div>
@@ -477,11 +477,11 @@
   }
 
   function methodIcon(m) {
-    const icons = { cash:'💵', upi:'📱', card:'💳', bank_transfer:'🏦', complimentary:'🎁', other:'✏️' };
-    return icons[m] || '💳';
+    const icons = { cash:'??', upi:'??', card:'??', bank_transfer:'??', complimentary:'??', other:'??' };
+    return icons[m] || '??';
   }
 
-  // ── Payment modal
+  // -- Payment modal
   window.openPaymentModal = function(orderId) {
     const o = allOrders.find(x => x.id === orderId);
     if (!o) return;
@@ -490,15 +490,15 @@
     document.querySelectorAll('.pay-method-btn').forEach(b => b.classList.toggle('active', b.dataset.method === 'cash'));
 
     const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
-    document.getElementById('payModalTitle').textContent = `💳 Collect Payment — ${o.room_number ? 'Room ' + o.room_number : 'Table ' + (o.table_number||'—')}`;
+    document.getElementById('payModalTitle').textContent = `?? Collect Payment � ${o.room_number ? 'Room ' + o.room_number : 'Table ' + (o.table_number||'�')}`;
     document.getElementById('payOrderSummary').innerHTML = `
       <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
         <span style="color:var(--text-dim);">Order</span><strong>${o.order_id}</strong>
       </div>
       <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-        <span style="color:var(--text-dim);">Customer</span><span>${o.customer_name||'Guest'} ${o.customer_phone?'· 📱'+o.customer_phone:''}</span>
+        <span style="color:var(--text-dim);">Customer</span><span>${o.customer_name||'Guest'} ${o.customer_phone?'� ??'+o.customer_phone:''}</span>
       </div>
-      <div style="font-size:0.8rem;color:var(--text-dim);margin-bottom:6px;">${items.map(i=>`${i.emoji||''}${i.name}×${i.qty}`).join(', ')}</div>
+      <div style="font-size:0.8rem;color:var(--text-dim);margin-bottom:6px;">${items.map(i=>`${i.emoji||''}${i.name}�${i.qty}`).join(', ')}</div>
       <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-dim);">
         <span>Subtotal: Rs. ${parseFloat(o.subtotal).toFixed(2)}</span>
         <span>GST: Rs. ${(parseFloat(o.cgst||0)+parseFloat(o.sgst||0)).toFixed(2)}</span>
@@ -520,7 +520,7 @@
     document.getElementById('waiterSelectWrap').style.display = show ? '' : 'none';
   };
 
-  // ── Confirm payment
+  // -- Confirm payment
   window.confirmPayment = async function() {
     if (!currentPayOrder) return;
     const sb   = window.supabaseClient;
@@ -534,23 +534,23 @@
       const wId   = sel.value;
       const wName = sel.options[sel.selectedIndex]?.dataset?.name;
       if (!wId) { window.showToast('Select a waiter first','','error'); return; }
-      btn.disabled = true; btn.textContent = 'Sending…';
+      btn.disabled = true; btn.textContent = 'Sending�';
       const { error } = await sb.from('orders').update({
         collect_by_waiter_id:   wId,
         collect_by_waiter_name: wName,
         collection_requested_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       }).eq('id', currentPayOrder.id);
-      btn.disabled = false; btn.textContent = '✅ Confirm Payment';
+      btn.disabled = false; btn.textContent = '? Confirm Payment';
       if (!error) {
-        window.showToast('🚶 Waiter notified!', `${wName} will collect payment`, 'success');
+        window.showToast('?? Waiter notified!', `${wName} will collect payment`, 'success');
         closePaymentModal();
         await loadOrders();
       }
       return;
     }
 
-    btn.disabled = true; btn.textContent = 'Processing…';
+    btn.disabled = true; btn.textContent = 'Processing�';
 
     const { error } = await sb.from('orders').update({
       payment_status:  'paid',
@@ -562,7 +562,7 @@
       updated_at:      new Date().toISOString()
     }).eq('id', currentPayOrder.id);
 
-    btn.disabled = false; btn.textContent = '✅ Confirm Payment';
+    btn.disabled = false; btn.textContent = '? Confirm Payment';
 
     if (error) { window.showToast('Error', error.message, 'error'); return; }
 
@@ -595,17 +595,17 @@
     currentRatingOrderId = orderId;
     selectedRating = 0;
     const order = allOrders.find(o => o.id === orderId) || currentPayOrder;
-    document.getElementById('ratingOrderInfo').textContent = `${order.order_id} · Table ${order.table_number||'—'} · Rs. ${parseFloat(order.total).toFixed(2)}`;
+    document.getElementById('ratingOrderInfo').textContent = `${order.order_id} � Table ${order.table_number||'�'} � Rs. ${parseFloat(order.total).toFixed(2)}`;
     document.getElementById('ratingNote').value = '';
     document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
     document.getElementById('ratingLabel').textContent = 'Tap to rate';
     document.getElementById('ratingModal').style.display = 'flex';
   };
 
-  // ── Rating
+  // -- Rating
   window.setRating = function(r) {
     selectedRating = r;
-    const labels = ['','😞 Poor','😐 Fair','🙂 Good','😊 Great','🤩 Excellent!'];
+    const labels = ['','?? Poor','?? Fair','?? Good','?? Great','?? Excellent!'];
     document.getElementById('ratingLabel').textContent = labels[r];
     document.querySelectorAll('.star').forEach(s => {
       s.classList.toggle('active', parseInt(s.dataset.r) <= r);
@@ -618,7 +618,7 @@
     const bid  = window.getActiveBranchId();
     const note = document.getElementById('ratingNote').value.trim();
     const btn  = document.getElementById('ratingSubmitBtn');
-    btn.disabled = true; btn.textContent = 'Saving…';
+    btn.disabled = true; btn.textContent = 'Saving�';
 
     const order = allOrders.find(o => o.id === currentRatingOrderId);
 
@@ -642,7 +642,7 @@
     });
 
     btn.disabled = false; btn.textContent = 'Submit Rating';
-    window.showToast('⭐ Rating saved!', '', 'success');
+    window.showToast('? Rating saved!', '', 'success');
     document.getElementById('ratingModal').style.display = 'none';
     currentRatingOrderId = null;
     selectedRating = 0;
@@ -653,13 +653,13 @@
   window.assignReviewToCustomer = async function() {
     if (!currentRatingOrderId) return;
     const btn = document.getElementById('assignToCustomerBtn');
-    btn.disabled = true; btn.textContent = 'Assigning…';
+    btn.disabled = true; btn.textContent = 'Assigning�';
 
     const { error } = await window.supabaseClient.from('orders').update({
       review_requested: true
     }).eq('id', currentRatingOrderId);
 
-    btn.disabled = false; btn.innerHTML = '📲 Assign to Customer';
+    btn.disabled = false; btn.innerHTML = '?? Assign to Customer';
 
     if (error) {
       window.showToast('Error assigning review', error.message, 'error');
@@ -667,7 +667,7 @@
     }
 
     document.getElementById('ratingModal').style.display = 'none';
-    window.showToast('📲 Review assigned!', 'Customer will see a pop-up to rate.', 'success');
+    window.showToast('?? Review assigned!', 'Customer will see a pop-up to rate.', 'success');
     currentRatingOrderId = null;
     selectedRating = 0;
     await loadOrders();
@@ -677,20 +677,20 @@
     currentRatingOrderId = orderId;
     selectedRating = 0;
     const order = allOrders.find(o => o.id === orderId);
-    document.getElementById('ratingOrderInfo').textContent = `${order?.order_id} · ${order?.room_number ? 'Room ' + order.room_number : 'Table ' + (order?.table_number||'—')}`;
+    document.getElementById('ratingOrderInfo').textContent = `${order?.order_id} � ${order?.room_number ? 'Room ' + order.room_number : 'Table ' + (order?.table_number||'�')}`;
     document.getElementById('ratingNote').value = '';
     document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
     document.getElementById('ratingLabel').textContent = 'Tap to rate';
     document.getElementById('ratingModal').style.display = 'flex';
   };
 
-  // ── Assign collection to waiter
+  // -- Assign collection to waiter
   window.openAssignCollect = function(orderId) {
     assignCollectOrderId = orderId;
     const o = allOrders.find(x => x.id === orderId);
     document.getElementById('assignCollectInfo').innerHTML = `
-      <strong>${o?.order_id}</strong> — ${o?.room_number ? 'Room ' + o.room_number : 'Table ' + (o?.table_number||'—')}<br>
-      Amount: <strong style="color:var(--green-bright)">Rs. ${parseFloat(o?.total||0).toFixed(2)}</strong>
+      <strong>${o?.order_id}</strong> � ${o?.room_number ? 'Room ' + o.room_number : 'Table ' + (o?.table_number||'�')}<br>
+      Amount: <strong style="color:var(--accent)">Rs. ${parseFloat(o?.total||0).toFixed(2)}</strong>
     `;
     document.getElementById('assignCollectModal').style.display = 'flex';
   };
@@ -703,7 +703,7 @@
     if (!wId) { window.showToast('Select a waiter','','error'); return; }
     const sb  = window.supabaseClient;
     const btn = document.getElementById('assignCollectBtn');
-    btn.disabled = true; btn.textContent = 'Sending…';
+    btn.disabled = true; btn.textContent = 'Sending�';
 
     const { error } = await sb.from('orders').update({
       collect_by_waiter_id:    wId,
@@ -714,18 +714,18 @@
 
     btn.disabled = false; btn.textContent = 'Send Request';
     if (error) { window.showToast('Error', error.message, 'error'); return; }
-    window.showToast('🚶 Request sent!', `${wName} notified to collect payment`, 'success');
+    window.showToast('?? Request sent!', `${wName} notified to collect payment`, 'success');
     closeAssignCollect();
     await loadOrders();
   };
 
-  // ── Print bill
+  // -- Print bill
   window.printBillById = function(orderId) {
     const o = allOrders.find(x => x.id === orderId);
     if (o) window.printBill && window.printBill(o, window.kitchenSettings || {});
   };
 
-  // ── Load reviews
+  // -- Load reviews
   async function loadReviews() {
     const sb  = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -739,7 +739,7 @@
   function updateAvgRating() {
     if (!allReviews.length) return;
     const avg = allReviews.reduce((s,r) => s + r.rating, 0) / allReviews.length;
-    document.getElementById('avgRating').textContent = `Avg: ${avg.toFixed(1)} ⭐ (${allReviews.length} reviews)`;
+    document.getElementById('avgRating').textContent = `Avg: ${avg.toFixed(1)} ? (${allReviews.length} reviews)`;
   }
 
   window.filterReviews = function() {
@@ -751,28 +751,28 @@
       return;
     }
     tbody.innerHTML = filtered.map(r => {
-      const stars = [1,2,3,4,5].map(i => `<span class="review-star ${i<=r.rating?'filled':'empty'}">★</span>`).join('');
+      const stars = [1,2,3,4,5].map(i => `<span class="review-star ${i<=r.rating?'filled':'empty'}">?</span>`).join('');
       const dt    = new Date(r.created_at).toLocaleString('en-IN', { timeZone:'Asia/Kolkata', day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
       // Cross-reference rated_by from allOrders (rated_by lives on orders table)
       const matchOrder = allOrders.find(o => o.order_id === r.order_id);
       const ratedByVal = matchOrder?.rated_by || r.rated_by || null;
       const ratedBy = ratedByVal === 'customer'
-        ? `<span style="font-size:0.68rem;background:#e8f0e8;color:#2d7a2d;padding:2px 6px;border-radius:10px;font-weight:600;">📲 Customer</span>`
+        ? `<span style="font-size:0.68rem;background:#e8f0e8;color:#2d7a2d;padding:2px 6px;border-radius:10px;font-weight:600;">?? Customer</span>`
         : ratedByVal
-          ? `<span style="font-size:0.68rem;background:var(--surface2);color:var(--text-dim);padding:2px 6px;border-radius:10px;font-weight:600;">👤 Staff</span>`
+          ? `<span style="font-size:0.68rem;background:var(--surface2);color:var(--text-dim);padding:2px 6px;border-radius:10px;font-weight:600;">?? Staff</span>`
           : '';
       return `<tr>
-        <td style="font-family:var(--font-mono);font-size:0.8rem;">${r.order_id||'—'}</td>
-        <td>—</td>
+        <td style="font-family:var(--font-mono);font-size:0.8rem;">${r.order_id||'�'}</td>
+        <td>�</td>
         <td style="font-size:0.875rem;">${r.customer_name||'Guest'} ${r.customer_phone?`<div style="font-size:0.72rem;color:var(--text-dim);">&#128241;${r.customer_phone}</div>`:''}</td>
         <td><div class="review-stars">${stars}</div>${ratedBy ? '<div style="margin-top:3px;">'+ratedBy+'</div>' : ''}</td>
-        <td style="font-size:0.8rem;color:var(--text-dim);">${r.note||'—'}</td>
+        <td style="font-size:0.8rem;color:var(--text-dim);">${r.note||'�'}</td>
         <td style="font-size:0.78rem;color:var(--text-dim);white-space:nowrap;">${dt}</td>
       </tr>`;
     }).join('');
   };
 
-  // ── Realtime
+  // -- Realtime
   function subscribeRealtime() {
     const sb  = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -796,7 +796,7 @@
       });
   }
 
-  // ── Tab switch
+  // -- Tab switch
   window.switchTab = function(tab, el) {
     document.querySelectorAll('.pm-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));

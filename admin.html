@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LAXMI — Admin Panel</title>
+  <title>LAXMI � Admin Panel</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
@@ -18,10 +18,10 @@
     .chart-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-bottom:24px; }
     .chart-title { font-family:var(--font-display); font-size:1rem; color:var(--text); margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; }
     .chart-svg { width:100%; overflow:visible; }
-    .chart-bar { fill:var(--green-dim); transition:fill 0.2s; cursor:pointer; }
-    .chart-bar:hover { fill:var(--green-accent); }
+    .chart-bar { fill:var(--accent-dim); transition:fill 0.2s; cursor:pointer; }
+    .chart-bar:hover { fill:var(--accent); }
     .chart-label { font-family:var(--font-mono); font-size:10px; fill:var(--text-dim); }
-    .chart-value { font-family:var(--font-mono); font-size:10px; fill:var(--green-bright); }
+    .chart-value { font-family:var(--font-mono); font-size:10px; fill:var(--accent); }
 
     /* QR */
     .qr-wrap { display:flex; flex-direction:column; align-items:center; gap:8px; padding:16px; background:var(--surface2); border-radius:var(--radius-sm); border:1px solid var(--border); }
@@ -36,7 +36,7 @@
     .table-num { font-family:var(--font-display); font-size:1.6rem; color:var(--text); margin-bottom:4px; }
     .table-seats { font-size:0.75rem; color:var(--text-dim); }
     .table-status { font-size:0.72rem; font-weight:600; margin-top:6px; }
-    .table-status.free { color:var(--green-bright); }
+    .table-status.free { color:var(--accent); }
     .table-status.occupied { color:var(--gold); }
 
     /* Settings form */
@@ -50,44 +50,44 @@
 <body>
 
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-<div class="offline-banner" id="offlineBanner">⚠️ Connection lost — reconnecting…</div>
+<div class="offline-banner" id="offlineBanner">?? Connection lost � reconnecting�</div>
 <div class="auth-gate" id="authGate" style="display:none;"></div>
 
 <div id="appContent" style="display:none;">
   <div class="app-layout">
 
-    <!-- ── SIDEBAR ── -->
+    <!-- -- SIDEBAR -- -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-logo">
-        <div class="sidebar-logo-name">🍃 LAXMI</div>
+        <div class="sidebar-logo-name">?? LAXMI</div>
         <div class="sidebar-logo-sub">Admin Panel</div>
       </div>
       <nav class="sidebar-nav">
         <div class="nav-section-label">Operations</div>
-        <a class="nav-item" href="kitchen.html"><span class="nav-item-icon">🍳</span> Kitchen</a>
-        <a class="nav-item active" href="admin.html"><span class="nav-item-icon">📊</span> Admin Panel</a>
-        <a class="nav-item" href="menu-manager.html"><span class="nav-item-icon">📋</span> Menu Manager</a>
-        <a class="nav-item" href="reports.html"><span class="nav-item-icon">📈</span> Reports</a>
+        <a class="nav-item" href="kitchen.html"><span class="nav-item-icon">??</span> Kitchen</a>
+        <a class="nav-item active" href="admin.html"><span class="nav-item-icon">??</span> Admin Panel</a>
+        <a class="nav-item" href="menu-manager.html"><span class="nav-item-icon">??</span> Menu Manager</a>
+        <a class="nav-item" href="reports.html"><span class="nav-item-icon">??</span> Reports</a>
         <div class="nav-section-label" style="margin-top:8px;">Management</div>
-        <a class="nav-item" href="staff.html"><span class="nav-item-icon">👥</span> Staff</a>
+        <a class="nav-item" href="staff.html"><span class="nav-item-icon">??</span> Staff</a>
         <div class="nav-section-label" style="margin-top:8px;">Customer</div>
-        <a class="nav-item" href="waiter.html"><span class="nav-item-icon">🛎️</span> Waiter</a>
-        <a class="nav-item" href="payment-manager.html"><span class="nav-item-icon">💳</span> Payments</a>
-        <a class="nav-item" href="index.html" target="_blank"><span class="nav-item-icon">🛒</span> Order Page ↗</a>
+        <a class="nav-item" href="waiter.html"><span class="nav-item-icon">???</span> Waiter</a>
+        <a class="nav-item" href="payment-manager.html"><span class="nav-item-icon">??</span> Payments</a>
+        <a class="nav-item" href="index.html" target="_blank"><span class="nav-item-icon">??</span> Order Page ?</a>
       </nav>
       <div class="sidebar-footer">
         <div class="sidebar-user">
           <div class="sidebar-avatar" id="sidebarAvatar">?</div>
           <div class="sidebar-user-info">
-            <div class="sidebar-user-name" id="sidebarUserName">Loading…</div>
-            <div class="sidebar-user-role" id="sidebarUserRole">—</div>
+            <div class="sidebar-user-name" id="sidebarUserName">Loading�</div>
+            <div class="sidebar-user-role" id="sidebarUserRole">�</div>
           </div>
         </div>
-        <button class="btn btn-ghost w-full btn-sm" onclick="window.rmsSignOut()">⏏ Sign Out</button>
+        <button class="btn btn-ghost w-full btn-sm" onclick="window.rmsSignOut()">? Sign Out</button>
       </div>
     </aside>
 
-    <!-- ── MAIN ── -->
+    <!-- -- MAIN -- -->
     <main class="main-content">
 
       <!-- Header -->
@@ -97,22 +97,22 @@
             <span></span><span></span><span></span>
           </button>
           <div>
-            <h1 class="page-title">📊 Admin Panel</h1>
-            <div class="page-subtitle" id="adminDate">—</div>
+            <h1 class="page-title">?? Admin Panel</h1>
+            <div class="page-subtitle" id="adminDate">�</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
           <span class="live-dot" id="liveDot"></span>
-          <span id="liveText" style="font-size:0.8rem;color:var(--text-dim);">Connecting…</span>
+          <span id="liveText" style="font-size:0.8rem;color:var(--text-dim);">Connecting�</span>
         </div>
       </div>
 
-      <!-- ── STATS ── -->
+      <!-- -- STATS -- -->
       <div class="stats-grid" id="statsGrid">
         <div class="stat-card">
           <div class="stat-label">Today's Revenue</div>
           <div class="stat-value green" id="statRevenue">Rs. 0</div>
-          <div class="stat-dot" style="background:var(--green-accent);"></div>
+          <div class="stat-dot" style="background:var(--accent);"></div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Orders Today</div>
@@ -140,23 +140,23 @@
         </div>
       </div>
 
-      <!-- ── TABS ── -->
+      <!-- -- TABS -- -->
       <div class="admin-tabs">
-        <button class="admin-tab active" onclick="switchTab('dashboard',this)">📊 Dashboard</button>
-        <button class="admin-tab" onclick="switchTab('orders',this)">📋 Orders</button>
-        <button class="admin-tab" onclick="switchTab('tables',this)">🪑 Tables / Rooms</button>
-        <button class="admin-tab" onclick="switchTab('settings',this)">⚙️ Settings</button>
-        <button class="admin-tab" onclick="switchTab('activity',this)">📜 Activity Log</button>
+        <button class="admin-tab active" onclick="switchTab('dashboard',this)">?? Dashboard</button>
+        <button class="admin-tab" onclick="switchTab('orders',this)">?? Orders</button>
+        <button class="admin-tab" onclick="switchTab('tables',this)">?? Tables / Rooms</button>
+        <button class="admin-tab" onclick="switchTab('settings',this)">?? Settings</button>
+        <button class="admin-tab" onclick="switchTab('activity',this)">?? Activity Log</button>
       </div>
 
-      <!-- ══ DASHBOARD TAB ══ -->
+      <!-- -- DASHBOARD TAB -- -->
       <div class="tab-panel active" id="tab-dashboard">
 
         <!-- Hourly Revenue Chart -->
         <div class="chart-wrap">
           <div class="chart-title">
-            <span>📈 Hourly Revenue — Today</span>
-            <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--green-bright);" id="chartTotal">Rs. 0</span>
+            <span>?? Hourly Revenue � Today</span>
+            <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--accent);" id="chartTotal">Rs. 0</span>
           </div>
           <svg class="chart-svg" id="revenueChart" height="180" viewBox="0 0 700 180"></svg>
         </div>
@@ -164,13 +164,13 @@
         <!-- Top Items Chart -->
         <div class="chart-wrap">
           <div class="chart-title">
-            <span>🍽️ Top Selling Items — Today</span>
+            <span>??? Top Selling Items � Today</span>
           </div>
           <svg class="chart-svg" id="topItemsChart" height="200" viewBox="0 0 700 200"></svg>
         </div>
 
         <!-- Recent Orders -->
-        <div class="section-title">🕐 Recent Orders</div>
+        <div class="section-title">?? Recent Orders</div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -185,18 +185,18 @@
               </tr>
             </thead>
             <tbody id="recentOrdersBody">
-              <tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-dim);">Loading…</td></tr>
+              <tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-dim);">Loading�</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- ══ ORDERS TAB ══ -->
+      <!-- -- ORDERS TAB -- -->
       <div class="tab-panel" id="tab-orders">
         <div class="search-bar" style="margin-bottom:16px;">
           <div class="search-input-wrap" style="flex:1;position:relative;">
-            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-dim);">🔍</span>
-            <input type="text" id="orderSearch" class="input" placeholder="Search order ID, table, phone…" oninput="filterOrders()" style="padding-left:36px;">
+            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-dim);">??</span>
+            <input type="text" id="orderSearch" class="input" placeholder="Search order ID, table, phone�" oninput="filterOrders()" style="padding-left:36px;">
           </div>
           <select id="orderTypeFilter" class="input" style="max-width:140px;" onchange="filterOrders()">
             <option value="all">All Types</option>
@@ -217,36 +217,36 @@
             <option value="unpaid">Unpaid</option>
           </select>
           <input type="date" id="orderDateFilter" class="input" style="max-width:160px;" onchange="loadAllOrders()">
-          <button class="btn btn-secondary btn-sm" onclick="exportOrdersCSV()">📥 Export</button>
-          <button class="btn btn-secondary btn-sm" onclick="loadAllOrders()">🔄 Refresh</button>
+          <button class="btn btn-secondary btn-sm" onclick="exportOrdersCSV()">?? Export</button>
+          <button class="btn btn-secondary btn-sm" onclick="loadAllOrders()">?? Refresh</button>
         </div>
 
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th onclick="sortOrders('order_id')">Order ID ↕</th>
+                <th onclick="sortOrders('order_id')">Order ID ?</th>
                 <th>Table/Room</th>
                 <th>Items</th>
-                <th onclick="sortOrders('total')">Total ↕</th>
-                <th onclick="sortOrders('status')">Status ↕</th>
+                <th onclick="sortOrders('total')">Total ?</th>
+                <th onclick="sortOrders('status')">Status ?</th>
                 <th>Payment</th>
-                <th onclick="sortOrders('created_at')">Time ↕</th>
+                <th onclick="sortOrders('created_at')">Time ?</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody id="ordersTableBody">
-              <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-dim);">Loading…</td></tr>
+              <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-dim);">Loading�</td></tr>
             </tbody>
           </table>
         </div>
         <div class="pagination" id="ordersPagination"></div>
       </div>
 
-      <!-- ══ TABLES TAB ══ -->
+      <!-- -- TABLES TAB -- -->
       <div class="tab-panel" id="tab-tables">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
-          <div class="section-title" style="margin:0;">🪑 Restaurant Tables & Rooms</div>
+          <div class="section-title" style="margin:0;">?? Restaurant Tables & Rooms</div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             <select id="tableTypeFilter" class="input" style="max-width:140px;height:38px;padding:0 12px;font-size:0.85rem;" onchange="renderTables()">
               <option value="all">All Types</option>
@@ -254,22 +254,22 @@
               <option value="room">Rooms Only</option>
             </select>
             <div class="search-input-wrap" style="position:relative;">
-              <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-dim);font-size:0.85rem;">🔍</span>
+              <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-dim);font-size:0.85rem;">??</span>
               <input type="text" id="tableSearch" class="input" placeholder="Search number..." oninput="renderTables()" style="padding-left:30px;max-width:150px;height:38px;font-size:0.85rem;">
             </div>
-            <button class="btn btn-secondary btn-sm" onclick="printAllQR()" style="height:38px;">🖨️ Print All QR</button>
+            <button class="btn btn-secondary btn-sm" onclick="printAllQR()" style="height:38px;">??? Print All QR</button>
             <button class="btn btn-primary btn-sm" onclick="openTableModal()" style="height:38px;">+ Add</button>
           </div>
         </div>
 
         <div class="tables-grid" id="tablesGrid">
-          <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-dim);">Loading…</div>
+          <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-dim);">Loading�</div>
         </div>
       </div>
 
-      <!-- ══ SETTINGS TAB ══ -->
+      <!-- -- SETTINGS TAB -- -->
       <div class="tab-panel" id="tab-settings">
-        <div class="section-title">⚙️ Restaurant Settings</div>
+        <div class="section-title">?? Restaurant Settings</div>
         <div class="card" style="max-width:700px;">
           <div class="settings-grid">
             <div class="input-group">
@@ -282,7 +282,7 @@
             </div>
             <div class="input-group" style="grid-column:1/-1;">
               <label class="input-label">Address</label>
-              <textarea id="setAddress" class="input" rows="2" placeholder="Full address…"></textarea>
+              <textarea id="setAddress" class="input" rows="2" placeholder="Full address�"></textarea>
             </div>
             <div class="input-group">
               <label class="input-label">Legal Name</label>
@@ -318,7 +318,7 @@
             </div>
             <div class="input-group">
               <label class="input-label">Bill Footer Message</label>
-              <input type="text" id="setBillFooter" class="input" placeholder="Thank you! Visit again 🌿">
+              <input type="text" id="setBillFooter" class="input" placeholder="Thank you! Visit again ??">
             </div>
             <div class="input-group">
               <label class="input-label">Currency Symbol</label>
@@ -326,16 +326,16 @@
             </div>
           </div>
           <div style="margin-top:20px;display:flex;gap:10px;">
-            <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
-            <button class="btn btn-secondary" onclick="loadSettings()">↺ Reset</button>
+            <button class="btn btn-primary" onclick="saveSettings()">?? Save Settings</button>
+            <button class="btn btn-secondary" onclick="loadSettings()">? Reset</button>
           </div>
         </div>
       </div>
 
-      <!-- ══ ACTIVITY LOG TAB ══ -->
+      <!-- -- ACTIVITY LOG TAB -- -->
       <div class="tab-panel" id="tab-activity">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
-          <div class="section-title" style="margin:0;">📜 Activity Log</div>
+          <div class="section-title" style="margin:0;">?? Activity Log</div>
           <div style="display:flex;gap:8px;">
             <select id="activityFilter" class="input" style="max-width:160px;" onchange="filterActivity()">
               <option value="all">All Events</option>
@@ -344,7 +344,7 @@
               <option value="store_toggle">Store Toggle</option>
               <option value="staff">Staff Events</option>
             </select>
-            <button class="btn btn-secondary btn-sm" onclick="loadActivity()">🔄 Refresh</button>
+            <button class="btn btn-secondary btn-sm" onclick="loadActivity()">?? Refresh</button>
           </div>
         </div>
         <div class="table-wrap">
@@ -353,7 +353,7 @@
               <tr><th>Time</th><th>Event</th><th>Description</th><th>Staff</th></tr>
             </thead>
             <tbody id="activityBody">
-              <tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-dim);">Loading…</td></tr>
+              <tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-dim);">Loading�</td></tr>
             </tbody>
           </table>
         </div>
@@ -364,12 +364,12 @@
   </div>
 </div>
 
-<!-- ── TABLE MODAL ── -->
+<!-- -- TABLE MODAL -- -->
 <div class="modal-overlay" id="tableModal" style="display:none;" onclick="if(event.target===this)closeTableModal()">
   <div class="modal" style="max-width:400px;">
     <div class="modal-header">
       <h2 class="modal-title" id="tableModalTitle">Add Table</h2>
-      <button class="modal-close" onclick="closeTableModal()">×</button>
+      <button class="modal-close" onclick="closeTableModal()">�</button>
     </div>
     <div style="display:flex;flex-direction:column;gap:16px;">
       <div class="input-group">
@@ -395,19 +395,19 @@
   </div>
 </div>
 
-<!-- ── ORDER DETAIL MODAL ── -->
+<!-- -- ORDER DETAIL MODAL -- -->
 <div class="modal-overlay" id="orderDetailModal" style="display:none;" onclick="if(event.target===this)closeOrderDetail()">
   <div class="modal modal-lg">
     <div class="modal-header">
       <h2 class="modal-title" id="orderDetailTitle">Order Details</h2>
-      <button class="modal-close" onclick="closeOrderDetail()">×</button>
+      <button class="modal-close" onclick="closeOrderDetail()">�</button>
     </div>
     <div id="orderDetailBody"></div>
     <div class="modal-footer" id="orderDetailFooter"></div>
   </div>
 </div>
 
-<!-- ── QR PRINT ── -->
+<!-- -- QR PRINT -- -->
 <div id="qrPrintArea" style="display:none;"></div>
 <div id="printSlip"></div>
 <div id="toast-container"></div>
@@ -415,7 +415,7 @@
 <script type="module" src="assets/auth.js?v=3"></script>
 <script type="module">
 
-  // ── State
+  // -- State
   let allOrders = [];
   let filteredOrders = [];
   let allTables = [];
@@ -429,7 +429,7 @@
   const PAGE_SIZE = 25;
   let editingTableId = null;
 
-  // ── appInit
+  // -- appInit
   window.appInit = async function() {
     window.renderStaffUI && window.renderStaffUI();
     initDate();
@@ -453,7 +453,7 @@
     if (df) df.value = window.todayIST ? window.todayIST() : new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'});
   }
 
-  // ── Load settings
+  // -- Load settings
   window.loadSettings = async function() {
     const sb = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -481,7 +481,7 @@
     };
   };
 
-  // ── Save settings
+  // -- Save settings
   window.saveSettings = async function() {
     const sb = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -525,12 +525,12 @@
       if (error) { window.showToast('Error inserting settings', error.message, 'error'); return; }
     }
     
-    window.showToast('✅ Settings saved!', '', 'success');
+    window.showToast('? Settings saved!', '', 'success');
     window.logActivity && window.logActivity('settings', 'Settings updated', window.currentStaff?.name || '', bid);
     await loadSettings();
   };
 
-  // ── Load today's orders for stats + charts
+  // -- Load today's orders for stats + charts
   async function loadTodayOrders() {
     const sb  = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -560,7 +560,7 @@
     document.getElementById('statRejected').textContent = rejected;
   }
 
-  // ── Revenue Chart (SVG bar chart by hour)
+  // -- Revenue Chart (SVG bar chart by hour)
   function drawRevenueChart(orders) {
     const svg = document.getElementById('revenueChart');
     if (!svg) return;
@@ -613,7 +613,7 @@
     svg.innerHTML = svgContent;
   }
 
-  // ── Top Items Chart (SVG horizontal bars)
+  // -- Top Items Chart (SVG horizontal bars)
   function drawTopItemsChart(orders) {
     const svg = document.getElementById('topItemsChart');
     if (!svg) return;
@@ -622,7 +622,7 @@
     orders.filter(o => o.status !== 'rejected' && o.status !== 'cancelled').forEach(o => {
       const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
       items.forEach(i => {
-        if (!itemCounts[i.name]) itemCounts[i.name] = { qty:0, revenue:0, emoji: i.emoji||'🍽️' };
+        if (!itemCounts[i.name]) itemCounts[i.name] = { qty:0, revenue:0, emoji: i.emoji||'???' };
         itemCounts[i.name].qty     += i.qty;
         itemCounts[i.name].revenue += i.price * i.qty;
       });
@@ -644,11 +644,11 @@
     sorted.forEach(([name, data], i) => {
       const y      = pad + i * (rowH + 8);
       const barW   = Math.floor((data.qty / maxQty) * barAreaW);
-      const shortName = name.length > 22 ? name.slice(0,20)+'…' : name;
+      const shortName = name.length > 22 ? name.slice(0,20)+'�' : name;
 
       svgContent += `<text x="${pad}" y="${y + rowH/2 + 4}" fill="var(--text-dim)" font-size="12" font-family="DM Mono">${data.emoji} ${shortName}</text>`;
-      svgContent += `<rect x="${labelW}" y="${y}" width="${Math.max(barW,2)}" height="${rowH}" rx="4" fill="var(--green-dim)"/>`;
-      svgContent += `<text x="${labelW + Math.max(barW,2) + 6}" y="${y + rowH/2 + 4}" fill="var(--green-bright)" font-size="11" font-family="DM Mono">×${data.qty} · Rs. ${data.revenue.toFixed(0)}</text>`;
+      svgContent += `<rect x="${labelW}" y="${y}" width="${Math.max(barW,2)}" height="${rowH}" rx="4" fill="var(--accent-dim)"/>`;
+      svgContent += `<text x="${labelW + Math.max(barW,2) + 6}" y="${y + rowH/2 + 4}" fill="var(--accent)" font-size="11" font-family="DM Mono">�${data.qty} � Rs. ${data.revenue.toFixed(0)}</text>`;
     });
 
     const svgHeight = pad + sorted.length * (rowH + 8) + pad;
@@ -657,7 +657,7 @@
     svg.innerHTML = svgContent;
   }
 
-  // ── Recent orders table
+  // -- Recent orders table
   function renderRecentOrders(orders) {
     const tbody = document.getElementById('recentOrdersBody');
     if (!tbody) return;
@@ -667,14 +667,14 @@
     }
     tbody.innerHTML = orders.map(o => {
       const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
-      const summary = items.map(i => `${i.emoji||''}${i.name}×${i.qty}`).join(', ');
+      const summary = items.map(i => `${i.emoji||''}${i.name}�${i.qty}`).join(', ');
       const dispStatus = o.status === 'done' ? 'delivered' : o.status;
         const time = new Date(o.created_at).toLocaleTimeString('en-IN', { timeZone:'Asia/Kolkata', hour:'2-digit', minute:'2-digit' });
       return `<tr>
         <td><span style="font-family:var(--font-mono);font-size:0.82rem;">${o.order_id}</span></td>
-        <td>${o.room_number ? 'R' + o.room_number : 'T' + (o.table_number || '—')}</td>
+        <td>${o.room_number ? 'R' + o.room_number : 'T' + (o.table_number || '�')}</td>
         <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:0.8rem;">${summary}</td>
-        <td><span style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${parseFloat(o.total).toFixed(2)}</span></td>
+        <td><span style="font-family:var(--font-mono);color:var(--accent);">Rs. ${parseFloat(o.total).toFixed(2)}</span></td>
         <td><span class="badge badge-${o.status}">${o.status}</span></td>
         <td><span class="badge ${o.payment_status==='paid'?'badge-paid':'badge-unpaid'}">${o.payment_status}</span></td>
         <td style="color:var(--text-dim);font-size:0.8rem;">${time}</td>
@@ -682,7 +682,7 @@
     }).join('');
   }
 
-  // ── All Orders (orders tab)
+  // -- All Orders (orders tab)
   window.loadAllOrders = async function() {
     const sb  = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -748,12 +748,12 @@
 
     tbody.innerHTML = page.map(o => {
       const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
-      const summary = items.slice(0,2).map(i=>`${i.name}×${i.qty}`).join(', ') + (items.length>2?` +${items.length-2}`:'');
+      const summary = items.slice(0,2).map(i=>`${i.name}�${i.qty}`).join(', ') + (items.length>2?` +${items.length-2}`:'');
       const dispStatus = o.status === 'done' ? 'delivered' : o.status;
         const time = new Date(o.created_at).toLocaleTimeString('en-IN', { timeZone:'Asia/Kolkata', hour:'2-digit', minute:'2-digit' });
       return `<tr>
-        <td><span style="font-family:var(--font-mono);font-size:0.8rem;cursor:pointer;color:var(--green-bright);" onclick="openOrderDetail('${o.id}')">${o.order_id}</span></td>
-        <td>${o.room_number ? 'R' + o.room_number : 'T' + (o.table_number || '—')}</td>
+        <td><span style="font-family:var(--font-mono);font-size:0.8rem;cursor:pointer;color:var(--accent);" onclick="openOrderDetail('${o.id}')">${o.order_id}</span></td>
+        <td>${o.room_number ? 'R' + o.room_number : 'T' + (o.table_number || '�')}</td>
         <td style="font-size:0.8rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${summary}</td>
         <td><span style="font-family:var(--font-mono);">Rs. ${parseFloat(o.total).toFixed(2)}</span></td>
         <td><span class="badge badge-${o.status}">${o.status}</span></td>
@@ -761,9 +761,9 @@
         <td style="color:var(--text-dim);font-size:0.8rem;">${time}</td>
         <td>
           <div class="order-actions-cell">
-            <button class="btn btn-secondary btn-sm" onclick="openOrderDetail('${o.id}')">👁 View</button>
+            <button class="btn btn-secondary btn-sm" onclick="openOrderDetail('${o.id}')">?? View</button>
             
-            <button class="btn btn-secondary btn-sm" onclick="printSingleBill('${o.id}')">🖨️</button>
+            <button class="btn btn-secondary btn-sm" onclick="printSingleBill('${o.id}')">???</button>
           </div>
         </td>
       </tr>`;
@@ -774,14 +774,14 @@
     const total = Math.ceil(filteredOrders.length / PAGE_SIZE);
     const el = document.getElementById('ordersPagination');
     if (total <= 1) { el.innerHTML=''; return; }
-    let html = `<button class="page-btn" onclick="ordersGoPage(${ordersPage-1})" ${ordersPage===1?'disabled':''}>‹</button>`;
+    let html = `<button class="page-btn" onclick="ordersGoPage(${ordersPage-1})" ${ordersPage===1?'disabled':''}>�</button>`;
     for (let i=1; i<=total; i++) {
       if (i===1||i===total||Math.abs(i-ordersPage)<=1)
         html += `<button class="page-btn ${i===ordersPage?'active':''}" onclick="ordersGoPage(${i})">${i}</button>`;
       else if (Math.abs(i-ordersPage)===2)
-        html += `<span style="color:var(--text-dim);padding:0 4px;">…</span>`;
+        html += `<span style="color:var(--text-dim);padding:0 4px;">�</span>`;
     }
-    html += `<button class="page-btn" onclick="ordersGoPage(${ordersPage+1})" ${ordersPage===total?'disabled':''}>›</button>`;
+    html += `<button class="page-btn" onclick="ordersGoPage(${ordersPage+1})" ${ordersPage===total?'disabled':''}>�</button>`;
     el.innerHTML = html;
   }
 
@@ -797,7 +797,7 @@
     const sb = window.supabaseClient;
     const { error } = await sb.from('orders').update({ payment_status:'paid', updated_at:new Date().toISOString() }).eq('id', orderId);
     if (!error) {
-      window.showToast('✅ Marked as paid','','success');
+      window.showToast('? Marked as paid','','success');
       await loadAllOrders();
       await loadTodayOrders();
     }
@@ -808,7 +808,7 @@
     if (order) window.printBill && window.printBill(order, window.restaurantSettings || settings);
   };
 
-  // ── Order Detail Modal
+  // -- Order Detail Modal
   window.openOrderDetail = function(orderId) {
     const order = allOrders.find(o => o.id === orderId);
     if (!order) return;
@@ -816,21 +816,21 @@
     const rate = parseFloat(settings.gst_rate || 5);
     const half = rate / 2;
 
-    document.getElementById('orderDetailTitle').textContent = `${order.order_id} — ${order.room_number ? 'Room ' + order.room_number : 'Table ' + (order.table_number||'—')}`;
+    document.getElementById('orderDetailTitle').textContent = `${order.order_id} � ${order.room_number ? 'Room ' + order.room_number : 'Table ' + (order.table_number||'�')}`;
     document.getElementById('orderDetailBody').innerHTML = `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;font-size:0.875rem;">
         <div><span style="color:var(--text-dim);">Status</span><br><span class="badge badge-${order.status}" style="margin-top:4px;">${order.status}</span></div>
         <div><span style="color:var(--text-dim);">Payment</span><br><span class="badge ${order.payment_status==='paid'?'badge-paid':'badge-unpaid'}" style="margin-top:4px;">${order.payment_status}</span></div>
-        <div><span style="color:var(--text-dim);">Customer</span><br>${order.customer_name||'—'}</div>
-        <div><span style="color:var(--text-dim);">Mobile</span><br>${order.customer_phone||'—'}</div>
-        <div><span style="color:var(--text-dim);">Invoice</span><br><span style="font-family:var(--font-mono);font-size:0.8rem;">${order.invoice_no||'—'}</span></div>
+        <div><span style="color:var(--text-dim);">Customer</span><br>${order.customer_name||'�'}</div>
+        <div><span style="color:var(--text-dim);">Mobile</span><br>${order.customer_phone||'�'}</div>
+        <div><span style="color:var(--text-dim);">Invoice</span><br><span style="font-family:var(--font-mono);font-size:0.8rem;">${order.invoice_no||'�'}</span></div>
         <div><span style="color:var(--text-dim);">Time</span><br>${new Date(order.created_at).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'})}</div>
       </div>
       <div class="table-wrap" style="margin-bottom:16px;">
         <table>
           <thead><tr><th>Item</th><th style="text-align:center">Qty</th><th style="text-align:right">Amount</th></tr></thead>
           <tbody>
-            ${items.map(i=>`<tr><td>${i.emoji||'🍽️'} ${i.name}</td><td style="text-align:center">×${i.qty}</td><td style="text-align:right;font-family:var(--font-mono)">Rs. ${(i.price*i.qty).toFixed(2)}</td></tr>`).join('')}
+            ${items.map(i=>`<tr><td>${i.emoji||'???'} ${i.name}</td><td style="text-align:center">�${i.qty}</td><td style="text-align:right;font-family:var(--font-mono)">Rs. ${(i.price*i.qty).toFixed(2)}</td></tr>`).join('')}
           </tbody>
         </table>
       </div>
@@ -839,26 +839,26 @@
         <div style="display:flex;justify-content:space-between;padding:3px 0;color:var(--text-dim);"><span>CGST @ ${half}%</span><span>Rs. ${parseFloat(order.cgst).toFixed(2)}</span></div>
         <div style="display:flex;justify-content:space-between;padding:3px 0;color:var(--text-dim);"><span>SGST @ ${half}%</span><span>Rs. ${parseFloat(order.sgst).toFixed(2)}</span></div>
         <div style="display:flex;justify-content:space-between;padding:6px 0 0;font-weight:700;font-size:1rem;border-top:1px solid var(--border);margin-top:6px;">
-          <span>Total</span><span style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${parseFloat(order.total).toFixed(2)}</span>
+          <span>Total</span><span style="font-family:var(--font-mono);color:var(--accent);">Rs. ${parseFloat(order.total).toFixed(2)}</span>
         </div>
       </div>
-      ${order.note?`<div class="order-note" style="margin-top:12px;">📝 ${order.note}</div>`:''}
+      ${order.note?`<div class="order-note" style="margin-top:12px;">?? ${order.note}</div>`:''}
     `;
     document.getElementById('orderDetailFooter').innerHTML = `
       
-      <button class="btn btn-secondary" onclick="printSingleBill('${order.id}')">🖨️ Print Bill</button>
+      <button class="btn btn-secondary" onclick="printSingleBill('${order.id}')">??? Print Bill</button>
       <button class="btn btn-ghost" onclick="closeOrderDetail()">Close</button>
     `;
     document.getElementById('orderDetailModal').style.display = 'flex';
   };
   window.closeOrderDetail = () => document.getElementById('orderDetailModal').style.display = 'none';
 
-  // ── Export Orders CSV
+  // -- Export Orders CSV
   window.exportOrdersCSV = function() {
     if (!filteredOrders.length) { window.showToast('No orders to export','','warning'); return; }
     let csv = 'Order ID,Invoice,Table,Customer,Phone,Items,Subtotal,CGST,SGST,Total,Status,Payment,Time\n';
     filteredOrders.forEach(o => {
-      const items = (typeof o.items==='string'?JSON.parse(o.items):o.items).map(i=>`${i.name}×${i.qty}`).join(' | ');
+      const items = (typeof o.items==='string'?JSON.parse(o.items):o.items).map(i=>`${i.name}�${i.qty}`).join(' | ');
       const time = new Date(o.created_at).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'});
       csv += `"${o.order_id}","${o.invoice_no||''}","${o.table_number||''}","${o.customer_name||''}","${o.customer_phone||''}","${items}",${o.subtotal},${o.cgst},${o.sgst},${o.total},"${o.status}","${o.payment_status}","${time}"\n`;
     });
@@ -866,10 +866,10 @@
     a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
     a.download = `LAXMI_Orders_${new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'})}.csv`;
     a.click();
-    window.showToast('✅ Exported','','success');
+    window.showToast('? Exported','','success');
   };
 
-  // ── Tables
+  // -- Tables
   async function loadTables() {
     const sb  = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -905,15 +905,15 @@
 
     grid.innerHTML = filtered.map(t => {
       const isRoom = !!t.room_number;
-      const numLabel = isRoom ? '🛏️ ' + t.room_number : '🪑 ' + t.table_number;
+      const numLabel = isRoom ? '??? ' + t.room_number : '?? ' + t.table_number;
       return `
       <div class="table-card ${t.is_occupied?'occupied':''}" onclick="openTableModal(${t.id})">
         <div class="table-num" style="font-size:1.5rem;">${numLabel}</div>
-        <div class="table-seats">👥 ${t.seats} seats</div>
-        <div class="table-status ${t.is_occupied?'occupied':'free'}">${t.is_occupied?'🔴 Occupied':'🟢 Free'}</div>
+        <div class="table-seats">?? ${t.seats} seats</div>
+        <div class="table-status ${t.is_occupied?'occupied':'free'}">${t.is_occupied?'?? Occupied':'?? Free'}</div>
         <div style="margin-top:10px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
-          <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();showQR(${t.id})">📱 QR</button>
-          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteTable(${t.id},'${isRoom ? t.room_number : t.table_number}')">🗑</button>
+          <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();showQR(${t.id})">?? QR</button>
+          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteTable(${t.id},'${isRoom ? t.room_number : t.table_number}')">??</button>
         </div>
       </div>`}).join('');
   }
@@ -937,7 +937,7 @@
     const seats = parseInt(document.getElementById('tableSeats').value) || 4;
     if (!num) { window.showToast('Number required','','error'); return; }
     const btn = document.getElementById('tableSaveBtn');
-    btn.disabled=true; btn.textContent='Saving…';
+    btn.disabled=true; btn.textContent='Saving�';
     const payload = { branch_id:bid, seats };
     if (type === 'room') { payload.room_number = num; payload.table_number = null; }
     else { payload.table_number = num; payload.room_number = null; }
@@ -949,7 +949,7 @@
     }
     btn.disabled=false; btn.textContent='Save Table';
     if (error) { window.showToast('Error saving table', error.message, 'error'); return; }
-    window.showToast('✅ Table saved!','','success');
+    window.showToast('? Table saved!','','success');
     closeTableModal();
     await loadTables();
   };
@@ -958,10 +958,10 @@
     if (!confirm(`Delete Table ${tableNum}? This cannot be undone.`)) return;
     const sb = window.supabaseClient;
     const { error } = await sb.from('restaurant_tables').delete().eq('id', tableId);
-    if (!error) { window.showToast('🗑 Table deleted','','success'); await loadTables(); }
+    if (!error) { window.showToast('?? Table deleted','','success'); await loadTables(); }
   };
 
-  // ── QR Code Generator
+  // -- QR Code Generator
   window.showQR = function(tableId) {
     const table = allTables.find(t => t.id === tableId);
     if (!table) return;
@@ -976,17 +976,17 @@
     modal.innerHTML = `
       <div class="modal" style="max-width:320px;text-align:center;">
         <div class="modal-header">
-          <h2 class="modal-title">📱 ${isRoom ? 'Room ' + table.room_number : 'Table ' + table.table_number} QR</h2>
-          <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">×</button>
+          <h2 class="modal-title">?? ${isRoom ? 'Room ' + table.room_number : 'Table ' + table.table_number} QR</h2>
+          <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">�</button>
         </div>
         <div class="qr-wrap">
           <img src="${qrUrl}" alt="QR Code" class="qr-img" width="200" height="200">
-          <div class="qr-table-number">${isRoom ? 'Room ' + table.room_number : 'Table ' + table.table_number} · ${table.seats} seats</div>
+          <div class="qr-table-number">${isRoom ? 'Room ' + table.room_number : 'Table ' + table.table_number} � ${table.seats} seats</div>
           <div style="font-size:0.72rem;color:var(--text-dim);word-break:break-all;margin-top:4px;">${url}</div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" onclick="window.open('${qrUrl}','_blank')">⬇️ Download</button>
-          <button class="btn btn-primary" onclick="printQR('${isRoom ? table.room_number : table.table_number}', '${qrUrl}', ${isRoom})">🖨️ Print</button>
+          <button class="btn btn-secondary" onclick="window.open('${qrUrl}','_blank')">?? Download</button>
+          <button class="btn btn-primary" onclick="printQR('${isRoom ? table.room_number : table.table_number}', '${qrUrl}', ${isRoom})">??? Print</button>
           <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Close</button>
         </div>
       </div>`;
@@ -998,7 +998,7 @@
     const slip = document.getElementById('printSlip');
     slip.innerHTML = `
       <div style="font-family:monospace;text-align:center;padding:20px;">
-        <div style="font-size:20px;font-weight:700;margin-bottom:4px;">🍃 LAXMI</div>
+        <div style="font-size:20px;font-weight:700;margin-bottom:4px;">?? LAXMI</div>
         <div style="font-size:14px;margin-bottom:12px;">Scan to Order</div>
         <img src="${qrUrl}" width="200" height="200" style="margin:0 auto;display:block;">
         <div style="font-size:18px;font-weight:700;margin-top:12px;">${isRoom ? 'Room ' + num : 'Table ' + num}</div>
@@ -1015,7 +1015,7 @@
       const url = isRoom ? `${baseUrl}?room=${encodeURIComponent(table.room_number)}&token=${table.qr_token}` : `${baseUrl}?table=${encodeURIComponent(table.table_number)}&token=${table.qr_token}`;
       const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(url)}`;
       return `<div style="font-family:monospace;text-align:center;padding:16px;display:inline-block;width:200px;margin:8px;break-inside:avoid;">
-        <div style="font-size:16px;font-weight:700;">🍃 LAXMI</div>
+        <div style="font-size:16px;font-weight:700;">?? LAXMI</div>
         <div style="font-size:11px;margin-bottom:8px;">Scan to Order</div>
         <img src="${qrUrl}" width="180" height="180" style="margin:0 auto;display:block;">
         <div style="font-size:16px;font-weight:700;margin-top:12px;">${isRoom ? 'Room ' + table.room_number : 'Table ' + table.table_number}</div>
@@ -1024,7 +1024,7 @@
     window.print();
   };
 
-  // ── Activity Log
+  // -- Activity Log
   window.loadActivity = async function() {
     const sb  = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -1050,14 +1050,14 @@
       tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-dim);">No activity yet.</td></tr>`;
       return;
     }
-    const icons = { new_order:'🔔', order_status:'🔄', store_toggle:'🏪', settings:'⚙️', staff:'👥' };
+    const icons = { new_order:'??', order_status:'??', store_toggle:'??', settings:'??', staff:'??' };
     tbody.innerHTML = page.map(a => {
       const time = new Date(a.created_at).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
       return `<tr>
         <td style="font-size:0.8rem;color:var(--text-dim);white-space:nowrap;">${time}</td>
-        <td><span class="chip">${icons[a.event_type]||'📌'} ${a.event_type}</span></td>
-        <td style="font-size:0.875rem;">${a.description||'—'}</td>
-        <td style="font-size:0.8rem;color:var(--text-dim);">${a.staff_name||'—'}</td>
+        <td><span class="chip">${icons[a.event_type]||'??'} ${a.event_type}</span></td>
+        <td style="font-size:0.875rem;">${a.description||'�'}</td>
+        <td style="font-size:0.8rem;color:var(--text-dim);">${a.staff_name||'�'}</td>
       </tr>`;
     }).join('');
   }
@@ -1066,14 +1066,14 @@
     const total = Math.ceil(filteredActivity.length / PAGE_SIZE);
     const el = document.getElementById('activityPagination');
     if (total<=1) { el.innerHTML=''; return; }
-    let html = `<button class="page-btn" onclick="actGoPage(${activityPage-1})" ${activityPage===1?'disabled':''}>‹</button>`;
+    let html = `<button class="page-btn" onclick="actGoPage(${activityPage-1})" ${activityPage===1?'disabled':''}>�</button>`;
     for (let i=1;i<=total;i++) {
       if(i===1||i===total||Math.abs(i-activityPage)<=1)
         html+=`<button class="page-btn ${i===activityPage?'active':''}" onclick="actGoPage(${i})">${i}</button>`;
       else if(Math.abs(i-activityPage)===2)
-        html+=`<span style="color:var(--text-dim);padding:0 4px;">…</span>`;
+        html+=`<span style="color:var(--text-dim);padding:0 4px;">�</span>`;
     }
-    html+=`<button class="page-btn" onclick="actGoPage(${activityPage+1})" ${activityPage===total?'disabled':''}>›</button>`;
+    html+=`<button class="page-btn" onclick="actGoPage(${activityPage+1})" ${activityPage===total?'disabled':''}>�</button>`;
     el.innerHTML = html;
   }
   window.actGoPage = function(p) {
@@ -1082,7 +1082,7 @@
     activityPage=p; renderActivity(); renderActivityPagination();
   };
 
-  // ── Realtime
+  // -- Realtime
   function subscribeRealtime() {
     const sb  = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -1094,7 +1094,7 @@
       .subscribe(s => { if(s==='SUBSCRIBED') window.setConnectionStatus('online'); });
   }
 
-  // ── Tab switching
+  // -- Tab switching
   window.switchTab = function(tab, el) {
     document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));

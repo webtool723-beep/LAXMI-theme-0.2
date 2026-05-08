@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LAXMI — Kitchen Dashboard</title>
+  <title>LAXMI � Kitchen Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
@@ -18,7 +18,7 @@
 
 <!-- Offline Banner -->
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-<div class="offline-banner" id="offlineBanner">⚠️ Connection lost — showing last known data. Reconnecting…</div>
+<div class="offline-banner" id="offlineBanner">?? Connection lost � showing last known data. Reconnecting�</div>
 
 <!-- Auth Gate -->
 <div class="auth-gate" id="authGate" style="display:none;">
@@ -29,36 +29,36 @@
 <div id="appContent" style="display:none;">
   <div class="app-layout">
 
-    <!-- ── SIDEBAR ── -->
+    <!-- -- SIDEBAR -- -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-logo">
-        <div class="sidebar-logo-name">🍃 LAXMI</div>
+        <div class="sidebar-logo-name">?? LAXMI</div>
         <div class="sidebar-logo-sub">Kitchen Dashboard</div>
       </div>
 
       <nav class="sidebar-nav">
         <div class="nav-section-label">Operations</div>
         <a class="nav-item active" href="kitchen.html">
-          <span class="nav-item-icon">🍳</span> Kitchen
+          <span class="nav-item-icon">??</span> Kitchen
         </a>
         <a class="nav-item" href="admin.html">
-          <span class="nav-item-icon">📊</span> Admin Panel
+          <span class="nav-item-icon">??</span> Admin Panel
         </a>
         <a class="nav-item" href="menu-manager.html">
-          <span class="nav-item-icon">📋</span> Menu Manager
+          <span class="nav-item-icon">??</span> Menu Manager
         </a>
         <a class="nav-item" href="reports.html">
-          <span class="nav-item-icon">📈</span> Reports
+          <span class="nav-item-icon">??</span> Reports
         </a>
         <div class="nav-section-label" style="margin-top:8px;">Management</div>
         <a class="nav-item" href="staff.html">
-          <span class="nav-item-icon">👥</span> Staff
+          <span class="nav-item-icon">??</span> Staff
         </a>
         <div class="nav-section-label" style="margin-top:8px;">Customer</div>
-        <a class="nav-item" href="waiter.html"><span class="nav-item-icon">🛎️</span> Waiter</a>
-        <a class="nav-item" href="payment-manager.html"><span class="nav-item-icon">💳</span> Payments</a>
+        <a class="nav-item" href="waiter.html"><span class="nav-item-icon">???</span> Waiter</a>
+        <a class="nav-item" href="payment-manager.html"><span class="nav-item-icon">??</span> Payments</a>
         <a class="nav-item" href="index.html" target="_blank">
-          <span class="nav-item-icon">🛒</span> Order Page ↗
+          <span class="nav-item-icon">??</span> Order Page ?
         </a>
       </nav>
 
@@ -66,15 +66,15 @@
         <div class="sidebar-user">
           <div class="sidebar-avatar" id="sidebarAvatar">?</div>
           <div class="sidebar-user-info">
-            <div class="sidebar-user-name" id="sidebarUserName">Loading…</div>
-            <div class="sidebar-user-role" id="sidebarUserRole">—</div>
+            <div class="sidebar-user-name" id="sidebarUserName">Loading�</div>
+            <div class="sidebar-user-role" id="sidebarUserRole">�</div>
           </div>
         </div>
-        <button class="btn btn-ghost w-full btn-sm" onclick="window.rmsSignOut()">⏏ Sign Out</button>
+        <button class="btn btn-ghost w-full btn-sm" onclick="window.rmsSignOut()">? Sign Out</button>
       </div>
     </aside>
 
-    <!-- ── MAIN CONTENT ── -->
+    <!-- -- MAIN CONTENT -- -->
     <main class="main-content">
 
       <!-- Page Header -->
@@ -84,15 +84,15 @@
             <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
               <span></span><span></span><span></span>
             </button>
-            <h1 class="page-title">🍳 Kitchen Dashboard</h1>
+            <h1 class="page-title">?? Kitchen Dashboard</h1>
           </div>
-          <div class="page-subtitle" id="kitchenDate">—</div>
+          <div class="page-subtitle" id="kitchenDate">�</div>
         </div>
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
           <!-- Live indicator -->
           <div style="display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--text-dim);">
             <span class="live-dot" id="liveDot"></span>
-            <span id="liveText">Connecting…</span>
+            <span id="liveText">Connecting�</span>
           </div>
           <!-- Store toggle -->
           <div class="toggle-wrap">
@@ -104,14 +104,14 @@
           </div>
           <!-- Bell toggle -->
           <button class="btn btn-secondary btn-sm" id="bellBtn" onclick="toggleBell()" title="Toggle sound">
-            🔔 Sound On
+            ?? Sound On
           </button>
           <!-- Fullscreen toggle -->
           <button class="btn btn-secondary btn-sm" id="fullscreenBtn" onclick="toggleFullscreen()" title="Full Screen">
-            🖥️ Full Screen
+            ??? Full Screen
           </button>
           <!-- Print summary -->
-          <button class="btn btn-secondary btn-sm" onclick="printDailySummary()">🖨️ Print Summary</button>
+          <button class="btn btn-secondary btn-sm" onclick="printDailySummary()">??? Print Summary</button>
         </div>
       </div>
 
@@ -148,35 +148,35 @@
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
         <div class="filter-tabs" id="filterTabs">
           <button class="filter-tab active" data-status="active" onclick="setFilter('active',this)">
-            🔥 Active <span class="tab-count" id="tabActive">0</span>
+            ?? Active <span class="tab-count" id="tabActive">0</span>
           </button>
           <button class="filter-tab" data-status="pending" onclick="setFilter('pending',this)">
-            🕐 Pending <span class="tab-count" id="tabPending">0</span>
+            ?? Pending <span class="tab-count" id="tabPending">0</span>
           </button>
           <button class="filter-tab" data-status="preparing" onclick="setFilter('preparing',this)">
-            👨‍🍳 Preparing <span class="tab-count" id="tabPreparing">0</span>
+            ????? Preparing <span class="tab-count" id="tabPreparing">0</span>
           </button>
           <button class="filter-tab" id="filterTabDelayed" data-status="delayed" onclick="setFilter('delayed',this)">
-            ⚠️ Delayed <span class="tab-count" id="tabDelayed">0</span>
+            ?? Delayed <span class="tab-count" id="tabDelayed">0</span>
           </button>
           <button class="filter-tab" data-status="all" onclick="setFilter('all',this)">
-            📋 All Today
+            ?? All Today
           </button>
           <button class="filter-tab" data-status="rejected" onclick="setFilter('rejected',this)">
-            ❌ Rejected
+            ? Rejected
           </button>
         </div>
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-secondary btn-sm" onclick="exportExcel()">📥 Export Excel</button>
-          <button class="btn btn-secondary btn-sm" onclick="loadOrders()">🔄 Refresh</button>
+          <button class="btn btn-secondary btn-sm" onclick="exportExcel()">?? Export Excel</button>
+          <button class="btn btn-secondary btn-sm" onclick="loadOrders()">?? Refresh</button>
         </div>
       </div>
 
       <!-- Orders Grid -->
       <div class="orders-grid" id="ordersGrid">
         <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-dim);">
-          <div style="font-size:2rem;margin-bottom:12px;">⏳</div>
-          <p>Loading orders…</p>
+          <div style="font-size:2rem;margin-bottom:12px;">?</div>
+          <p>Loading orders�</p>
         </div>
       </div>
 
@@ -184,34 +184,34 @@
   </div>
 </div>
 
-<!-- ── ORDER DETAIL MODAL ── -->
+<!-- -- ORDER DETAIL MODAL -- -->
 <div class="modal-overlay" id="orderModal" style="display:none;" onclick="if(event.target===this)closeOrderModal()">
   <div class="modal modal-lg">
     <div class="modal-header">
       <h2 class="modal-title" id="modalTitle">Order Details</h2>
-      <button class="modal-close" onclick="closeOrderModal()">×</button>
+      <button class="modal-close" onclick="closeOrderModal()">�</button>
     </div>
     <div id="modalBody"></div>
     <div class="modal-footer" id="modalFooter"></div>
   </div>
 </div>
 
-<!-- ── PRINT SLIP ── -->
+<!-- -- PRINT SLIP -- -->
 <div id="printSlip"></div>
 
-<!-- ── TOAST CONTAINER ── -->
+<!-- -- TOAST CONTAINER -- -->
 <div id="toast-container"></div>
 
-<!-- ── BELL AUDIO ── -->
+<!-- -- BELL AUDIO -- -->
 <audio id="bellSound" preload="auto">
   <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAA..." type="audio/wav">
 </audio>
 
-<!-- ── SUPABASE ── -->
-<!-- ── AUTH ── -->
+<!-- -- SUPABASE -- -->
+<!-- -- AUTH -- -->
 <script type="module" src="assets/auth.js?v=3"></script>
 
-<!-- ── MAIN LOGIC ── -->
+<!-- -- MAIN LOGIC -- -->
 <script type="module">
   // Wait for auth + supabase to load
   window.appInit = async function() {
@@ -227,7 +227,7 @@
     setInterval(updateTimers, 60000);
   };
 
-  // ── Date & time display
+  // -- Date & time display
   function initDate() {
     const el = document.getElementById('kitchenDate');
     const now = new Date().toLocaleDateString('en-IN', {
@@ -237,7 +237,7 @@
     if (el) el.textContent = now;
   }
 
-  // ── Load settings (store open/close)
+  // -- Load settings (store open/close)
   async function loadSettings() {
     const sb = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -254,7 +254,7 @@
     window.gstRate = parseFloat(s.gst_rate || '5');
   }
 
-  // ── Load orders
+  // -- Load orders
   window.loadOrders = async function() {
     const sb = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -274,7 +274,7 @@
     window.setConnectionStatus('online');
   };
 
-  // ── Realtime subscription
+  // -- Realtime subscription
   function subscribeRealtime() {
     const sb = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -289,7 +289,7 @@
         updateTabCounts(window.allOrders);
         renderOrders(window.allOrders);
         playBell();
-        window.showToast('🔔 New Order!', `${payload.new.order_id} — Table ${payload.new.table_number}`, 'order');
+        window.showToast('?? New Order!', `${payload.new.order_id} � Table ${payload.new.table_number}`, 'order');
         window.logActivity && window.logActivity('new_order', `New order ${payload.new.order_id}`, window.currentStaff?.name || '', bid);
       })
       .on('postgres_changes', {
@@ -324,7 +324,7 @@
       .subscribe();
   }
 
-  // ── Stats
+  // -- Stats
   function updateStats(orders) {
     const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
     const todayOrders = orders.filter(o => o.created_at?.startsWith(today) ||
@@ -364,7 +364,7 @@
     if (tabDelayed) tabDelayed.textContent = delayed;
   }
 
-  // ── Render orders
+  // -- Render orders
   window._activeFilter = 'active';
 
   window.setFilter = function(status, el) {
@@ -399,7 +399,7 @@
 
     if (filtered.length === 0) {
       grid.innerHTML = `<div style="grid-column:1/-1;" class="empty-state">
-        <div class="empty-state-icon">✅</div>
+        <div class="empty-state-icon">?</div>
         <div class="empty-state-title">All clear!</div>
         <div class="empty-state-text">No orders in this view right now.</div>
       </div>`;
@@ -442,10 +442,10 @@
     const itemsHtml = items.map(i =>
       `<li class="order-item">
         <span class="order-item-name">
-          <span>${i.emoji || '🍽️'}</span>
+          <span>${i.emoji || '???'}</span>
           <span>${i.name}</span>
         </span>
-        <span class="order-item-qty">×${i.qty}</span>
+        <span class="order-item-qty">�${i.qty}</span>
       </li>`
     ).join('');
 
@@ -456,9 +456,9 @@
       <div class="order-card-header">
         <div>
           <div class="order-id">${order.order_id}</div>
-          <div class="order-table">${order.room_number ? '🛏️ Room ' + order.room_number : '🪑 Table ' + (order.table_number || '—')}</div>
+          <div class="order-table">${order.room_number ? '??? Room ' + order.room_number : '?? Table ' + (order.table_number || '�')}</div>
           <div class="order-time" id="timer-${order.id}" data-created="${order.created_at}" data-status="${order.status}">
-            ⏱ ${elapsedText}${delayLabel}
+            ? ${elapsedText}${delayLabel}
           </div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
@@ -468,13 +468,13 @@
       </div>
       <div class="order-card-body">
         <ul class="order-items">${itemsHtml}</ul>
-        ${order.note ? `<div class="order-note">📝 ${order.note}</div>` : ''}
-        ${order.customer_phone ? `<div style="font-size:0.75rem;color:var(--text-dim);margin-top:6px;">📱 ${order.customer_phone}</div>` : ''}
+        ${order.note ? `<div class="order-note">?? ${order.note}</div>` : ''}
+        ${order.customer_phone ? `<div style="font-size:0.75rem;color:var(--text-dim);margin-top:6px;">?? ${order.customer_phone}</div>` : ''}
       </div>
       <div class="order-card-footer">
         <div>
           <div style="font-size:0.72rem;color:var(--text-dim);margin-top:2px;">
-            ${order.assigned_waiter_name ? `🛎️ ${order.assigned_waiter_name}` : ''}
+            ${order.assigned_waiter_name ? `??? ${order.assigned_waiter_name}` : ''}
           </div>
         </div>
         <div class="order-actions">${actionBtns}</div>
@@ -489,47 +489,47 @@
 
   function getActionButtons(order) {
     const waiterTag = order.assigned_waiter_name
-      ? `<span style="font-size:0.72rem;color:var(--blue);background:var(--blue-dim);padding:2px 8px;border-radius:10px;border:1px solid rgba(66,165,245,0.3);">🛎️ ${order.assigned_waiter_name}</span>`
+      ? `<span style="font-size:0.72rem;color:var(--blue);background:var(--blue-dim);padding:2px 8px;border-radius:10px;border:1px solid rgba(66,165,245,0.3);">??? ${order.assigned_waiter_name}</span>`
       : '';
 
     if (order.status === 'pending') {
       return `
-        <button class="btn btn-blue btn-sm" onclick="updateStatus('${order.id}','preparing');event.stopPropagation()">👨‍🍳 Preparing</button>
-        <button class="btn btn-danger btn-sm" onclick="updateStatus('${order.id}','rejected');event.stopPropagation()">✕ Reject</button>
+        <button class="btn btn-blue btn-sm" onclick="updateStatus('${order.id}','preparing');event.stopPropagation()">????? Preparing</button>
+        <button class="btn btn-danger btn-sm" onclick="updateStatus('${order.id}','rejected');event.stopPropagation()">? Reject</button>
       `;
     }
     if (order.status === 'preparing') {
       // If waiter already assigned show Done button, else show Assign+Done
       if (order.assigned_waiter_name) {
         return `
-          <button class="btn btn-primary btn-sm" onclick="markDoneWithWaiter('${order.id}');event.stopPropagation()">✅ Done</button>
-          <button class="btn btn-danger btn-sm" onclick="updateStatus('${order.id}','rejected');event.stopPropagation()">✕ Reject</button>
+          <button class="btn btn-primary btn-sm" onclick="markDoneWithWaiter('${order.id}');event.stopPropagation()">? Done</button>
+          <button class="btn btn-danger btn-sm" onclick="updateStatus('${order.id}','rejected');event.stopPropagation()">? Reject</button>
           ${waiterTag}
         `;
       } else {
         return `
-          <button class="btn btn-primary btn-sm" onclick="markDoneWithWaiter('${order.id}');event.stopPropagation()">✅ Done</button>
-          <button class="btn btn-danger btn-sm" onclick="updateStatus('${order.id}','rejected');event.stopPropagation()">✕ Reject</button>
+          <button class="btn btn-primary btn-sm" onclick="markDoneWithWaiter('${order.id}');event.stopPropagation()">? Done</button>
+          <button class="btn btn-danger btn-sm" onclick="updateStatus('${order.id}','rejected');event.stopPropagation()">? Reject</button>
         `;
       }
     }
     if (order.status === 'done') {
       return `
-        <span style="font-size:0.78rem;color:var(--green-bright);">✅ Ready — Waiter collecting</span>
+        <span style="font-size:0.78rem;color:var(--accent);">? Ready � Waiter collecting</span>
         ${waiterTag}
       `;
     }
     if (order.status === 'delivered') {
       if (order.payment_status === 'paid') {
-        return `<span style="font-size:0.78rem;color:var(--green-bright);">🛎️ Delivered & Paid</span>`;
+        return `<span style="font-size:0.78rem;color:var(--accent);">??? Delivered & Paid</span>`;
       } else {
-        return `<span style="font-size:0.78rem;color:var(--text-dim);">🛎️ Delivered — Awaiting payment</span>`;
+        return `<span style="font-size:0.78rem;color:var(--text-dim);">??? Delivered � Awaiting payment</span>`;
       }
     }
     return '';
   }
 
-  // ── Update order status (simple — for pending/rejected only)
+  // -- Update order status (simple � for pending/rejected only)
   window.updateStatus = async function(orderId, newStatus) {
     const sb = window.supabaseClient;
     const { error } = await sb.from('orders')
@@ -537,45 +537,45 @@
       .eq('id', orderId);
     if (error) { window.showToast('Error', 'Could not update status', 'error'); return; }
     const order = (window.allOrders || []).find(o => o.id === orderId);
-    window.logActivity && window.logActivity('order_status', `${order?.order_id} → ${newStatus}`, window.currentStaff?.name||'', window.getActiveBranchId());
-    window.showToast('✅ Updated', `Order → ${newStatus}`, 'success');
+    window.logActivity && window.logActivity('order_status', `${order?.order_id} ? ${newStatus}`, window.currentStaff?.name||'', window.getActiveBranchId());
+    window.showToast('? Updated', `Order ? ${newStatus}`, 'success');
   };
 
-  // ── Mark done with smart auto waiter assignment
+  // -- Mark done with smart auto waiter assignment
   window.markDoneWithWaiter = async function(orderId) {
     const sb    = window.supabaseClient;
     const bid   = window.getActiveBranchId();
     const order = (window.allOrders || []).find(o => o.id === orderId);
     if (!order) return;
 
-    // ── Situation 5: Waiter placed the order — already assigned, just mark done
+    // -- Situation 5: Waiter placed the order � already assigned, just mark done
     if (order.assigned_waiter_id) {
       const { error } = await sb.from('orders')
         .update({ status: 'done', updated_at: new Date().toISOString() })
         .eq('id', orderId);
       if (!error) {
-        window.showToast('✅ Order Ready!', `${order.assigned_waiter_name} will deliver`, 'success');
+        window.showToast('? Order Ready!', `${order.assigned_waiter_name} will deliver`, 'success');
         window.logActivity && window.logActivity(
           'order_status',
-          `${order.order_id} → done (waiter: ${order.assigned_waiter_name})`,
+          `${order.order_id} ? done (waiter: ${order.assigned_waiter_name})`,
           window.currentStaff?.name || '', bid
         );
       }
       return;
     }
 
-    // ── Situation 3: No waiters at all
-    // Always fetch fresh from DB (fixes Situation 4 — deactivated mid-shift)
+    // -- Situation 3: No waiters at all
+    // Always fetch fresh from DB (fixes Situation 4 � deactivated mid-shift)
     const { data: waiters } = await sb.from('staff').select('id,name')
       .eq('branch_id', bid).eq('is_active', true).eq('role', 'waiter');
 
     if (!waiters || waiters.length === 0) {
-      window.showToast('⚠️ No waiters available', 'Add waiter staff first', 'warning');
+      window.showToast('?? No waiters available', 'Add waiter staff first', 'warning');
       return;
     }
 
-    // ── Get each waiter's CURRENT active orders (status = done, not yet delivered)
-    // This fixes Situation 1 — waiter already busy with an order
+    // -- Get each waiter's CURRENT active orders (status = done, not yet delivered)
+    // This fixes Situation 1 � waiter already busy with an order
     const { data: activeOrders } = await sb.from('orders').select('assigned_waiter_id')
       .eq('branch_id', bid)
       .in('status', ['done']) // 'done' = kitchen ready, waiter picking up/delivering
@@ -590,14 +590,14 @@
       }
     });
 
-    // ── Get today's total delivery count for tiebreaking (fairness)
+    // -- Get today's total delivery count for tiebreaking (fairness)
     const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
     const { data: counts } = await sb.from('waiter_delivery_count').select('*')
       .eq('branch_id', bid).eq('date', today);
     const countMap = {};
     (counts || []).forEach(c => { countMap[c.waiter_id] = c.count; });
 
-    // ── Smart assignment: 
+    // -- Smart assignment: 
     // Primary sort: fewest ACTIVE orders right now
     // Tiebreak: fewest total deliveries today (round-robin fairness)
     let assignedWaiter = waiters[0];
@@ -617,18 +617,18 @@
       }
     });
 
-    // ── Situation 2: All waiters are busy — warn but still assign least-busy one
+    // -- Situation 2: All waiters are busy � warn but still assign least-busy one
     const allBusy = waiters.every(w => (activeMap[w.id] || 0) > 0);
     if (allBusy) {
       window.showToast(
-        '⚠️ All waiters are busy',
-        `Assigned to ${assignedWaiter.name} — fewest active orders`,
+        '?? All waiters are busy',
+        `Assigned to ${assignedWaiter.name} � fewest active orders`,
         'warning',
         6000
       );
     }
 
-    // ── Mark done + assign waiter
+    // -- Mark done + assign waiter
     const { error } = await sb.from('orders').update({
       status:               'done',
       assigned_waiter_id:   assignedWaiter.id,
@@ -639,7 +639,7 @@
 
     if (error) { window.showToast('Error assigning waiter', error.message, 'error'); return; }
 
-    // ── Update daily delivery count for tiebreaking
+    // -- Update daily delivery count for tiebreaking
     await sb.from('waiter_delivery_count').upsert({
       branch_id:   bid,
       waiter_id:   assignedWaiter.id,
@@ -650,7 +650,7 @@
 
     if (!allBusy) {
       window.showToast(
-        '✅ Order Ready!',
+        '? Order Ready!',
         `Auto-assigned to ${assignedWaiter.name} ${minActive === 0 ? '(free)' : `(${minActive} active)`}`,
         'success'
       );
@@ -658,18 +658,18 @@
 
     window.logActivity && window.logActivity(
       'order_status',
-      `${order.order_id} → done, auto-assigned to ${assignedWaiter.name} (active:${minActive}, today:${minTotal})`,
+      `${order.order_id} ? done, auto-assigned to ${assignedWaiter.name} (active:${minActive}, today:${minTotal})`,
       window.currentStaff?.name || '', bid
     );
   };
 
-  // ── Store toggle
+  // -- Store toggle
   window.toggleStore = async function(isOpen) {
     const label = document.getElementById('storeLabel');
     if (label) label.textContent = isOpen ? 'Store Open' : 'Store Closed';
     const ok = await window.setSetting('store_open', String(isOpen));
     if (ok) {
-      window.showToast(isOpen ? '✅ Store Opened' : '🔴 Store Closed', '', isOpen ? 'success' : 'warning');
+      window.showToast(isOpen ? '? Store Opened' : '?? Store Closed', '', isOpen ? 'success' : 'warning');
       window.logActivity && window.logActivity(
         'store_toggle', `Store ${isOpen ? 'opened' : 'closed'}`,
         window.currentStaff?.name || '', window.getActiveBranchId()
@@ -679,12 +679,12 @@
     }
   };
 
-  // ── Bell sound
+  // -- Bell sound
   window._bellEnabled = true;
   window.toggleBell = function() {
     window._bellEnabled = !window._bellEnabled;
     const btn = document.getElementById('bellBtn');
-    if (btn) btn.textContent = window._bellEnabled ? '🔔 Sound On' : '🔕 Sound Off';
+    if (btn) btn.textContent = window._bellEnabled ? '?? Sound On' : '?? Sound Off';
   };
 
   function playBell() {
@@ -694,7 +694,7 @@
     } catch(e) {}
   }
 
-  // ── Elapsed time helpers
+  // -- Elapsed time helpers
   function getMinutesElapsed(dateStr) {
     return Math.floor((Date.now() - new Date(dateStr).getTime()) / 60000);
   }
@@ -744,7 +744,7 @@
         }
       }
       
-      el.innerHTML = `⏱ ${text}`;
+      el.innerHTML = `? ${text}`;
     });
     
     const delayTab = document.getElementById('filterTabDelayed');
@@ -761,18 +761,18 @@
     }
   };
 
-  // ── Order detail modal
+  // -- Order detail modal
   window.openOrderModal = function(order) {
     const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
     const rate = window.gstRate || 5;
     const half = rate / 2;
 
-    document.getElementById('modalTitle').textContent = `${order.order_id} — ${order.room_number ? 'Room ' + order.room_number : 'Table ' + (order.table_number || '—')}`;
+    document.getElementById('modalTitle').textContent = `${order.order_id} � ${order.room_number ? 'Room ' + order.room_number : 'Table ' + (order.table_number || '�')}`;
 
     const itemRows = items.map(i =>
       `<tr>
-        <td>${i.emoji || '🍽️'} ${i.name}</td>
-        <td style="text-align:center;">×${i.qty}</td>
+        <td>${i.emoji || '???'} ${i.name}</td>
+        <td style="text-align:center;">�${i.qty}</td>
         <td style="text-align:right;font-family:var(--font-mono);">Rs. ${(i.price * i.qty).toFixed(2)}</td>
       </tr>`
     ).join('');
@@ -783,10 +783,10 @@
           <span class="badge badge-${order.status}" style="margin-top:4px;">${order.status}</span></div>
         <div><span style="color:var(--text-dim);">Payment</span><br>
           <span class="badge ${order.payment_status === 'paid' ? 'badge-paid' : 'badge-unpaid'}" style="margin-top:4px;">${order.payment_status}</span></div>
-        <div><span style="color:var(--text-dim);">Customer</span><br>${order.customer_name || '—'}</div>
-        <div><span style="color:var(--text-dim);">Mobile</span><br>${order.customer_phone || '—'}</div>
+        <div><span style="color:var(--text-dim);">Customer</span><br>${order.customer_name || '�'}</div>
+        <div><span style="color:var(--text-dim);">Mobile</span><br>${order.customer_phone || '�'}</div>
         <div><span style="color:var(--text-dim);">Invoice No</span><br>
-          <span style="font-family:var(--font-mono);font-size:0.8rem;">${order.invoice_no || '—'}</span></div>
+          <span style="font-family:var(--font-mono);font-size:0.8rem;">${order.invoice_no || '�'}</span></div>
         <div><span style="color:var(--text-dim);">Time</span><br>
           ${new Date(order.created_at).toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' })}</div>
       </div>
@@ -805,27 +805,27 @@
           <span>SGST @ ${half}%</span><span>Rs. ${parseFloat(order.sgst).toFixed(2)}</span></div>
         <div style="display:flex;justify-content:space-between;padding:6px 0 0;font-weight:700;font-size:1rem;border-top:1px solid var(--border);margin-top:6px;">
           <span>Total</span>
-          <span style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${parseFloat(order.total).toFixed(2)}</span>
+          <span style="font-family:var(--font-mono);color:var(--accent);">Rs. ${parseFloat(order.total).toFixed(2)}</span>
         </div>
       </div>
-      ${order.note ? `<div class="order-note" style="margin-top:12px;">📝 ${order.note}</div>` : ''}
+      ${order.note ? `<div class="order-note" style="margin-top:12px;">?? ${order.note}</div>` : ''}
     `;
 
     document.getElementById('modalFooter').innerHTML = `
       ${order.status === 'pending' ? `
-        <button class="btn btn-blue" onclick="updateStatus('${order.id}','preparing');closeOrderModal()">👨‍🍳 Mark Preparing</button>
-        <button class="btn btn-danger" onclick="updateStatus('${order.id}','rejected');closeOrderModal()">✕ Reject</button>
+        <button class="btn btn-blue" onclick="updateStatus('${order.id}','preparing');closeOrderModal()">????? Mark Preparing</button>
+        <button class="btn btn-danger" onclick="updateStatus('${order.id}','rejected');closeOrderModal()">? Reject</button>
       ` : ''}
       ${order.status === 'preparing' ? `
-        <button class="btn btn-primary" onclick="updateStatus('${order.id}','done');closeOrderModal()">✅ Mark Done</button>
-        <button class="btn btn-danger" onclick="updateStatus('${order.id}','rejected');closeOrderModal()">✕ Reject</button>
+        <button class="btn btn-primary" onclick="updateStatus('${order.id}','done');closeOrderModal()">? Mark Done</button>
+        <button class="btn btn-danger" onclick="updateStatus('${order.id}','rejected');closeOrderModal()">? Reject</button>
       ` : ''}
       ${order.status === 'done' ? `
         <button class="btn btn-gold" onclick="markPayment('${order.id}');closeOrderModal()">
-          ${order.payment_status === 'paid' ? '🔄 Mark Unpaid' : '💰 Mark Paid'}
+          ${order.payment_status === 'paid' ? '?? Mark Unpaid' : '?? Mark Paid'}
         </button>
       ` : ''}
-      <button class="btn btn-secondary" onclick="printOrderBill('${order.id}')">🖨️ Print Bill</button>
+      <button class="btn btn-secondary" onclick="printOrderBill('${order.id}')">??? Print Bill</button>
       <button class="btn btn-ghost" onclick="closeOrderModal()">Close</button>
     `;
 
@@ -836,7 +836,7 @@
     document.getElementById('orderModal').style.display = 'none';
   };
 
-  // ── Print daily summary
+  // -- Print daily summary
   window.printDailySummary = function() {
     const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
     const orders = (window.allOrders || []).filter(o =>
@@ -851,14 +851,14 @@
       return `<tr>
         <td>${o.order_id}</td>
         <td>T${o.table_number}</td>
-        <td>${items.map(i => `${i.name}×${i.qty}`).join(', ')}</td>
+        <td>${items.map(i => `${i.name}�${i.qty}`).join(', ')}</td>
         <td style="text-align:right">Rs. ${parseFloat(o.total).toFixed(2)}</td>
       </tr>`;
     }).join('');
 
     slip.innerHTML = `
       <div style="font-family:monospace;font-size:12px;color:#000;max-width:700px;margin:0 auto;">
-        <h2 style="text-align:center;margin-bottom:4px;">LAXMI — Daily Summary</h2>
+        <h2 style="text-align:center;margin-bottom:4px;">LAXMI � Daily Summary</h2>
         <p style="text-align:center;color:#555;margin-bottom:12px;">${new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'long', year: 'numeric' })}</p>
         <table width="100%" style="border-collapse:collapse;font-size:11px;">
           <thead>
@@ -881,7 +881,7 @@
     window.print();
   };
 
-  // ── Full Screen Mode
+  // -- Full Screen Mode
   window.toggleFullscreen = function() {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().catch(err => {
@@ -899,13 +899,13 @@
     document.body.classList.toggle('kitchen-fullscreen', isFullscreen);
     const btn = document.getElementById('fullscreenBtn');
     if (btn) {
-      btn.innerHTML = isFullscreen ? '❌ Exit Full Screen' : '🖥️ Full Screen';
+      btn.innerHTML = isFullscreen ? '? Exit Full Screen' : '??? Full Screen';
       btn.classList.toggle('btn-primary', isFullscreen);
       btn.classList.toggle('btn-secondary', !isFullscreen);
     }
   });
 
-  // ── Export Excel
+  // -- Export Excel
   window.exportExcel = function() {
     const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
     const orders = (window.allOrders || []).filter(o =>
@@ -916,7 +916,7 @@
     let csv = 'Order ID,Invoice No,Table,Customer,Phone,Items,Subtotal,CGST,SGST,Total,Status,Payment,Time\n';
     orders.forEach(o => {
       const items = (typeof o.items === 'string' ? JSON.parse(o.items) : o.items)
-        .map(i => `${i.name}×${i.qty}`).join(' | ');
+        .map(i => `${i.name}�${i.qty}`).join(' | ');
       const time = new Date(o.created_at).toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' });
       csv += `"${o.order_id}","${o.invoice_no || ''}","${o.table_number || ''}","${o.customer_name || ''}","${o.customer_phone || ''}","${items}",${o.subtotal},${o.cgst},${o.sgst},${o.total},"${o.status}","${o.payment_status}","${time}"\n`;
     });
@@ -926,15 +926,15 @@
     a.href = URL.createObjectURL(blob);
     a.download = `LAXMI_Orders_${today}.csv`;
     a.click();
-    window.showToast('✅ Exported', `${orders.length} orders downloaded`, 'success');
+    window.showToast('? Exported', `${orders.length} orders downloaded`, 'success');
   };
 
-  // ── Sidebar toggle (mobile)
+  // -- Sidebar toggle (mobile)
   window.toggleSidebar = function() {
     document.getElementById('sidebar').classList.toggle('open');
   };
 
-  // BroadcastChannel — receive orders from same browser
+  // BroadcastChannel � receive orders from same browser
   try {
     const bc = new BroadcastChannel('rms_orders');
     bc.onmessage = (e) => {
@@ -972,7 +972,7 @@
     });
   });
 
-  // ── Assign waiter to order
+  // -- Assign waiter to order
   let _waiters = [];
   async function loadWaiters() {
     const { data } = await window.supabaseClient.from('staff').select('id,name,role')
@@ -990,13 +990,13 @@
     modal.innerHTML = `
       <div class="modal" style="max-width:360px;">
         <div class="modal-header">
-          <h2 class="modal-title">🛎️ Assign Waiter</h2>
-          <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">×</button>
+          <h2 class="modal-title">??? Assign Waiter</h2>
+          <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">�</button>
         </div>
         <div class="input-group">
           <label class="input-label">Select Waiter</label>
           <select id="waiterSelect" class="input">
-            <option value="">Choose waiter…</option>
+            <option value="">Choose waiter�</option>
             ${_waiters.map(w=>`<option value="${w.id}" data-name="${w.name}">${w.name} (${w.role})</option>`).join('')}
           </select>
         </div>
@@ -1015,7 +1015,7 @@
     const wId    = sel.value;
     const wName  = sel.options[sel.selectedIndex]?.dataset.name;
     if (!wId) { window.showToast('Select a waiter','','error'); return; }
-    btn.disabled = true; btn.textContent = 'Assigning…';
+    btn.disabled = true; btn.textContent = 'Assigning�';
     const { data, error } = await window.supabaseClient.from('orders').update({
       assigned_waiter_id:   wId,
       assigned_waiter_name: wName,
@@ -1029,7 +1029,7 @@
       return;
     }
     modal.remove();
-    window.showToast('✅ Waiter assigned!', `${wName} will deliver this order`, 'success');
+    window.showToast('? Waiter assigned!', `${wName} will deliver this order`, 'success');
     window.logActivity && window.logActivity('order_status', `Waiter ${wName} assigned to order`, window.currentStaff?.name||'', window.getActiveBranchId());
     await window.loadOrders();
   };

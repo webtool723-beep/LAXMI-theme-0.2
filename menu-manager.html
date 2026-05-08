@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LAXMI — Menu Manager</title>
+  <title>LAXMI � Menu Manager</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
@@ -12,13 +12,13 @@
     .emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; max-height: 200px; overflow-y: auto; padding: 4px; }
     .emoji-btn { font-size: 1.4rem; padding: 6px; border-radius: 6px; background: var(--surface2); border: 1px solid transparent; cursor: pointer; text-align: center; transition: all 0.15s; }
     .emoji-btn:hover { background: var(--surface3); border-color: var(--border); }
-    .emoji-btn.selected { border-color: var(--green-accent); background: var(--green-dim); }
+    .emoji-btn.selected { border-color: var(--accent); background: var(--accent-dim); }
     .drag-handle { cursor: grab; color: var(--text-dim); padding: 0 8px; font-size: 1rem; }
     .drag-handle:active { cursor: grabbing; }
     .dragging { opacity: 0.5; }
-    .drag-over { border-top: 2px solid var(--green-accent); }
+    .drag-over { border-top: 2px solid var(--accent); }
     .bulk-bar {
-      background: var(--green-dim); border: 1px solid var(--green-accent);
+      background: var(--accent-dim); border: 1px solid var(--accent);
       border-radius: var(--radius); padding: 12px 16px;
       display: none; align-items: center; justify-content: space-between;
       gap: 12px; margin-bottom: 16px; flex-wrap: wrap;
@@ -35,70 +35,70 @@
 <body>
 
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-<div class="offline-banner" id="offlineBanner">⚠️ Connection lost — reconnecting…</div>
+<div class="offline-banner" id="offlineBanner">?? Connection lost � reconnecting�</div>
 <div class="auth-gate" id="authGate" style="display:none;"></div>
 
 <div id="appContent" style="display:none;">
   <div class="app-layout">
 
-    <!-- ── SIDEBAR ── -->
+    <!-- -- SIDEBAR -- -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-logo">
-        <div class="sidebar-logo-name">🍃 LAXMI</div>
+        <div class="sidebar-logo-name">?? LAXMI</div>
         <div class="sidebar-logo-sub">Menu Manager</div>
       </div>
       <nav class="sidebar-nav">
         <div class="nav-section-label">Operations</div>
-        <a class="nav-item" href="kitchen.html"><span class="nav-item-icon">🍳</span> Kitchen</a>
-        <a class="nav-item" href="admin.html"><span class="nav-item-icon">📊</span> Admin Panel</a>
-        <a class="nav-item active" href="menu-manager.html"><span class="nav-item-icon">📋</span> Menu Manager</a>
-        <a class="nav-item" href="reports.html"><span class="nav-item-icon">📈</span> Reports</a>
+        <a class="nav-item" href="kitchen.html"><span class="nav-item-icon">??</span> Kitchen</a>
+        <a class="nav-item" href="admin.html"><span class="nav-item-icon">??</span> Admin Panel</a>
+        <a class="nav-item active" href="menu-manager.html"><span class="nav-item-icon">??</span> Menu Manager</a>
+        <a class="nav-item" href="reports.html"><span class="nav-item-icon">??</span> Reports</a>
         <div class="nav-section-label" style="margin-top:8px;">Management</div>
-        <a class="nav-item" href="staff.html"><span class="nav-item-icon">👥</span> Staff</a>
+        <a class="nav-item" href="staff.html"><span class="nav-item-icon">??</span> Staff</a>
         <div class="nav-section-label" style="margin-top:8px;">Customer</div>
-        <a class="nav-item" href="waiter.html"><span class="nav-item-icon">🛎️</span> Waiter</a>
-        <a class="nav-item" href="payment-manager.html"><span class="nav-item-icon">💳</span> Payments</a>
-        <a class="nav-item" href="index.html" target="_blank"><span class="nav-item-icon">🛒</span> Order Page ↗</a>
+        <a class="nav-item" href="waiter.html"><span class="nav-item-icon">???</span> Waiter</a>
+        <a class="nav-item" href="payment-manager.html"><span class="nav-item-icon">??</span> Payments</a>
+        <a class="nav-item" href="index.html" target="_blank"><span class="nav-item-icon">??</span> Order Page ?</a>
       </nav>
       <div class="sidebar-footer">
         <div class="sidebar-user">
           <div class="sidebar-avatar" id="sidebarAvatar">?</div>
           <div class="sidebar-user-info">
-            <div class="sidebar-user-name" id="sidebarUserName">Loading…</div>
-            <div class="sidebar-user-role" id="sidebarUserRole">—</div>
+            <div class="sidebar-user-name" id="sidebarUserName">Loading�</div>
+            <div class="sidebar-user-role" id="sidebarUserRole">�</div>
           </div>
         </div>
-        <button class="btn btn-ghost w-full btn-sm" onclick="window.rmsSignOut()">⏏ Sign Out</button>
+        <button class="btn btn-ghost w-full btn-sm" onclick="window.rmsSignOut()">? Sign Out</button>
       </div>
     </aside>
 
-    <!-- ── MAIN ── -->
+    <!-- -- MAIN -- -->
     <main class="main-content">
       <div class="page-header">
         <div style="display:flex;align-items:center;gap:10px;">
           <button class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></button>
           <div>
-            <h1 class="page-title">📋 Menu Manager</h1>
+            <h1 class="page-title">?? Menu Manager</h1>
             <div class="page-subtitle">Manage categories and menu items</div>
           </div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="btn btn-secondary btn-sm" onclick="exportMenuCSV()">📥 Export CSV</button>
-          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('importFile').click()">📤 Import CSV</button>
+          <button class="btn btn-secondary btn-sm" onclick="exportMenuCSV()">?? Export CSV</button>
+          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('importFile').click()">?? Import CSV</button>
           <input type="file" id="importFile" accept=".csv" style="display:none" onchange="importCSV(this)">
         </div>
       </div>
 
       <!-- Page Tabs -->
       <div class="page-tabs">
-        <button class="page-tab active" onclick="switchPanel('categories',this)">🗂 Categories</button>
-        <button class="page-tab" onclick="switchPanel('items',this)">🍽️ Menu Items</button>
+        <button class="page-tab active" onclick="switchPanel('categories',this)">?? Categories</button>
+        <button class="page-tab" onclick="switchPanel('items',this)">??? Menu Items</button>
       </div>
 
-      <!-- ══ CATEGORIES PANEL ══ -->
+      <!-- -- CATEGORIES PANEL -- -->
       <div class="tab-panel active" id="panel-categories">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
-          <div class="section-title">🗂 Categories</div>
+          <div class="section-title">?? Categories</div>
           <button class="btn btn-primary" onclick="openCatModal()">+ Add Category</button>
         </div>
 
@@ -116,32 +116,32 @@
               </tr>
             </thead>
             <tbody id="catTableBody">
-              <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-dim);">Loading…</td></tr>
+              <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-dim);">Loading�</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- ══ MENU ITEMS PANEL ══ -->
+      <!-- -- MENU ITEMS PANEL -- -->
       <div class="tab-panel" id="panel-items">
         <!-- Bulk bar -->
         <div class="bulk-bar" id="bulkBar">
-          <span style="color:var(--green-bright);font-size:0.875rem;">
+          <span style="color:var(--accent);font-size:0.875rem;">
             <span id="bulkCount">0</span> item(s) selected
           </span>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="btn btn-secondary btn-sm" onclick="bulkToggleAvailable(true)">✅ Mark Available</button>
-            <button class="btn btn-secondary btn-sm" onclick="bulkToggleAvailable(false)">🔴 Mark Unavailable</button>
-            <button class="btn btn-danger btn-sm" onclick="bulkDelete()">🗑 Delete Selected</button>
-            <button class="btn btn-ghost btn-sm" onclick="clearSelection()">✕ Clear</button>
+            <button class="btn btn-secondary btn-sm" onclick="bulkToggleAvailable(true)">? Mark Available</button>
+            <button class="btn btn-secondary btn-sm" onclick="bulkToggleAvailable(false)">?? Mark Unavailable</button>
+            <button class="btn btn-danger btn-sm" onclick="bulkDelete()">?? Delete Selected</button>
+            <button class="btn btn-ghost btn-sm" onclick="clearSelection()">? Clear</button>
           </div>
         </div>
 
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
           <div class="search-bar" style="flex:1;min-width:200px;margin:0;">
             <div class="search-input-wrap" style="flex:1;">
-              <span class="search-icon" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;">🔍</span>
-              <input type="text" class="input" id="itemSearch" placeholder="Search items…" oninput="filterItems()" style="padding-left:36px;">
+              <span class="search-icon" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;">??</span>
+              <input type="text" class="input" id="itemSearch" placeholder="Search items�" oninput="filterItems()" style="padding-left:36px;">
             </div>
             <select class="input" id="catFilter" onchange="filterItems()" style="max-width:160px;">
               <option value="all">All Categories</option>
@@ -169,7 +169,7 @@
               </tr>
             </thead>
             <tbody id="itemsTableBody">
-              <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-dim);">Loading…</td></tr>
+              <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-dim);">Loading�</td></tr>
             </tbody>
           </table>
         </div>
@@ -180,12 +180,12 @@
   </div>
 </div>
 
-<!-- ── CATEGORY MODAL ── -->
+<!-- -- CATEGORY MODAL -- -->
 <div class="modal-overlay" id="catModal" style="display:none;" onclick="if(event.target===this)closeCatModal()">
   <div class="modal">
     <div class="modal-header">
       <h2 class="modal-title" id="catModalTitle">Add Category</h2>
-      <button class="modal-close" onclick="closeCatModal()">×</button>
+      <button class="modal-close" onclick="closeCatModal()">�</button>
     </div>
     <div style="display:flex;flex-direction:column;gap:16px;">
       <div class="input-group">
@@ -195,9 +195,9 @@
       <div class="input-group">
         <label class="input-label">Emoji</label>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
-          <span id="catEmojiPreview" style="font-size:2rem;">🍽️</span>
+          <span id="catEmojiPreview" style="font-size:2rem;">???</span>
           <input type="text" id="catEmoji" class="input" placeholder="Paste emoji" maxlength="4" style="width:100px;"
-            oninput="document.getElementById('catEmojiPreview').textContent=this.value||'🍽️'">
+            oninput="document.getElementById('catEmojiPreview').textContent=this.value||'???'">
         </div>
         <div class="emoji-grid" id="catEmojiGrid"></div>
       </div>
@@ -213,12 +213,12 @@
   </div>
 </div>
 
-<!-- ── MENU ITEM MODAL ── -->
+<!-- -- MENU ITEM MODAL -- -->
 <div class="modal-overlay" id="itemModal" style="display:none;" onclick="if(event.target===this)closeItemModal()">
   <div class="modal modal-lg">
     <div class="modal-header">
       <h2 class="modal-title" id="itemModalTitle">Add Menu Item</h2>
-      <button class="modal-close" onclick="closeItemModal()">×</button>
+      <button class="modal-close" onclick="closeItemModal()">�</button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div class="input-group" style="grid-column:1/-1;">
@@ -235,7 +235,7 @@
       </div>
       <div class="input-group" style="grid-column:1/-1;">
         <label class="input-label">Description</label>
-        <textarea id="itemDesc" class="input" rows="2" placeholder="Short description…"></textarea>
+        <textarea id="itemDesc" class="input" rows="2" placeholder="Short description�"></textarea>
       </div>
 
       <!-- Tag 1 -->
@@ -261,9 +261,9 @@
       <div class="input-group">
         <label class="input-label">Emoji</label>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
-          <span id="itemEmojiPreview" style="font-size:2rem;">🍽️</span>
+          <span id="itemEmojiPreview" style="font-size:2rem;">???</span>
           <input type="text" id="itemEmoji" class="input" placeholder="Paste emoji" maxlength="4" style="width:100px;"
-            oninput="document.getElementById('itemEmojiPreview').textContent=this.value||'🍽️'">
+            oninput="document.getElementById('itemEmojiPreview').textContent=this.value||'???'">
         </div>
         <div class="emoji-grid" id="itemEmojiGrid"></div>
       </div>
@@ -283,11 +283,11 @@
           </label>
           <label class="toggle-wrap">
             <label class="toggle"><input type="checkbox" id="itemChefsSpecial"><span class="toggle-slider"></span></label>
-            <span class="toggle-label">👨‍🍳 Chef's Special</span>
+            <span class="toggle-label">????? Chef's Special</span>
           </label>
           <label class="toggle-wrap">
             <label class="toggle"><input type="checkbox" id="itemTodaysSpecial"><span class="toggle-slider"></span></label>
-            <span class="toggle-label">⏰ Today's Special</span>
+            <span class="toggle-label">? Today's Special</span>
           </label>
           <div id="specialTimeWrap" style="display:none;gap:8px;flex-direction:column;">
             <div style="display:flex;gap:8px;align-items:center;">
@@ -307,10 +307,10 @@
   </div>
 </div>
 
-<!-- ── DELETE CONFIRM MODAL ── -->
+<!-- -- DELETE CONFIRM MODAL -- -->
 <div class="modal-overlay" id="deleteModal" style="display:none;" onclick="if(event.target===this)closeDeleteModal()">
   <div class="modal" style="max-width:360px;text-align:center;">
-    <div style="font-size:2.5rem;margin-bottom:12px;">🗑️</div>
+    <div style="font-size:2.5rem;margin-bottom:12px;">???</div>
     <h2 class="modal-title" style="margin-bottom:8px;" id="deleteTitle">Delete Item?</h2>
     <p style="color:var(--text-dim);font-size:0.875rem;margin-bottom:24px;" id="deleteMsg">This action cannot be undone.</p>
     <div style="display:flex;gap:10px;justify-content:center;">
@@ -325,8 +325,8 @@
 <script type="module" src="assets/auth.js?v=3"></script>
 <script type="module">
 
-  // ── Common emojis for picker
-  const FOOD_EMOJIS = ['🍽️','🍛','🍜','🍝','🍲','🥘','🍱','🍣','🍤','🍗','🍖','🥩','🍔','🍟','🌮','🌯','🥙','🧆','🥚','🍳','🥞','🧇','🥓','🥗','🥦','🌽','🥕','🍅','🫑','🧅','🧄','🍠','🍆','🥑','🫒','🍞','🫓','🥐','🥖','🫕','🧀','🥣','🍲','🍜','🍝','🍛','🍚','🍙','🍘','🍥','🥮','🍡','🧁','🍰','🎂','🍮','🍭','🍬','🍫','🍩','🍪','🌰','🥜','🍦','🍨','🍧','🍺','🍻','☕','🍵','🧃','🥤','🧋','🍹','🍸','🥂','🍾','🫖','🧊','🫙','🍴','🥄','🔪','🫙'];
+  // -- Common emojis for picker
+  const FOOD_EMOJIS = ['???','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','?','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??'];
 
   function buildEmojiGrid(gridId, inputId, previewId) {
     const grid = document.getElementById(gridId);
@@ -347,7 +347,7 @@
     });
   }
 
-  // ── State
+  // -- State
   let categories = [];
   let menuItems = [];
   let filteredItems = [];
@@ -361,7 +361,7 @@
   
 
 
-  // ── appInit called by auth.js
+  // -- appInit called by auth.js
 window.appInit = async function() {
     window.renderStaffUI && window.renderStaffUI();
     window.buildAuthGate && window.buildAuthGate('Menu Manager');
@@ -378,7 +378,7 @@ window.appInit = async function() {
     window.listenToSettings && window.listenToSettings();
   };
 
-  // ── Load categories
+  // -- Load categories
   async function loadCategories() {
     const sb = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -390,7 +390,7 @@ window.appInit = async function() {
     populateItemCategorySelect();
   }
 
-  // ── Load menu items
+  // -- Load menu items
   async function loadMenuItems() {
     const sb = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -400,7 +400,7 @@ window.appInit = async function() {
     filterItems();
   }
 
-  // ── Render categories table
+  // -- Render categories table
   function renderCatTable() {
     const tbody = document.getElementById('catTableBody');
     if (categories.length === 0) {
@@ -414,8 +414,8 @@ window.appInit = async function() {
         ondragover="dragOver(event)"
         ondrop="dropCat(event,${cat.id})"
         ondragleave="dragLeave(event)">
-        <td><span class="drag-handle" title="Drag to reorder">⠿</span></td>
-        <td><span style="font-size:1.6rem;">${cat.emoji || '🍽️'}</span></td>
+        <td><span class="drag-handle" title="Drag to reorder">?</span></td>
+        <td><span style="font-size:1.6rem;">${cat.emoji || '???'}</span></td>
         <td style="font-weight:600;">${cat.name}</td>
         <td><span class="chip">${itemCount} items</span></td>
         <td>
@@ -424,16 +424,16 @@ window.appInit = async function() {
         <td><span style="font-family:var(--font-mono);font-size:0.8rem;color:var(--text-dim);">${cat.sort_order}</span></td>
         <td>
           <div style="display:flex;gap:6px;">
-            <button class="btn btn-secondary btn-sm" onclick="openCatModal(${cat.id})">✏️ Edit</button>
-            <button class="btn btn-ghost btn-sm" onclick="toggleCatActive(${cat.id},${!cat.is_active})">${cat.is_active ? '🙈 Hide' : '👁 Show'}</button>
-            <button class="btn btn-danger btn-sm" onclick="confirmDeleteCat(${cat.id},'${cat.name.replace(/'/g,"\\'")}')">🗑</button>
+            <button class="btn btn-secondary btn-sm" onclick="openCatModal(${cat.id})">?? Edit</button>
+            <button class="btn btn-ghost btn-sm" onclick="toggleCatActive(${cat.id},${!cat.is_active})">${cat.is_active ? '?? Hide' : '?? Show'}</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmDeleteCat(${cat.id},'${cat.name.replace(/'/g,"\\'")}')">??</button>
           </div>
         </td>
       </tr>`;
     }).join('');
   }
 
-  // ── Populate category filter dropdown
+  // -- Populate category filter dropdown
   function populateCatFilter() {
     const sel = document.getElementById('catFilter');
     const currentVal = sel.value;
@@ -449,7 +449,7 @@ window.appInit = async function() {
     sel.innerHTML = categories.map(c => `<option value="${c.id}">${c.emoji} ${c.name}</option>`).join('');
   }
 
-  // ── Filter items
+  // -- Filter items
   window.filterItems = function() {
     const search = document.getElementById('itemSearch').value.toLowerCase();
     const catId = document.getElementById('catFilter').value;
@@ -466,7 +466,7 @@ window.appInit = async function() {
     renderPagination();
   };
 
-  // ── Render items table
+  // -- Render items table
   function renderItemsTable() {
     const tbody = document.getElementById('itemsTableBody');
     const start = (currentPage - 1) * PAGE_SIZE;
@@ -484,15 +484,15 @@ window.appInit = async function() {
         <td><input type="checkbox" ${checked} onchange="toggleItemSelect(${item.id},this.checked)" style="cursor:pointer;"></td>
         <td>
           <div style="display:flex;align-items:center;gap:10px;">
-            <span style="font-size:1.5rem;">${item.emoji || '🍽️'}</span>
+            <span style="font-size:1.5rem;">${item.emoji || '???'}</span>
             <div>
               <div style="font-weight:600;font-size:0.9rem;">${item.name}</div>
               ${item.description ? `<div style="font-size:0.75rem;color:var(--text-dim);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.description}</div>` : ''}
             </div>
           </div>
         </td>
-        <td>${cat ? `<span class="chip">${cat.emoji} ${cat.name}</span>` : '<span style="color:var(--text-dim)">—</span>'}</td>
-        <td><span style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${parseFloat(item.price).toFixed(2)}</span></td>
+        <td>${cat ? `<span class="chip">${cat.emoji} ${cat.name}</span>` : '<span style="color:var(--text-dim)">�</span>'}</td>
+        <td><span style="font-family:var(--font-mono);color:var(--accent);">Rs. ${parseFloat(item.price).toFixed(2)}</span></td>
         <td>
           <div style="display:flex;align-items:center;gap:5px;">
             <div class="veg-dot ${item.is_veg ? 'veg' : 'nonveg'}"></div>
@@ -507,28 +507,28 @@ window.appInit = async function() {
         </td>
         <td>
           <div style="display:flex;gap:6px;">
-            <button class="btn btn-secondary btn-sm" onclick="openItemModal(${item.id})">✏️ Edit</button>
-            <button class="btn btn-danger btn-sm" onclick="confirmDeleteItem(${item.id},'${item.name.replace(/'/g,"\\'")}')">🗑</button>
+            <button class="btn btn-secondary btn-sm" onclick="openItemModal(${item.id})">?? Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmDeleteItem(${item.id},'${item.name.replace(/'/g,"\\'")}')">??</button>
           </div>
         </td>
       </tr>`;
     }).join('');
   }
 
-  // ── Pagination
+  // -- Pagination
   function renderPagination() {
     const total = Math.ceil(filteredItems.length / PAGE_SIZE);
     const el = document.getElementById('itemsPagination');
     if (total <= 1) { el.innerHTML = ''; return; }
-    let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+    let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>�</button>`;
     for (let i = 1; i <= total; i++) {
       if (i === 1 || i === total || Math.abs(i - currentPage) <= 1) {
         html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
       } else if (Math.abs(i - currentPage) === 2) {
-        html += `<span style="color:var(--text-dim);padding:0 4px;">…</span>`;
+        html += `<span style="color:var(--text-dim);padding:0 4px;">�</span>`;
       }
     }
-    html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===total?'disabled':''}>›</button>`;
+    html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===total?'disabled':''}>�</button>`;
     el.innerHTML = html;
   }
 
@@ -540,7 +540,7 @@ window.appInit = async function() {
     renderPagination();
   };
 
-  // ── Category CRUD
+  // -- Category CRUD
   window.openCatModal = function(catId = null) {
     editingCatId = catId;
     const modal = document.getElementById('catModal');
@@ -551,14 +551,14 @@ window.appInit = async function() {
       if (!cat) return;
       title.textContent = 'Edit Category';
       document.getElementById('catName').value = cat.name;
-      document.getElementById('catEmoji').value = cat.emoji || '🍽️';
-      document.getElementById('catEmojiPreview').textContent = cat.emoji || '🍽️';
+      document.getElementById('catEmoji').value = cat.emoji || '???';
+      document.getElementById('catEmojiPreview').textContent = cat.emoji || '???';
       document.getElementById('catSort').value = cat.sort_order || 0;
     } else {
       title.textContent = 'Add Category';
       document.getElementById('catName').value = '';
-      document.getElementById('catEmoji').value = '🍽️';
-      document.getElementById('catEmojiPreview').textContent = '🍽️';
+      document.getElementById('catEmoji').value = '???';
+      document.getElementById('catEmojiPreview').textContent = '???';
       document.getElementById('catSort').value = categories.length;
     }
     modal.style.display = 'flex';
@@ -571,7 +571,7 @@ window.appInit = async function() {
 
   window.saveCategory = async function() {
     const name = document.getElementById('catName').value.trim();
-    const emoji = document.getElementById('catEmoji').value.trim() || '🍽️';
+    const emoji = document.getElementById('catEmoji').value.trim() || '???';
     const sortOrder = parseInt(document.getElementById('catSort').value) || 0;
 
     if (!name) { window.showToast('Category name is required', '', 'error'); return; }
@@ -579,7 +579,7 @@ window.appInit = async function() {
     const sb = window.supabaseClient;
     const bid = window.getActiveBranchId();
     const btn = document.getElementById('catSaveBtn');
-    btn.disabled = true; btn.textContent = 'Saving…';
+    btn.disabled = true; btn.textContent = 'Saving�';
 
     const payload = { branch_id: bid, name, emoji, sort_order: sortOrder };
     let error;
@@ -593,7 +593,7 @@ window.appInit = async function() {
     btn.disabled = false; btn.textContent = 'Save Category';
 
     if (error) { window.showToast('Error saving category', error.message, 'error'); return; }
-    window.showToast('✅ Category saved!', '', 'success');
+    window.showToast('? Category saved!', '', 'success');
     closeCatModal();
     await loadCategories();
     renderCatTable();
@@ -603,7 +603,7 @@ window.appInit = async function() {
     const sb = window.supabaseClient;
     const { error } = await sb.from('categories').update({ is_active: isActive }).eq('id', catId);
     if (!error) {
-      window.showToast(isActive ? '👁 Category visible' : '🙈 Category hidden', '', 'success');
+      window.showToast(isActive ? '?? Category visible' : '?? Category hidden', '', 'success');
       await loadCategories();
       renderCatTable();
     }
@@ -624,12 +624,12 @@ window.appInit = async function() {
     const { error } = await sb.from('categories').delete().eq('id', catId);
     closeDeleteModal();
     if (error) { window.showToast('Error deleting category', error.message, 'error'); return; }
-    window.showToast('🗑 Category deleted', '', 'success');
+    window.showToast('?? Category deleted', '', 'success');
     await loadCategories();
     renderCatTable();
   }
 
-  // ── Drag & drop category reorder
+  // -- Drag & drop category reorder
   let dragSrcCatId = null;
 
   window.dragStart = function(e, type, id) {
@@ -670,10 +670,10 @@ window.appInit = async function() {
 
     await loadCategories();
     renderCatTable();
-    window.showToast('✅ Order saved', '', 'success');
+    window.showToast('? Order saved', '', 'success');
   };
 
-  // ── Menu Item CRUD
+  // -- Menu Item CRUD
   window.openItemModal = function(itemId = null) {
     editingItemId = itemId;
     const title = document.getElementById('itemModalTitle');
@@ -686,8 +686,8 @@ window.appInit = async function() {
       document.getElementById('itemCategory').value = item.category_id || '';
       document.getElementById('itemPrice').value = item.price;
       document.getElementById('itemDesc').value = item.description || '';
-      document.getElementById('itemEmoji').value = item.emoji || '🍽️';
-      document.getElementById('itemEmojiPreview').textContent = item.emoji || '🍽️';
+      document.getElementById('itemEmoji').value = item.emoji || '???';
+      document.getElementById('itemEmojiPreview').textContent = item.emoji || '???';
       document.getElementById('itemSort').value          = item.sort_order || 0;
       document.getElementById('itemVeg').checked         = item.is_veg !== false;
       document.getElementById('itemAvailable').checked   = item.is_available !== false;
@@ -705,8 +705,8 @@ window.appInit = async function() {
       document.getElementById('itemName').value = '';
       document.getElementById('itemPrice').value = '';
       document.getElementById('itemDesc').value = '';
-      document.getElementById('itemEmoji').value = '🍽️';
-      document.getElementById('itemEmojiPreview').textContent = '🍽️';
+      document.getElementById('itemEmoji').value = '???';
+      document.getElementById('itemEmojiPreview').textContent = '???';
       document.getElementById('itemSort').value            = menuItems.length;
       document.getElementById('itemVeg').checked           = true;
       document.getElementById('itemAvailable').checked     = true;
@@ -734,7 +734,7 @@ window.appInit = async function() {
     const catId = document.getElementById('itemCategory').value;
     const price = parseFloat(document.getElementById('itemPrice').value);
     const desc = document.getElementById('itemDesc').value.trim();
-    const emoji = document.getElementById('itemEmoji').value.trim() || '🍽️';
+    const emoji = document.getElementById('itemEmoji').value.trim() || '???';
     const sortOrder = parseInt(document.getElementById('itemSort').value) || 0;
     const isVeg = document.getElementById('itemVeg').checked;
     const isAvailable = document.getElementById('itemAvailable').checked;
@@ -746,7 +746,7 @@ window.appInit = async function() {
     const sb = window.supabaseClient;
     const bid = window.getActiveBranchId();
     const btn = document.getElementById('itemSaveBtn');
-    btn.disabled = true; btn.textContent = 'Saving…';
+    btn.disabled = true; btn.textContent = 'Saving�';
 
     const tag1Text  = document.getElementById('itemTag1Text').value.trim();
     const tag1Color = document.getElementById('itemTag1Color').value;
@@ -779,7 +779,7 @@ window.appInit = async function() {
     btn.disabled = false; btn.textContent = 'Save Item';
 
     if (error) { window.showToast('Error saving item', error.message, 'error'); return; }
-    window.showToast('✅ Item saved!', '', 'success');
+    window.showToast('? Item saved!', '', 'success');
     closeItemModal();
     await loadMenuItems();
   };
@@ -790,7 +790,7 @@ window.appInit = async function() {
     if (!error) {
       const item = menuItems.find(i => i.id === itemId);
       if (item) item.is_available = isAvailable;
-      window.showToast(isAvailable ? '✅ Marked available' : '🔴 Marked unavailable', '', 'success');
+      window.showToast(isAvailable ? '? Marked available' : '?? Marked unavailable', '', 'success');
     }
   };
 
@@ -806,11 +806,11 @@ window.appInit = async function() {
     const { error } = await sb.from('menu_items').delete().eq('id', itemId);
     closeDeleteModal();
     if (error) { window.showToast('Error deleting item', error.message, 'error'); return; }
-    window.showToast('🗑 Item deleted', '', 'success');
+    window.showToast('?? Item deleted', '', 'success');
     await loadMenuItems();
   }
 
-  // ── Bulk actions
+  // -- Bulk actions
   window.toggleItemSelect = function(itemId, checked) {
     if (checked) selectedItems.add(itemId);
     else selectedItems.delete(itemId);
@@ -848,7 +848,7 @@ window.appInit = async function() {
     const ids = [...selectedItems];
     const { error } = await sb.from('menu_items').update({ is_available: isAvailable }).in('id', ids);
     if (!error) {
-      window.showToast(`✅ ${ids.length} items updated`, '', 'success');
+      window.showToast(`? ${ids.length} items updated`, '', 'success');
       clearSelection();
       await loadMenuItems();
     }
@@ -865,7 +865,7 @@ window.appInit = async function() {
       const { error } = await sb.from('menu_items').delete().in('id', ids);
       closeDeleteModal();
       if (!error) {
-        window.showToast(`🗑 ${count} items deleted`, '', 'success');
+        window.showToast(`?? ${count} items deleted`, '', 'success');
         clearSelection();
         await loadMenuItems();
       }
@@ -873,7 +873,7 @@ window.appInit = async function() {
     document.getElementById('deleteModal').style.display = 'flex';
   };
 
-  // ── Export CSV
+  // -- Export CSV
   window.exportMenuCSV = function() {
     if (menuItems.length === 0) { window.showToast('No items to export', '', 'warning'); return; }
     let csv = 'Name,Category,Price,Description,Emoji,Veg,Available,Sort Order\n';
@@ -886,10 +886,10 @@ window.appInit = async function() {
     a.href = URL.createObjectURL(blob);
     a.download = `LAXMI_Menu_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
-    window.showToast('✅ Menu exported', '', 'success');
+    window.showToast('? Menu exported', '', 'success');
   };
 
-  // ── Import CSV
+  // -- Import CSV
   window.importCSV = async function(input) {
     const file = input.files[0];
     if (!file) return;
@@ -908,7 +908,7 @@ window.appInit = async function() {
         category_id: cat?.id || null,
         price: parseFloat(price) || 0,
         description: description || null,
-        emoji: emoji || '🍽️',
+        emoji: emoji || '???',
         is_veg: isVeg !== 'false',
         is_available: isAvailable !== 'false',
         sort_order: parseInt(sortOrder) || 0
@@ -918,16 +918,16 @@ window.appInit = async function() {
     }
 
     input.value = '';
-    window.showToast(`✅ Imported ${imported} items`, '', 'success');
+    window.showToast(`? Imported ${imported} items`, '', 'success');
     await loadMenuItems();
   };
 
-  // ── Delete modal
+  // -- Delete modal
   window.closeDeleteModal = function() {
     document.getElementById('deleteModal').style.display = 'none';
   };
 
-  // ── Panel switch
+  // -- Panel switch
   window.switchPanel = function(panel, el) {
     document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));

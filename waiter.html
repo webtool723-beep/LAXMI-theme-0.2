@@ -1,14 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <title>LAXMI — Waiter Dashboard</title>
+  <title>LAXMI � Waiter Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
   <style>
-    /* ── Waiter specific styles ── */
+    /* -- Waiter specific styles -- */
     .waiter-tabs { display:flex; gap:4px; background:var(--surface2); border-radius:var(--radius-sm); padding:4px; margin-bottom:20px; }
     .waiter-tab  { flex:1; padding:10px 8px; border-radius:6px; font-size:0.82rem; font-weight:600; cursor:pointer; color:var(--text-dim); transition:all 0.2s; border:none; background:none; text-align:center; }
     .waiter-tab.active { background:var(--surface); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.3); }
@@ -29,7 +29,7 @@
     .assign-table     { font-size:1.2rem; font-weight:700; color:var(--text); }
     .assign-time      { font-size:0.72rem; color:var(--text-dim); margin-top:2px; }
     .assign-items     { font-size:0.82rem; color:var(--text-mid); margin-bottom:10px; line-height:1.6; }
-    .assign-total     { font-family:var(--font-mono); font-size:1rem; color:var(--green-bright); font-weight:500; }
+    .assign-total     { font-family:var(--font-mono); font-size:1rem; color:var(--accent); font-weight:500; }
     .assign-actions   { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
 
     /* Transfer modal */
@@ -40,7 +40,7 @@
     .quick-cat-tabs   { display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; scrollbar-width:none; margin-bottom:12px; }
     .quick-cat-tabs::-webkit-scrollbar { display:none; }
     .quick-cat-tab    { flex-shrink:0; padding:6px 14px; border-radius:20px; border:1.5px solid var(--border); background:var(--surface); font-size:0.8rem; font-weight:500; color:var(--text-mid); cursor:pointer; transition:all 0.2s; white-space:nowrap; }
-    .quick-cat-tab.active { background:var(--green-dim); color:var(--green-bright); border-color:var(--green-dim); }
+    .quick-cat-tab.active { background:var(--accent-dim); color:var(--accent); border-color:var(--accent-dim); }
 
     .quick-item { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); gap:8px; }
     .quick-item:last-child { border-bottom:none; }
@@ -48,23 +48,24 @@
     .quick-item-emoji { font-size:1.4rem; flex-shrink:0; }
     .quick-item-info  { flex:1; min-width:0; }
     .quick-item-name  { font-weight:600; font-size:0.875rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .quick-item-price { font-family:var(--font-mono); font-size:0.78rem; color:var(--green-bright); }
+    .quick-item-price { font-family:var(--font-mono); font-size:0.78rem; color:var(--accent); }
     .quick-item-ctrl  { display:flex; align-items:center; gap:6px; flex-shrink:0; }
-    .qbtn { width:28px; height:28px; border-radius:50%; background:var(--green-dim); color:var(--green-bright); font-size:1rem; font-weight:700; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
-    .qbtn:hover { background:var(--green-accent); color:#0f1a0f; }
+    .qbtn { width:28px; height:28px; border-radius:50%; background:var(--accent-dim); color:var(--accent); font-size:1rem; font-weight:700; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+    .qbtn:hover { background:var(--accent); color:#fff; }
     .qnum { font-family:var(--font-mono); font-weight:600; min-width:20px; text-align:center; font-size:0.9rem; }
 
     /* Quick cart bar */
     .cart-bar {
       position:sticky; bottom:0; left:0; right:0;
-      background:var(--green-dark, #1a2e1a); border-top:1px solid var(--border);
+      background:var(--surface); border-top:1px solid var(--border);
       padding:12px 16px; display:none; align-items:center; justify-content:space-between;
       gap:12px; z-index:50; margin:0 -16px;
     }
     .cart-bar.show { display:flex; }
-    .cart-bar-info { color:#fff; font-size:0.875rem; }
-    .cart-bar-total { font-family:var(--font-mono); color:var(--gold, #ffc107); font-weight:700; font-size:1rem; }
-    .cart-bar-btn { background:var(--gold, #ffc107); color:#0f1a0f; padding:8px 18px; border-radius:20px; font-weight:700; font-size:0.875rem; border:none; cursor:pointer; }
+    .cart-bar-info { color:var(--text); font-size:0.875rem; }
+    .cart-bar-total { font-family:var(--font-mono); color:var(--accent); font-weight:700; font-size:1rem; }
+    .cart-bar-btn { background:var(--accent); color:#fff; padding:8px 18px; border-radius:20px; font-weight:700; font-size:0.875rem; border:none; cursor:pointer; }
+    .cart-bar-btn:hover { box-shadow: var(--glow); }
 
     /* Report cards */
     .report-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); font-size:0.875rem; }
@@ -89,37 +90,37 @@
 </head>
 <body>
 
-<div class="offline-banner" id="offlineBanner">⚠️ Connection lost — reconnecting…</div>
+<div class="offline-banner" id="offlineBanner">?? Connection lost � reconnecting�</div>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <div class="auth-gate" id="authGate" style="display:none;"></div>
 
 <div id="appContent" style="display:none;">
   <div class="app-layout">
 
-    <!-- ── SIDEBAR ── -->
+    <!-- -- SIDEBAR -- -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-logo">
-        <div class="sidebar-logo-name">🍃 LAXMI</div>
+        <div class="sidebar-logo-name">?? LAXMI</div>
         <div class="sidebar-logo-sub">Waiter Dashboard</div>
       </div>
       <nav class="sidebar-nav">
         <div class="nav-section-label">My Pages</div>
-        <a class="nav-item active" href="waiter.html"><span class="nav-item-icon">🛎️</span> My Dashboard</a>
-        <a class="nav-item" href="index.html" target="_blank"><span class="nav-item-icon">🛒</span> Order Page ↗</a>
+        <a class="nav-item active" href="waiter.html"><span class="nav-item-icon">???</span> My Dashboard</a>
+        <a class="nav-item" href="index.html" target="_blank"><span class="nav-item-icon">??</span> Order Page ?</a>
       </nav>
       <div class="sidebar-footer">
         <div class="sidebar-user">
           <div class="sidebar-avatar" id="sidebarAvatar">?</div>
           <div class="sidebar-user-info">
-            <div class="sidebar-user-name" id="sidebarUserName">Loading…</div>
-            <div class="sidebar-user-role" id="sidebarUserRole">—</div>
+            <div class="sidebar-user-name" id="sidebarUserName">Loading�</div>
+            <div class="sidebar-user-role" id="sidebarUserRole">�</div>
           </div>
         </div>
-        <button class="btn btn-ghost w-full btn-sm" onclick="window.rmsSignOut()">⏏ Sign Out</button>
+        <button class="btn btn-ghost w-full btn-sm" onclick="window.rmsSignOut()">? Sign Out</button>
       </div>
     </aside>
 
-    <!-- ── MAIN ── -->
+    <!-- -- MAIN -- -->
     <main class="main-content">
 
       <!-- Header -->
@@ -127,7 +128,7 @@
         <div style="display:flex;align-items:center;gap:10px;">
           <button class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></button>
           <div>
-            <h1 class="page-title">🛎️ Waiter Dashboard</h1>
+            <h1 class="page-title">??? Waiter Dashboard</h1>
             <div class="page-subtitle" id="waiterGreeting">Welcome!</div>
           </div>
         </div>
@@ -147,31 +148,31 @@
       <!-- Tabs -->
       <div class="waiter-tabs">
         <button class="waiter-tab active" onclick="switchTab('assignments',this)">
-          🔔 Assignments <span class="notif-badge" id="assignBadge" style="display:none;">0</span>
+          ?? Assignments <span class="notif-badge" id="assignBadge" style="display:none;">0</span>
         </button>
-        <button class="waiter-tab" onclick="switchTab('quickorder',this)">➕ New Order</button>
-        <button class="waiter-tab" onclick="switchTab('history',this)">📋 History</button>
-        <button class="waiter-tab" onclick="switchTab('myreport',this)">📊 My Report</button>
+        <button class="waiter-tab" onclick="switchTab('quickorder',this)">? New Order</button>
+        <button class="waiter-tab" onclick="switchTab('history',this)">?? History</button>
+        <button class="waiter-tab" onclick="switchTab('myreport',this)">?? My Report</button>
       </div>
 
-      <!-- ══ ASSIGNMENTS TAB ══ -->
+      <!-- -- ASSIGNMENTS TAB -- -->
       <div class="tab-panel active" id="tab-assignments">
         <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;">
-          <button class="filter-tab active" data-f="active" onclick="setAssignFilter('active',this)">🔥 Active</button>
-          <button class="filter-tab" data-f="delivering" onclick="setAssignFilter('delivering',this)">🚶 Delivering</button>
-          <button class="filter-tab" data-f="delivered" onclick="setAssignFilter('delivered',this)">✅ Done Today</button>
-          <button class="filter-tab" data-f="all" onclick="setAssignFilter('all',this)">📋 All</button>
+          <button class="filter-tab active" data-f="active" onclick="setAssignFilter('active',this)">?? Active</button>
+          <button class="filter-tab" data-f="delivering" onclick="setAssignFilter('delivering',this)">?? Delivering</button>
+          <button class="filter-tab" data-f="delivered" onclick="setAssignFilter('delivered',this)">? Done Today</button>
+          <button class="filter-tab" data-f="all" onclick="setAssignFilter('all',this)">?? All</button>
         </div>
         <div id="assignmentsList">
-          <div class="empty-state"><div class="empty-state-icon">🛎️</div><div class="empty-state-title">No assignments yet</div><div class="empty-state-text">Kitchen will assign orders to you here</div></div>
+          <div class="empty-state"><div class="empty-state-icon">???</div><div class="empty-state-title">No assignments yet</div><div class="empty-state-text">Kitchen will assign orders to you here</div></div>
         </div>
       </div>
 
-      <!-- ══ QUICK ORDER TAB ══ -->
+      <!-- -- QUICK ORDER TAB -- -->
       <div class="tab-panel" id="tab-quickorder">
         <!-- Customer details -->
         <div class="card" style="margin-bottom:16px;">
-          <div class="section-title" style="margin-bottom:12px;">👤 Customer Details</div>
+          <div class="section-title" style="margin-bottom:12px;">?? Customer Details</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
             <div class="input-group">
               <label class="input-label">Table No *</label>
@@ -187,20 +188,20 @@
             </div>
             <div class="input-group" style="grid-column:1/-1;">
               <label class="input-label">Special Note</label>
-              <input type="text" id="qoNote" class="input" placeholder="Any special instructions…">
+              <input type="text" id="qoNote" class="input" placeholder="Any special instructions�">
             </div>
           </div>
         </div>
 
         <!-- Menu search -->
         <div style="position:relative;margin-bottom:10px;">
-          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-dim);pointer-events:none;">🔍</span>
-          <input type="text" id="qoSearch" class="input" placeholder="Search menu…" oninput="filterQOMenu()" style="padding-left:36px;">
+          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-dim);pointer-events:none;">??</span>
+          <input type="text" id="qoSearch" class="input" placeholder="Search menu�" oninput="filterQOMenu()" style="padding-left:36px;">
         </div>
 
         <!-- Category tabs -->
         <div class="quick-cat-tabs" id="qoCatTabs">
-          <button class="quick-cat-tab active" data-cat="all" onclick="filterQOCategory('all',this)">🍽️ All</button>
+          <button class="quick-cat-tab active" data-cat="all" onclick="filterQOCategory('all',this)">??? All</button>
         </div>
 
         <!-- Menu items -->
@@ -214,26 +215,26 @@
             <span id="qoCartCount">0 items</span>
           </div>
           <div class="cart-bar-total" id="qoCartTotal">Rs. 0</div>
-          <button class="cart-bar-btn" onclick="openQOReview()">Review Order →</button>
+          <button class="cart-bar-btn" onclick="openQOReview()">Review Order ?</button>
         </div>
       </div>
 
-      <!-- ══ HISTORY TAB ══ -->
+      <!-- -- HISTORY TAB -- -->
       <div class="tab-panel" id="tab-history">
         <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;">
-          <button class="filter-tab active" data-h="all" onclick="setHistoryFilter('all',this)">📋 All</button>
-          <button class="filter-tab" data-h="assigned" onclick="setHistoryFilter('assigned',this)">🔔 Assigned</button>
-          <button class="filter-tab" data-h="self" onclick="setHistoryFilter('self',this)">✏️ My Orders</button>
-          <button class="filter-tab" data-h="delivered" onclick="setHistoryFilter('delivered',this)">✅ Delivered</button>
-          <button class="filter-tab" data-h="rejected" onclick="setHistoryFilter('rejected',this)">❌ Rejected</button>
+          <button class="filter-tab active" data-h="all" onclick="setHistoryFilter('all',this)">?? All</button>
+          <button class="filter-tab" data-h="assigned" onclick="setHistoryFilter('assigned',this)">?? Assigned</button>
+          <button class="filter-tab" data-h="self" onclick="setHistoryFilter('self',this)">?? My Orders</button>
+          <button class="filter-tab" data-h="delivered" onclick="setHistoryFilter('delivered',this)">? Delivered</button>
+          <button class="filter-tab" data-h="rejected" onclick="setHistoryFilter('rejected',this)">? Rejected</button>
         </div>
         <div id="historyList">
-          <div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-title">No history yet</div></div>
+          <div class="empty-state"><div class="empty-state-icon">??</div><div class="empty-state-title">No history yet</div></div>
         </div>
         <div class="pagination" id="historyPagination"></div>
       </div>
 
-      <!-- ══ MY REPORT TAB ══ -->
+      <!-- -- MY REPORT TAB -- -->
       <div class="tab-panel" id="tab-myreport">
         <!-- Date range -->
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
@@ -252,18 +253,18 @@
           <div class="stat-card"><div class="stat-label">Orders Made</div><div class="stat-value blue" id="repMade">0</div></div>
           <div class="stat-card"><div class="stat-label">Assigned</div><div class="stat-value gold" id="repAssigned">0</div></div>
           <div class="stat-card"><div class="stat-label">Transferred</div><div class="stat-value" id="repTransferred">0</div></div>
-          <div class="stat-card"><div class="stat-label">Avg Delivery</div><div class="stat-value" id="repAvgTime">—</div></div>
+          <div class="stat-card"><div class="stat-label">Avg Delivery</div><div class="stat-value" id="repAvgTime">�</div></div>
         </div>
 
         <!-- Breakdown -->
         <div class="card" style="margin-bottom:16px;">
-          <div class="section-title" style="margin-bottom:12px;">📋 Order Breakdown</div>
+          <div class="section-title" style="margin-bottom:12px;">?? Order Breakdown</div>
           <div id="repBreakdown"></div>
         </div>
 
         <!-- Top tables served -->
         <div class="card">
-          <div class="section-title" style="margin-bottom:12px;">🪑 Tables & Rooms served</div>
+          <div class="section-title" style="margin-bottom:12px;">?? Tables & Rooms served</div>
           <div id="repTables"></div>
         </div>
       </div>
@@ -272,33 +273,33 @@
   </div>
 </div>
 
-<!-- ── QO REVIEW MODAL ── -->
+<!-- -- QO REVIEW MODAL -- -->
 <div class="modal-overlay" id="qoReviewModal" style="display:none;" onclick="if(event.target===this)closeQOReview()">
   <div class="modal modal-lg">
     <div class="modal-header">
       <h2 class="modal-title">Review Order</h2>
-      <button class="modal-close" onclick="closeQOReview()">×</button>
+      <button class="modal-close" onclick="closeQOReview()">�</button>
     </div>
     <div id="qoReviewBody"></div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeQOReview()">← Edit</button>
-      <button class="btn btn-primary" onclick="placeQOOrder()" id="qoPlaceBtn">🌿 Place Order</button>
+      <button class="btn btn-ghost" onclick="closeQOReview()">? Edit</button>
+      <button class="btn btn-primary" onclick="placeQOOrder()" id="qoPlaceBtn">?? Place Order</button>
     </div>
   </div>
 </div>
 
-<!-- ── TRANSFER MODAL ── -->
+<!-- -- TRANSFER MODAL -- -->
 <div class="modal-overlay" id="transferModal" style="display:none;" onclick="if(event.target===this)closeTransferModal()">
   <div class="modal" style="max-width:400px;">
     <div class="modal-header">
-      <h2 class="modal-title">🔄 Transfer Order</h2>
-      <button class="modal-close" onclick="closeTransferModal()">×</button>
+      <h2 class="modal-title">?? Transfer Order</h2>
+      <button class="modal-close" onclick="closeTransferModal()">�</button>
     </div>
     <div class="transfer-info" id="transferInfo"></div>
     <div class="input-group">
       <label class="input-label">Transfer To *</label>
       <select id="transferWaiter" class="input">
-        <option value="">Select waiter…</option>
+        <option value="">Select waiter�</option>
       </select>
     </div>
     <div class="input-group" style="margin-top:12px;">
@@ -306,7 +307,7 @@
       <input type="text" id="transferReason" class="input" placeholder="e.g. Going on break">
     </div>
     <div style="background:var(--gold-dim);border:1px solid rgba(255,193,7,0.2);border-radius:var(--radius-sm);padding:10px 12px;margin-top:12px;font-size:0.78rem;color:var(--gold);">
-      ⚠️ Order credit will go to the new waiter upon delivery.
+      ?? Order credit will go to the new waiter upon delivery.
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeTransferModal()">Cancel</button>
@@ -321,7 +322,7 @@
 <script type="module" src="assets/auth.js?v=3"></script>
 <script type="module">
 
-  // ── State
+  // -- State
   let myAssignments = [];
   let myHistory     = [];
   let allWaiters    = [];
@@ -334,7 +335,7 @@
   let transferOrderId = null;
   const PAGE_SIZE   = 20;
 
-  // ── appInit
+  // -- appInit
   window.appInit = async function() {
     window.renderStaffUI && window.renderStaffUI();
     console.log('Staff ID:', window.currentStaff?.staff_id);
@@ -356,10 +357,10 @@ console.log('Full staff:', window.currentStaff);
     const hr   = new Date().getHours();
     const greet = hr < 12 ? 'Good Morning' : hr < 17 ? 'Good Afternoon' : 'Good Evening';
     const el = document.getElementById('waiterGreeting');
-    if (el) el.textContent = `${greet}, ${name}! 👋`;
+    if (el) el.textContent = `${greet}, ${name}! ??`;
   }
 
-  // ── Load waiters (for transfer dropdown)
+  // -- Load waiters (for transfer dropdown)
   async function loadWaiters() {
     const sb  = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -369,7 +370,7 @@ console.log('Full staff:', window.currentStaff);
     allWaiters = (data || []).filter(w => w.id !== window.currentStaff?.staff_id);
   }
 
-  // ── Load my assignments
+  // -- Load my assignments
   async function loadAssignments() {
     const sb  = window.supabaseClient;
     const sid = window.currentStaff?.staff_id;
@@ -386,7 +387,7 @@ console.log('Full staff:', window.currentStaff);
     renderAssignments();
   }
 
-  // ── Load history (all orders related to this waiter)
+  // -- Load history (all orders related to this waiter)
   async function loadHistory() {
     const sb  = window.supabaseClient;
     const sid = window.currentStaff?.staff_id;
@@ -413,7 +414,7 @@ console.log('Full staff:', window.currentStaff);
     renderHistory();
   }
 
-  // ── Update stats
+  // -- Update stats
   function updateStats() {
     const today     = new Date().toLocaleDateString('en-CA', { timeZone:'Asia/Kolkata' });
     const todayOrds = myHistory.filter(o => new Date(o.created_at).toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'}) === today);
@@ -427,14 +428,14 @@ console.log('Full staff:', window.currentStaff);
     document.getElementById('statMyOrders').textContent  = myOrders;
 
     // Badge
-    // Badge only counts active (pending/preparing/done) — not delivered
+    // Badge only counts active (pending/preparing/done) � not delivered
     const activeBadgeCount = myAssignments.filter(o => ['pending','preparing','done'].includes(o.status) || (o.status === 'delivered' && o.collect_by_waiter_id === window.currentStaff?.staff_id && o.payment_status === 'unpaid')).length;
     const badge = document.getElementById('assignBadge');
     if (activeBadgeCount > 0) { badge.textContent = activeBadgeCount; badge.style.display = 'inline-flex'; }
     else badge.style.display = 'none';
   }
 
-  // ── Render assignments
+  // -- Render assignments
   window.setAssignFilter = function(f, el) {
     assignFilter = f;
     document.querySelectorAll('[data-f]').forEach(t => t.classList.remove('active'));
@@ -451,13 +452,13 @@ console.log('Full staff:', window.currentStaff);
     if (assignFilter === 'delivered')  filtered = filtered.filter(o => o.status === 'delivered' && o.payment_status === 'unpaid');
 
     if (!filtered.length) {
-      list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🛎️</div><div class="empty-state-title">No orders here</div><div class="empty-state-text">Check back soon!</div></div>`;
+      list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">???</div><div class="empty-state-title">No orders here</div><div class="empty-state-text">Check back soon!</div></div>`;
       return;
     }
 
     list.innerHTML = filtered.map(order => {
       const items   = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
-      const summary = items.map(i => `${i.emoji||''}${i.name} ×${i.qty}`).join(', ');
+      const summary = items.map(i => `${i.emoji||''}${i.name} �${i.qty}`).join(', ');
       const elapsed = getElapsed(order.assigned_at || order.created_at);
       const isDone      = order.status === 'done';
       const isPickedUp  = order.status === 'picked_up';
@@ -478,14 +479,14 @@ console.log('Full staff:', window.currentStaff);
         <div class="assign-card-head">
           <div>
             <div class="assign-order-id">${order.order_id}</div>
-            <div class="assign-table">${order.room_number ? '🛏️ Room ' + order.room_number : '🪑 Table ' + (order.table_number || '—')}</div>
-            <div class="assign-time">⏱ ${elapsed}</div>
+            <div class="assign-table">${order.room_number ? '??? Room ' + order.room_number : '?? Table ' + (order.table_number || '�')}</div>
+            <div class="assign-time">? ${elapsed}</div>
           </div>
           <span class="badge badge-${order.status}">${order.status === 'picked_up' ? 'On the Way' : order.status}</span>
         </div>
         <div class="assign-items">${summary}</div>
-        ${order.note ? `<div class="order-note" style="margin-bottom:8px;">📝 ${order.note}</div>` : ''}
-        ${needsCollection ? `<div style="background:var(--red-dim);border:1px solid rgba(244,67,54,0.3);color:var(--red);padding:8px 10px;border-radius:6px;font-size:0.82rem;font-weight:600;margin-bottom:8px;">💰 Payment Manager requests you collect payment from this table!</div>` : ''}
+        ${order.note ? `<div class="order-note" style="margin-bottom:8px;">?? ${order.note}</div>` : ''}
+        ${needsCollection ? `<div style="background:var(--red-dim);border:1px solid rgba(244,67,54,0.3);color:var(--red);padding:8px 10px;border-radius:6px;font-size:0.82rem;font-weight:600;margin-bottom:8px;">?? Payment Manager requests you collect payment from this table!</div>` : ''}
         <div style="display:flex;justify-content:flex-end;align-items:center;">
           <div style="font-size:0.72rem;color:var(--text-dim);">${order.customer_phone||''}</div>
         </div>
@@ -493,20 +494,20 @@ console.log('Full staff:', window.currentStaff);
           ${isDone ? `
             <button class="btn btn-blue btn-sm" onclick="markPickedUp('${order.id}')"
               style="background:rgba(66,165,245,0.2);border:1px solid rgba(66,165,245,0.4);color:#42a5f5;">
-              📦 Picked Up from Kitchen
+              ?? Picked Up from Kitchen
             </button>
             <button class="btn btn-ghost btn-sm" onclick="openTransferModal('${order.id}')">&#x1f504; Transfer</button>
           ` : ''}
           ${isPickedUp ? `
             <div style="font-size:0.78rem;color:#42a5f5;margin-bottom:6px;">&#x1f6f4; Customer notified: &ldquo;Your order is on the way&hellip;&rdquo;</div>
-            <button class="btn btn-primary btn-sm" onclick="markDelivered('${order.id}')">✅ Mark Delivered</button>
+            <button class="btn btn-primary btn-sm" onclick="markDelivered('${order.id}')">? Mark Delivered</button>
             <button class="btn btn-ghost btn-sm" onclick="openTransferModal('${order.id}')">&#x1f504; Transfer</button>
           ` : ''}
           ${isDelivered && order.payment_status === 'unpaid' ? `
-            <span style="font-size:0.78rem;color:var(--gold);">⏳ Awaiting payment confirmation</span>
+            <span style="font-size:0.78rem;color:var(--gold);">? Awaiting payment confirmation</span>
           ` : ''}
           ${isDelivered && order.payment_status === 'paid' ? `
-            <span style="font-size:0.78rem;color:var(--green-bright);">✅ Payment confirmed — Credit added!</span>
+            <span style="font-size:0.78rem;color:var(--accent);">? Payment confirmed � Credit added!</span>
           ` : ''}
           ${needsCollection ? `
             <button class="btn btn-primary btn-sm" onclick="notifyPaymentCollected('${order.id}')">&#x1f4b0; Payment Collected</button>
@@ -516,12 +517,12 @@ console.log('Full staff:', window.currentStaff);
     }).join('');
   }
 
-  // ── Step 1: Waiter picks up from kitchen → status = picked_up
+  // -- Step 1: Waiter picks up from kitchen ? status = picked_up
   window.markPickedUp = async function(orderId) {
     const sb    = window.supabaseClient;
     const order = myAssignments.find(o => o.id === orderId);
     const btn   = event?.currentTarget;
-    if (btn) { btn.disabled = true; btn.textContent = 'Notifying…'; }
+    if (btn) { btn.disabled = true; btn.textContent = 'Notifying�'; }
 
     const { error } = await sb.from('orders').update({
       status:       'picked_up',
@@ -529,11 +530,11 @@ console.log('Full staff:', window.currentStaff);
       updated_at:   new Date().toISOString()
     }).eq('id', orderId);
 
-    if (btn) { btn.disabled = false; btn.textContent = '📦 Picked Up from Kitchen'; }
+    if (btn) { btn.disabled = false; btn.textContent = '?? Picked Up from Kitchen'; }
 
     if (error) { window.showToast('Error', error.message, 'error'); return; }
 
-    window.showToast('📦 Picked up! Customer notified.', '', 'success');
+    window.showToast('?? Picked up! Customer notified.', '', 'success');
     window.logActivity && window.logActivity(
       'order_status',
       `Order picked up by ${window.currentStaff?.name}`,
@@ -544,7 +545,7 @@ console.log('Full staff:', window.currentStaff);
     await loadHistory();
   };
 
-  // ── Step 2: Waiter delivers → status = delivered
+  // -- Step 2: Waiter delivers ? status = delivered
   window.markDelivered = async function(orderId) {
     const sb = window.supabaseClient;
     const { error } = await sb.from('orders').update({
@@ -554,7 +555,7 @@ console.log('Full staff:', window.currentStaff);
     }).eq('id', orderId);
 
     if (!error) {
-      window.showToast('✅ Marked as Delivered!', '', 'success');
+      window.showToast('? Marked as Delivered!', '', 'success');
       window.logActivity && window.logActivity(
         'order_status',
         `Order delivered by ${window.currentStaff?.name}`,
@@ -566,42 +567,42 @@ console.log('Full staff:', window.currentStaff);
     }
   };
 
-  // ── Mark paid
+  // -- Mark paid
   window.markPaid = async function(orderId) {
     const sb = window.supabaseClient;
     const { error } = await sb.from('orders').update({
       payment_status: 'paid', updated_at: new Date().toISOString()
     }).eq('id', orderId);
-    if (!error) { window.showToast('💰 Payment collected!', '', 'success'); await loadAssignments(); }
+    if (!error) { window.showToast('?? Payment collected!', '', 'success'); await loadAssignments(); }
   };
 
-  // ── Waiter notifies payment collected to manager
+  // -- Waiter notifies payment collected to manager
   window.notifyPaymentCollected = async function(orderId) {
     const sb = window.supabaseClient;
-    // Only notify manager — do NOT mark as paid
+    // Only notify manager � do NOT mark as paid
     // Just clear the collection request so manager knows waiter has collected
     const { error } = await sb.from('orders').update({
-      waiter_note: `Payment collected by ${window.currentStaff?.name} — awaiting manager confirmation`,
+      waiter_note: `Payment collected by ${window.currentStaff?.name} � awaiting manager confirmation`,
       updated_at:  new Date().toISOString()
     }).eq('id', orderId);
     if (!error) {
-      window.showToast('✅ Manager notified!', 'Payment manager will confirm and close the bill', 'success');
+      window.showToast('? Manager notified!', 'Payment manager will confirm and close the bill', 'success');
       await loadAssignments();
     }
   };
 
-  // ── Transfer order
+  // -- Transfer order
   window.openTransferModal = function(orderId) {
     transferOrderId = orderId;
     const order = myAssignments.find(o => o.id === orderId);
     if (!order) return;
 
     document.getElementById('transferInfo').innerHTML = `
-      <strong>${order.order_id}</strong> — ${order.room_number ? 'Room ' + order.room_number : 'Table ' + (order.table_number||'—')}
+      <strong>${order.order_id}</strong> � ${order.room_number ? 'Room ' + order.room_number : 'Table ' + (order.table_number||'�')}
     `;
 
     const sel = document.getElementById('transferWaiter');
-    sel.innerHTML = '<option value="">Select waiter…</option>' +
+    sel.innerHTML = '<option value="">Select waiter�</option>' +
       allWaiters.map(w => `<option value="${w.id}">${w.name} (${w.role})</option>`).join('');
 
     document.getElementById('transferReason').value = '';
@@ -617,7 +618,7 @@ console.log('Full staff:', window.currentStaff);
 
     const sb  = window.supabaseClient;
     const btn = document.getElementById('transferBtn');
-    btn.disabled = true; btn.textContent = 'Transferring…';
+    btn.disabled = true; btn.textContent = 'Transferring�';
 
     const { error } = await sb.from('orders').update({
       assigned_waiter_id:   newWaiterId,
@@ -629,7 +630,7 @@ console.log('Full staff:', window.currentStaff);
     btn.disabled = false; btn.textContent = 'Transfer';
 
     if (error) { window.showToast('Error transferring', error.message, 'error'); return; }
-    window.showToast('🔄 Order transferred!', `Now assigned to ${newWaiter.name}`, 'success');
+    window.showToast('?? Order transferred!', `Now assigned to ${newWaiter.name}`, 'success');
     window.logActivity && window.logActivity(
       'order_status',
       `Order transferred to ${newWaiter.name} by ${window.currentStaff?.name}`,
@@ -640,7 +641,7 @@ console.log('Full staff:', window.currentStaff);
     await loadAssignments();
   };
 
-  // ── History
+  // -- History
   window.setHistoryFilter = function(f, el) {
     historyFilter = f;
     document.querySelectorAll('[data-h]').forEach(t => t.classList.remove('active'));
@@ -661,7 +662,7 @@ console.log('Full staff:', window.currentStaff);
     if (historyFilter === 'rejected') filtered = filtered.filter(o => o.status === 'rejected');
 
     if (!filtered.length) {
-      list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-title">No orders found</div></div>`;
+      list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">??</div><div class="empty-state-title">No orders found</div></div>`;
       renderHistPagination(0);
       return;
     }
@@ -671,7 +672,7 @@ console.log('Full staff:', window.currentStaff);
 
     list.innerHTML = page.map(o => {
       const items   = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
-      const summary = items.map(i => `${i.emoji||''}${i.name}×${i.qty}`).join(', ');
+      const summary = items.map(i => `${i.emoji||''}${i.name}�${i.qty}`).join(', ');
       const dt      = new Date(o.created_at).toLocaleString('en-IN', { timeZone:'Asia/Kolkata', day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
       const isMyOrder = o.firebase_uid === myUid;
       const isAssigned = o.assigned_waiter_id === mySid;
@@ -680,13 +681,13 @@ console.log('Full staff:', window.currentStaff);
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px;">
           <div>
             <div style="font-family:var(--font-mono);font-size:0.8rem;color:var(--text-mid);">${o.order_id}</div>
-            <div style="font-weight:600;">${o.room_number ? '🛏️ Room ' + o.room_number : '🪑 Table ' + (o.table_number||'—')}</div>
+            <div style="font-weight:600;">${o.room_number ? '??? Room ' + o.room_number : '?? Table ' + (o.table_number||'�')}</div>
           </div>
           <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
             <span class="badge badge-${o.status}">${o.status}</span>
             <div style="display:flex;gap:4px;">
-              ${isMyOrder ? `<span style="font-size:0.65rem;background:var(--blue-dim);color:var(--blue);padding:2px 6px;border-radius:10px;">✏️ My Order</span>` : ''}
-              ${isAssigned ? `<span style="font-size:0.65rem;background:var(--gold-dim);color:var(--gold);padding:2px 6px;border-radius:10px;">🔔 Assigned</span>` : ''}
+              ${isMyOrder ? `<span style="font-size:0.65rem;background:var(--blue-dim);color:var(--blue);padding:2px 6px;border-radius:10px;">?? My Order</span>` : ''}
+              ${isAssigned ? `<span style="font-size:0.65rem;background:var(--gold-dim);color:var(--gold);padding:2px 6px;border-radius:10px;">?? Assigned</span>` : ''}
             </div>
           </div>
         </div>
@@ -705,14 +706,14 @@ console.log('Full staff:', window.currentStaff);
     const pages = Math.ceil(total / PAGE_SIZE);
     const el    = document.getElementById('historyPagination');
     if (pages <= 1) { el.innerHTML = ''; return; }
-    let html = `<button class="page-btn" onclick="histGoPage(${historyPage-1})" ${historyPage===1?'disabled':''}>‹</button>`;
+    let html = `<button class="page-btn" onclick="histGoPage(${historyPage-1})" ${historyPage===1?'disabled':''}>�</button>`;
     for (let i=1;i<=pages;i++) {
       if(i===1||i===pages||Math.abs(i-historyPage)<=1)
         html+=`<button class="page-btn ${i===historyPage?'active':''}" onclick="histGoPage(${i})">${i}</button>`;
       else if(Math.abs(i-historyPage)===2)
-        html+=`<span style="color:var(--text-dim);padding:0 4px">…</span>`;
+        html+=`<span style="color:var(--text-dim);padding:0 4px">�</span>`;
     }
-    html += `<button class="page-btn" onclick="histGoPage(${historyPage+1})" ${historyPage===pages?'disabled':''}>›</button>`;
+    html += `<button class="page-btn" onclick="histGoPage(${historyPage+1})" ${historyPage===pages?'disabled':''}>�</button>`;
     el.innerHTML = html;
   }
   window.histGoPage = function(p) {
@@ -721,7 +722,7 @@ console.log('Full staff:', window.currentStaff);
     historyPage=p; renderHistory();
   };
 
-  // ── Quick Order: Load menu
+  // -- Quick Order: Load menu
   async function loadMenuData() {
     const sb  = window.supabaseClient;
     const bid = window.getActiveBranchId();
@@ -782,7 +783,7 @@ console.log('Full staff:', window.currentStaff);
       const qty    = inCart ? inCart.qty : 0;
       return `<div class="quick-item" id="qoi-${item.id}">
         <div class="quick-item-left">
-          <div class="quick-item-emoji">${item.emoji||'🍽️'}</div>
+          <div class="quick-item-emoji">${item.emoji||'???'}</div>
           <div class="quick-item-info">
             <div class="quick-item-name">${item.name}</div>
             <div class="quick-item-price">Rs. ${parseFloat(item.price).toFixed(2)}</div>
@@ -790,7 +791,7 @@ console.log('Full staff:', window.currentStaff);
         </div>
         <div class="quick-item-ctrl">
           ${qty > 0 ? `
-            <button class="qbtn" onclick="qoChangeQty(${item.id},-1)">−</button>
+            <button class="qbtn" onclick="qoChangeQty(${item.id},-1)">-</button>
             <span class="qnum" id="qoqty-${item.id}">${qty}</span>
             <button class="qbtn" onclick="qoChangeQty(${item.id},1)">+</button>
           ` : `
@@ -804,7 +805,7 @@ console.log('Full staff:', window.currentStaff);
   window.qoAddItem = function(itemId) {
     const item = menuItems.find(i => i.id === itemId);
     if (!item) return;
-    qoCart.push({ id:item.id, name:item.name, price:parseFloat(item.price), emoji:item.emoji||'🍽️', is_veg:item.is_veg, qty:1 });
+    qoCart.push({ id:item.id, name:item.name, price:parseFloat(item.price), emoji:item.emoji||'???', is_veg:item.is_veg, qty:1 });
     updateQOCartUI(itemId);
     updateQOCartBar();
   };
@@ -825,7 +826,7 @@ console.log('Full staff:', window.currentStaff);
     const inCart = qoCart.find(c => c.id === itemId);
     if (inCart) {
       ctrl.innerHTML = `
-        <button class="qbtn" onclick="qoChangeQty(${itemId},-1)">−</button>
+        <button class="qbtn" onclick="qoChangeQty(${itemId},-1)">-</button>
         <span class="qnum" id="qoqty-${itemId}">${inCart.qty}</span>
         <button class="qbtn" onclick="qoChangeQty(${itemId},1)">+</button>`;
     } else {
@@ -842,7 +843,7 @@ console.log('Full staff:', window.currentStaff);
     bar.classList.toggle('show', count > 0);
   }
 
-  // ── QO Review Modal
+  // -- QO Review Modal
   window.openQOReview = function() {
     if (!qoCart.length) { window.showToast('Cart is empty','','error'); return; }
     const subtotal = qoCart.reduce((s,i) => s+(i.price*i.qty), 0);
@@ -854,8 +855,8 @@ console.log('Full staff:', window.currentStaff);
 
     document.getElementById('qoReviewBody').innerHTML = `
       <div style="margin-bottom:16px;padding:12px;background:var(--surface2);border-radius:var(--radius-sm);font-size:0.875rem;">
-        <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-dim);">Table</span><strong>${document.getElementById('qoTable').value||'—'}</strong></div>
-        <div style="display:flex;justify-content:space-between;margin-top:4px;"><span style="color:var(--text-dim);">Mobile</span><strong>${document.getElementById('qoPhone').value||'—'}</strong></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-dim);">Table</span><strong>${document.getElementById('qoTable').value||'�'}</strong></div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px;"><span style="color:var(--text-dim);">Mobile</span><strong>${document.getElementById('qoPhone').value||'�'}</strong></div>
         ${document.getElementById('qoName').value?`<div style="display:flex;justify-content:space-between;margin-top:4px;"><span style="color:var(--text-dim);">Name</span><strong>${document.getElementById('qoName').value}</strong></div>`:''}
         ${document.getElementById('qoNote').value?`<div style="display:flex;justify-content:space-between;margin-top:4px;"><span style="color:var(--text-dim);">Note</span><strong>${document.getElementById('qoNote').value}</strong></div>`:''}
       </div>
@@ -863,7 +864,7 @@ console.log('Full staff:', window.currentStaff);
         <table>
           <thead><tr><th>Item</th><th style="text-align:center">Qty</th><th style="text-align:right">Amount</th></tr></thead>
           <tbody>
-            ${qoCart.map(i=>`<tr><td>${i.emoji} ${i.name}</td><td style="text-align:center">×${i.qty}</td><td style="text-align:right;font-family:var(--font-mono)">Rs. ${(i.price*i.qty).toFixed(2)}</td></tr>`).join('')}
+            ${qoCart.map(i=>`<tr><td>${i.emoji} ${i.name}</td><td style="text-align:center">�${i.qty}</td><td style="text-align:right;font-family:var(--font-mono)">Rs. ${(i.price*i.qty).toFixed(2)}</td></tr>`).join('')}
           </tbody>
         </table>
       </div>
@@ -872,14 +873,14 @@ console.log('Full staff:', window.currentStaff);
         <div style="display:flex;justify-content:space-between;color:var(--text-dim);padding:2px 0;"><span>CGST @ ${half}%</span><span>Rs. ${cgst.toFixed(2)}</span></div>
         <div style="display:flex;justify-content:space-between;color:var(--text-dim);padding:2px 0;"><span>SGST @ ${half}%</span><span>Rs. ${sgst.toFixed(2)}</span></div>
         <div style="display:flex;justify-content:space-between;font-weight:700;font-size:1rem;border-top:1px solid var(--border);padding-top:8px;margin-top:6px;">
-          <span>Total</span><span style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${total.toFixed(2)}</span>
+          <span>Total</span><span style="font-family:var(--font-mono);color:var(--accent);">Rs. ${total.toFixed(2)}</span>
         </div>
       </div>`;
     document.getElementById('qoReviewModal').style.display = 'flex';
   };
   window.closeQOReview = () => document.getElementById('qoReviewModal').style.display = 'none';
 
-  // ── Place quick order
+  // -- Place quick order
   window.placeQOOrder = async function() {
     const table = document.getElementById('qoTable').value.trim();
     const phone = document.getElementById('qoPhone').value.trim();
@@ -889,7 +890,7 @@ console.log('Full staff:', window.currentStaff);
     if (!qoCart.length) { window.showToast('Cart is empty','','error'); return; }
 
     const btn      = document.getElementById('qoPlaceBtn');
-    btn.disabled   = true; btn.textContent = 'Placing…';
+    btn.disabled   = true; btn.textContent = 'Placing�';
 
     const sb       = window.supabaseClient;
     const bid      = window.getActiveBranchId();
@@ -936,11 +937,11 @@ console.log('Full staff:', window.currentStaff);
     };
 
     const { error } = await sb.from('orders').insert(payload);
-    btn.disabled = false; btn.textContent = '🌿 Place Order';
+    btn.disabled = false; btn.textContent = '?? Place Order';
 
     if (error) { window.showToast('Failed to place order', error.message, 'error'); return; }
 
-    window.showToast('✅ Order Placed!', `${orderId} — Table ${table}`, 'success');
+    window.showToast('? Order Placed!', `${orderId} � Table ${table}`, 'success');
     window.logActivity && window.logActivity('new_order', `Order placed by waiter ${window.currentStaff?.name} for Table ${table}`, window.currentStaff?.name||'', bid);
 
     // Clear cart
@@ -960,7 +961,7 @@ console.log('Full staff:', window.currentStaff);
     switchTab('assignments', document.querySelector('.waiter-tab'));
   };
 
-  // ── My Report
+  // -- My Report
   function initRepDates() {
     const today = new Date().toLocaleDateString('en-CA', { timeZone:'Asia/Kolkata' });
     document.getElementById('repFrom').value = today;
@@ -1018,7 +1019,7 @@ console.log('Full staff:', window.currentStaff);
     document.getElementById('repDelivered').textContent   = delivered;
     document.getElementById('repMade').textContent        = made;
     document.getElementById('repAssigned').textContent    = assignedOrds;
-    document.getElementById('repAvgTime').textContent     = avgTime ? avgTime + ' min' : '—';
+    document.getElementById('repAvgTime').textContent     = avgTime ? avgTime + ' min' : '�';
 
     // Count transferred (assigned to me but then reassigned to someone else)
     const { data: transferred } = await sb.from('orders').select('id')
@@ -1039,7 +1040,7 @@ console.log('Full staff:', window.currentStaff);
     // Tables & Rooms served
     const tableMap = {};
     orders.filter(o=>o.status==='delivered'&&o.assigned_waiter_id===sid).forEach(o => {
-      const t = o.room_number ? '🛏️ Room ' + o.room_number : '🪑 Table ' + (o.table_number||'—');
+      const t = o.room_number ? '??? Room ' + o.room_number : '?? Table ' + (o.table_number||'�');
       if (!tableMap[t]) tableMap[t] = { count:0, revenue:0 };
       tableMap[t].count++;
       tableMap[t].revenue += parseFloat(o.total||0);
@@ -1055,7 +1056,7 @@ console.log('Full staff:', window.currentStaff);
       : `<div style="padding:20px;text-align:center;color:var(--text-dim);">No deliveries in this range</div>`;
   };
 
-  // ── Realtime
+  // -- Realtime
   function subscribeRealtime() {
     const sb  = window.supabaseClient;
     const sid = window.currentStaff?.staff_id;
@@ -1070,7 +1071,7 @@ console.log('Full staff:', window.currentStaff);
         if (!prev) {
           // New assignment!
           playBell();
-          window.showToast('🔔 New Assignment!', `Table ${payload.new.table_number} — ${payload.new.order_id}`, 'order', 8000);
+          window.showToast('?? New Assignment!', `Table ${payload.new.table_number} � ${payload.new.order_id}`, 'order', 8000);
         }
         await loadAssignments();
         await loadHistory();
@@ -1080,7 +1081,7 @@ console.log('Full staff:', window.currentStaff);
         filter: `assigned_waiter_id=eq.${sid}`
       }, async (payload) => {
         playBell();
-        window.showToast('🔔 New Assignment!', `Table ${payload.new.table_number} — ${payload.new.order_id}`, 'order', 8000);
+        window.showToast('?? New Assignment!', `Table ${payload.new.table_number} � ${payload.new.order_id}`, 'order', 8000);
         await loadAssignments();
       })
       .subscribe(s => { if(s==='SUBSCRIBED') window.setConnectionStatus('online'); });
@@ -1092,7 +1093,7 @@ console.log('Full staff:', window.currentStaff);
         filter: `collect_by_waiter_id=eq.${sid}`
       }, async (payload) => {
         playBell();
-        window.showToast('💰 Collect Payment!', `Table ${payload.new.table_number} — Rs. ${parseFloat(payload.new.total).toFixed(2)}`, 'warning', 10000);
+        window.showToast('?? Collect Payment!', `Table ${payload.new.table_number} � Rs. ${parseFloat(payload.new.total).toFixed(2)}`, 'warning', 10000);
         await loadAssignments();
       })
       .subscribe();
@@ -1105,16 +1106,16 @@ console.log('Full staff:', window.currentStaff);
     } catch(e) {}
   }
 
-  // ── Helpers
+  // -- Helpers
   function getElapsed(dateStr) {
-    if (!dateStr) return '—';
+    if (!dateStr) return '�';
     const mins = Math.floor((Date.now() - new Date(dateStr).getTime()) / 60000);
     if (mins < 1) return 'Just now';
     if (mins < 60) return `${mins}m ago`;
     return `${Math.floor(mins/60)}h ${mins%60}m ago`;
   }
 
-  // ── Tab switch
+  // -- Tab switch
   window.switchTab = function(tab, el) {
     document.querySelectorAll('.waiter-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));

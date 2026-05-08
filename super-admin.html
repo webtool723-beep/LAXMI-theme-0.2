@@ -71,13 +71,13 @@
     }
 
     .chart-bar {
-      fill: var(--green-dim);
+      fill: var(--accent-dim);
       transition: fill 0.2s;
       cursor: pointer;
     }
 
     .chart-bar:hover {
-      fill: var(--green-accent);
+      fill: var(--accent);
     }
 
     .chart-label {
@@ -89,7 +89,7 @@
     .chart-value {
       font-family: var(--font-mono);
       font-size: 10px;
-      fill: var(--green-bright);
+      fill: var(--accent);
     }
 
     .branch-cards-grid {
@@ -222,7 +222,7 @@
           <div class="stat-card">
             <div class="stat-label">Total Revenue Today</div>
             <div class="stat-value green" id="statTotalRev">Rs. 0</div>
-            <div class="stat-dot" style="background:var(--green-accent);"></div>
+            <div class="stat-dot" style="background:var(--accent);"></div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Total Orders Today</div>
@@ -981,7 +981,7 @@
           <span class="badge ${b.is_active ? 'badge-paid' : 'badge-rejected'}">${b.is_active ? 'Active' : 'Inactive'}</span>
         </div>
         <div class="branch-card-stats">
-          <div><span>Revenue</span><span style="color:var(--green-bright)">Rs. ${st.rev.toFixed(0)}</span></div>
+          <div><span>Revenue</span><span style="color:var(--accent)">Rs. ${st.rev.toFixed(0)}</span></div>
           <div><span>Orders</span><span>${st.orders}</span></div>
           <div><span>Pending</span><span style="${st.pending > 0 ? 'color:var(--gold)' : ''}">${st.pending}</span></div>
         </div>
@@ -1189,7 +1189,7 @@
         <td style="font-size:0.85rem;color:var(--text-dim);">${o.branches?.name || '—'}</td>
         <td><span style="font-family:var(--font-mono);font-size:0.8rem;">${o.order_id}</span></td>
         <td style="font-size:0.8rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${summary}</td>
-        <td><span style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${parseFloat(o.total).toFixed(2)}</span></td>
+        <td><span style="font-family:var(--font-mono);color:var(--accent);">Rs. ${parseFloat(o.total).toFixed(2)}</span></td>
         <td><span class="badge badge-${o.status}">${o.status}</span></td>
         <td><span class="badge ${o.payment_status === 'paid' ? 'badge-paid' : 'badge-unpaid'}">${o.payment_status}</span></td>
         <td style="color:var(--text-dim);font-size:0.8rem;">${time}</td>
@@ -1454,7 +1454,7 @@
         <tr>
           <td style="font-weight:500;">${i.name}</td>
           <td style="text-align:right;">${i.qty}</td>
-          <td style="text-align:right;color:var(--green-bright);">Rs. ${i.rev.toFixed(0)}</td>
+          <td style="text-align:right;color:var(--accent);">Rs. ${i.rev.toFixed(0)}</td>
         </tr>
       `).join('');
       }
@@ -1488,7 +1488,7 @@
         <tr>
           <td style="font-weight:500;">${b.name}</td>
           <td style="text-align:right;">${b.ords}</td>
-          <td style="text-align:right;color:var(--green-bright);">Rs. ${b.rev.toFixed(0)}</td>
+          <td style="text-align:right;color:var(--accent);">Rs. ${b.rev.toFixed(0)}</td>
           <td style="text-align:right;">${avgR} ${avgR !== '-' ? '⭐' : ''}</td>
         </tr>`;
         }).join('');
@@ -1527,7 +1527,7 @@
         <tr>
           <td style="font-weight:500;">${w.name}</td>
           <td style="text-align:right;">${w.ords}</td>
-          <td style="text-align:right;color:var(--green-bright);">Rs. ${w.rev.toFixed(0)}</td>
+          <td style="text-align:right;color:var(--accent);">Rs. ${w.rev.toFixed(0)}</td>
         </tr>`).join('');
       }
 
@@ -1575,7 +1575,7 @@
         if (i === 0) pathD += `M ${x} ${y} `;
         else pathD += `L ${x} ${y} `;
 
-        circles += `<circle cx="${x}" cy="${y}" r="4" fill="var(--green-accent)" stroke="var(--bg)" stroke-width="2"/>`;
+        circles += `<circle cx="${x}" cy="${y}" r="4" fill="var(--accent)" stroke="var(--bg)" stroke-width="2"/>`;
 
         // Add labels if not too many points (limit to ~7 labels max)
         if (days.length <= 10 || i % Math.ceil(days.length / 7) === 0 || i === days.length - 1) {
@@ -1590,8 +1590,8 @@
       svg.innerHTML = `
       <defs>
         <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="var(--green-accent)" stop-opacity="0.3"/>
-          <stop offset="100%" stop-color="var(--green-accent)" stop-opacity="0"/>
+          <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
         </linearGradient>
       </defs>
       <!-- Grid lines -->
@@ -1601,7 +1601,7 @@
       
       <!-- Chart Elements -->
       <path d="${bgPath}" fill="url(#trendGrad)" />
-      <path d="${pathD}" fill="none" stroke="var(--green-accent)" stroke-width="3" />
+      <path d="${pathD}" fill="none" stroke="var(--accent)" stroke-width="3" />
       ${circles}
       ${labels}
     `;
