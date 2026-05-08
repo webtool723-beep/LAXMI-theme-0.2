@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -547,7 +547,12 @@
     .btn-ghost:hover { background: var(--border-light); }
 
     /* ── RESPONSIVE ── */
+    .mobile-only { display: none !important; }
+    .mobile-only-flex { display: none !important; }
     @media (max-width: 600px) {
+      .desktop-only { display: none !important; }
+      .mobile-only { display: block !important; }
+      .mobile-only-flex { display: flex !important; }
       .header { padding: 0 14px; }
       .logo-text { font-size: 1.2rem; }
       .order-bar { padding: 12px 16px; }
@@ -578,10 +583,11 @@
 <!-- ── HEADER ── -->
 <header class="header">
   <div class="header-logo" style="display:flex; align-items:center; gap:16px;">
-    <div>
+    <div class="desktop-only">
       <div class="logo-text" id="uiRestName">🍃 LAXMI</div>
       <span class="logo-tag">Fine Dining</span>
     </div>
+    <div class="mobile-only" style="font-size:1.8rem; padding-right:8px;">🍃</div>
     <button onclick="window.location.href=window.location.pathname" style="background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.9); border:1px solid rgba(255,255,255,0.2); padding:6px 12px; border-radius:8px; font-size:0.75rem; font-weight:600; display:flex; align-items:center; gap:6px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'" title="Change Location">
       📍 <span id="uiLocationName" style="max-width:100px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Location</span> ▾
     </button>
@@ -609,6 +615,10 @@
 
 <!-- ── HERO ── -->
 <div class="hero">
+  <div class="mobile-only-flex" style="flex-direction:column; align-items:center; margin-bottom:12px;">
+    <div class="logo-text" id="uiRestNameMobile" style="font-size: 2rem;">🍃 LAXMI</div>
+    <span class="logo-tag" style="color:var(--gold); font-size: 0.9rem;">Fine Dining</span>
+  </div>
   <h1 class="hero-title">🍽️ Order Fresh & Delicious</h1>
   <p class="hero-sub">Crafted with love · Served with warmth</p>
 </div>
@@ -1335,7 +1345,9 @@
     if (s.restaurant_name) {
       document.title = s.restaurant_name + ' — Order Online';
       const uiName = document.getElementById('uiRestName');
-      if (uiName) uiName.textContent = '🍃 ' + s.restaurant_name;
+        const uiNameMob = document.getElementById('uiRestNameMobile');
+        if (uiName) uiName.textContent = '🍃 ' + s.restaurant_name;
+        if (uiNameMob) uiNameMob.textContent = '🍃 ' + s.restaurant_name;
     }
     
     // Also update Location Button using branch info
@@ -2330,7 +2342,9 @@
           }
           if (payload.new && payload.new.key === 'restaurant_name') {
              const uiName = document.getElementById('uiRestName');
-             if (uiName) uiName.textContent = '🍃 ' + payload.new.value;
+               const uiNameMob = document.getElementById('uiRestNameMobile');
+               if (uiName) uiName.textContent = '🍃 ' + payload.new.value;
+               if (uiNameMob) uiNameMob.textContent = '🍃 ' + payload.new.value;
              document.title = payload.new.value + ' — Order Online';
           }
         }
@@ -2512,4 +2526,7 @@
 
 </body>
 </html>
+
+
+
 
