@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -811,6 +811,7 @@
         <td>${b.city || '—'}</td>
         <td><span class="badge ${b.is_active ? 'badge-paid' : 'badge-rejected'}">${b.is_active ? 'Active' : 'Inactive'}</span></td>
         <td>${b._tableCount}</td>
+        <td>${b._roomCount}</td>
         <td>${b._staffCount}</td>
         <td>
           <button class="btn btn-secondary btn-sm" onclick="openBranchModal('${b.id}')">Edit</button>
@@ -1660,6 +1661,7 @@
 </body>
 
 </html>
+
 
 
 
