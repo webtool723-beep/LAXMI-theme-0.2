@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -290,13 +290,14 @@
                   <th>City</th>
                   <th>Status</th>
                   <th>Tables</th>
-                  <th>Staff</th>
+                    <th>Rooms</th>
+                    <th>Staff</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="branchesTableBody">
-                <tr>
-                  <td colspan="6" style="text-align:center;padding:30px;color:var(--text-dim);">Loading...</td>
+                  <tr>
+                    <td colspan="7" style="text-align:center;padding:30px;color:var(--text-dim);">Loading...</td>
                 </tr>
               </tbody>
             </table>
@@ -779,15 +780,18 @@
       // Fetch basic counts (tables & staff per branch) to display in the table
       for (let b of allBranches) {
         try {
-          const [{ count: tCount }, { count: sCount }] = await Promise.all([
-            sb.from('restaurant_tables').select('id', { count: 'exact', head: true }).eq('branch_id', b.id),
-            sb.from('staff').select('id', { count: 'exact', head: true }).eq('branch_id', b.id)
-          ]);
-          b._tableCount = tCount || 0;
-          b._staffCount = sCount || 0;
+          const [{ count: tCount }, { count: rCount }, { count: sCount }] = await Promise.all([
+              sb.from('restaurant_tables').select('id', { count: 'exact', head: true }).eq('branch_id', b.id).not('table_number', 'is', null),
+              sb.from('restaurant_tables').select('id', { count: 'exact', head: true }).eq('branch_id', b.id).not('room_number', 'is', null),
+              sb.from('staff').select('id', { count: 'exact', head: true }).eq('branch_id', b.id)
+            ]);
+            b._tableCount = tCount || 0;
+            b._roomCount = rCount || 0;
+            b._staffCount = sCount || 0;
         } catch (e) {
           b._tableCount = 0;
-          b._staffCount = 0;
+            b._roomCount = 0;
+            b._staffCount = 0;
         }
       }
 
@@ -798,7 +802,7 @@
     function renderBranchesTable() {
       const tbody = document.getElementById('branchesTableBody');
       if (!allBranches.length) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-dim);">No branches found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-dim);">No branches found.</td></tr>`;
         return;
       }
       tbody.innerHTML = allBranches.map(b => `
@@ -1656,6 +1660,11 @@
 </body>
 
 </html>
+
+
+
+
+
 
 
 
