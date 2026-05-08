@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -158,13 +158,18 @@
             <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-dim);">🔍</span>
             <input type="text" id="repOrderSearch" class="input" placeholder="Search order, table, phone…" oninput="filterReportOrders()" style="padding-left:36px;">
           </div>
-          <select id="repStatusFilter" class="input" style="max-width:140px;" onchange="filterReportOrders()">
-            <option value="all">All Status</option>
-            <option value="done">Done</option>
-            <option value="pending">Pending</option>
-            <option value="preparing">Preparing</option>
-            <option value="rejected">Rejected</option>
-          </select>
+            <select id="repTypeFilter" class="input" style="max-width:140px;" onchange="filterReportOrders()">
+              <option value="all">All Types</option>
+              <option value="table">Table Orders</option>
+              <option value="room">Room Orders</option>
+            </select>
+            <select id="repStatusFilter" class="input" style="max-width:140px;" onchange="filterReportOrders()">
+              <option value="all">All Status</option>
+              <option value="delivered">Delivered</option>
+              <option value="pending">Pending</option>
+              <option value="preparing">Preparing</option>
+              <option value="rejected">Rejected</option>
+            </select>
         </div>
         <div class="table-wrap">
           <table>
@@ -564,14 +569,16 @@
   window.filterReportOrders = function() {
     const search = document.getElementById('repOrderSearch').value.toLowerCase();
     const status = document.getElementById('repStatusFilter').value;
+    const type   = document.getElementById('repTypeFilter')?.value || 'all';
     filteredReportOrders = [...reportOrders].reverse().filter(o => {
       const matchSearch = !search ||
         o.order_id?.toLowerCase().includes(search) ||
         o.table_number?.toLowerCase().includes(search) ||
         o.room_number?.toLowerCase().includes(search) ||
         o.customer_phone?.includes(search);
-      const matchStatus = status==='all' || o.status===status;
-      return matchSearch && matchStatus;
+      const matchStatus = status==='all' || o.status===status || (status==='delivered' && o.status==='done');
+      const matchType   = type==='all' || (type==='room' && o.room_number) || (type==='table' && !o.room_number);
+      return matchSearch && matchStatus && matchType;
     });
     repPage = 1;
     renderReportOrders();
@@ -601,7 +608,7 @@
         <td style="font-family:var(--font-mono);">Rs. ${parseFloat(o.subtotal).toFixed(2)}</td>
         <td style="font-family:var(--font-mono);color:var(--gold);">Rs. ${gst}</td>
         <td style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${parseFloat(o.total).toFixed(2)}</td>
-        <td><span class="badge badge-${o.status}">${o.status}</span></td>
+        <td><span class="badge badge-${o.status === 'done' ? 'delivered' : o.status}">${o.status === 'done' ? 'delivered' : o.status}</span></td>
         <td><span class="badge ${o.payment_status==='paid'?'badge-paid':'badge-unpaid'}">${o.payment_status}</span></td>
         <td style="font-size:0.78rem;color:var(--text-dim);white-space:nowrap;">${dt}</td>
       </tr>`;

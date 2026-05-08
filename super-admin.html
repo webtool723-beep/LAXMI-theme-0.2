@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -317,8 +317,7 @@
                 <option value="superadmin">Superadmin</option>
                 <option value="admin">Admin</option>
                 <option value="manager">Manager</option>
-                <option value="kitchen">Kitchen</option><option value="waiter">Waiter</option>
-                <option value="waiter">Waiter</option>
+                <option value="kitchen">Kitchen</option>
               </select>
               <button class="btn btn-primary" onclick="openStaffModal()">+ Add Staff</button>
             </div>
@@ -356,12 +355,7 @@
             <select id="orderBranchFilter" class="input" style="max-width:160px;" onchange="filterOrders()">
               <option value="all">All Branches</option>
             </select>
-            <select id="orderTypeFilter" class="input" style="max-width:140px;" onchange="filterOrders()">
-              <option value="all">All Types</option>
-              <option value="table">Table Orders</option>
-              <option value="room">Room Orders</option>
-            </select>
-            <select id="orderTypeFilter" class="input" style="max-width:140px;" onchange="filterOrders()"><option value="all">All Types</option><option value="table">Table Orders</option><option value="room">Room Orders</option></select> <select id="orderStatusFilter" class="input" style="max-width:140px;" onchange="filterOrders()">
+            <select id="orderStatusFilter" class="input" style="max-width:140px;" onchange="filterOrders()">
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
               <option value="preparing">Preparing</option>
@@ -670,7 +664,7 @@
           <label class="input-label">Role</label>
           <select id="smRole" class="input">
             <option value="waiter">Waiter</option>
-            <option value="kitchen">Kitchen</option><option value="waiter">Waiter</option>
+            <option value="kitchen">Kitchen</option>
             <option value="manager">Manager</option>
             <option value="admin">Admin</option>
             <option value="superadmin">Superadmin</option>
@@ -1158,15 +1152,12 @@
       const search = document.getElementById('orderSearch')?.value?.toLowerCase() || '';
       const branch = document.getElementById('orderBranchFilter')?.value || 'all';
       const status = document.getElementById('orderStatusFilter')?.value || 'all';
-      const type = document.getElementById('orderTypeFilter')?.value || 'all';
-      const type = document.getElementById('orderTypeFilter')?.value || 'all';
 
       filteredOrders = allOrders.filter(o => {
         const matchSearch = !search || o.order_id?.toLowerCase().includes(search) || o.customer_phone?.includes(search);
         const matchBranch = branch === 'all' || o.branch_id == branch;
         const matchStatus = status === 'all' || o.status === status || (status === 'delivered' && o.status === 'done');
-        const matchType = type === 'all' || (type === 'room' && o.room_number) || (type === 'table' && !o.room_number);
-        return matchSearch && matchBranch && matchStatus && matchType;
+        return matchSearch && matchBranch && matchStatus;
       });
 
       ordersPage = 1;
