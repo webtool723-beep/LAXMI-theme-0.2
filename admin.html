@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -668,7 +668,8 @@
     tbody.innerHTML = orders.map(o => {
       const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
       const summary = items.map(i => `${i.emoji||''}${i.name}×${i.qty}`).join(', ');
-      const time = new Date(o.created_at).toLocaleTimeString('en-IN', { timeZone:'Asia/Kolkata', hour:'2-digit', minute:'2-digit' });
+      const dispStatus = o.status === 'done' ? 'delivered' : o.status;
+        const time = new Date(o.created_at).toLocaleTimeString('en-IN', { timeZone:'Asia/Kolkata', hour:'2-digit', minute:'2-digit' });
       return `<tr>
         <td><span style="font-family:var(--font-mono);font-size:0.82rem;">${o.order_id}</span></td>
         <td>${o.room_number ? 'R' + o.room_number : 'T' + (o.table_number || '—')}</td>
@@ -748,7 +749,8 @@
     tbody.innerHTML = page.map(o => {
       const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
       const summary = items.slice(0,2).map(i=>`${i.name}×${i.qty}`).join(', ') + (items.length>2?` +${items.length-2}`:'');
-      const time = new Date(o.created_at).toLocaleTimeString('en-IN', { timeZone:'Asia/Kolkata', hour:'2-digit', minute:'2-digit' });
+      const dispStatus = o.status === 'done' ? 'delivered' : o.status;
+        const time = new Date(o.created_at).toLocaleTimeString('en-IN', { timeZone:'Asia/Kolkata', hour:'2-digit', minute:'2-digit' });
       return `<tr>
         <td><span style="font-family:var(--font-mono);font-size:0.8rem;cursor:pointer;color:var(--green-bright);" onclick="openOrderDetail('${o.id}')">${o.order_id}</span></td>
         <td>${o.room_number ? 'R' + o.room_number : 'T' + (o.table_number || '—')}</td>
@@ -1127,4 +1129,5 @@
 </script>
 </body>
 </html>
+
 
