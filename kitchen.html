@@ -515,13 +515,13 @@
     }
     if (order.status === 'done') {
       return `
-        <span style="font-size:0.78rem;color:var(--green-bright);">✅ Ready — Waiter collecting</span>
+        <span style="font-size:0.78rem;color:var(--accent-bright);">✅ Ready — Waiter collecting</span>
         ${waiterTag}
       `;
     }
     if (order.status === 'delivered') {
       if (order.payment_status === 'paid') {
-        return `<span style="font-size:0.78rem;color:var(--green-bright);">🛎️ Delivered & Paid</span>`;
+        return `<span style="font-size:0.78rem;color:var(--accent-bright);">🛎️ Delivered & Paid</span>`;
       } else {
         return `<span style="font-size:0.78rem;color:var(--text-dim);">🛎️ Delivered — Awaiting payment</span>`;
       }
@@ -805,7 +805,7 @@
           <span>SGST @ ${half}%</span><span>Rs. ${parseFloat(order.sgst).toFixed(2)}</span></div>
         <div style="display:flex;justify-content:space-between;padding:6px 0 0;font-weight:700;font-size:1rem;border-top:1px solid var(--border);margin-top:6px;">
           <span>Total</span>
-          <span style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${parseFloat(order.total).toFixed(2)}</span>
+          <span style="font-family:var(--font-mono);color:var(--accent-bright);">Rs. ${parseFloat(order.total).toFixed(2)}</span>
         </div>
       </div>
       ${order.note ? `<div class="order-note" style="margin-top:12px;">📝 ${order.note}</div>` : ''}

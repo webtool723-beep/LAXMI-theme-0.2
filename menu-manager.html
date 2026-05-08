@@ -12,13 +12,13 @@
     .emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; max-height: 200px; overflow-y: auto; padding: 4px; }
     .emoji-btn { font-size: 1.4rem; padding: 6px; border-radius: 6px; background: var(--surface2); border: 1px solid transparent; cursor: pointer; text-align: center; transition: all 0.15s; }
     .emoji-btn:hover { background: var(--surface3); border-color: var(--border); }
-    .emoji-btn.selected { border-color: var(--green-accent); background: var(--green-dim); }
+    .emoji-btn.selected { border-color: var(--accent); background: var(--accent-dim); }
     .drag-handle { cursor: grab; color: var(--text-dim); padding: 0 8px; font-size: 1rem; }
     .drag-handle:active { cursor: grabbing; }
     .dragging { opacity: 0.5; }
-    .drag-over { border-top: 2px solid var(--green-accent); }
+    .drag-over { border-top: 2px solid var(--accent); }
     .bulk-bar {
-      background: var(--green-dim); border: 1px solid var(--green-accent);
+      background: var(--accent-dim); border: 1px solid var(--accent);
       border-radius: var(--radius); padding: 12px 16px;
       display: none; align-items: center; justify-content: space-between;
       gap: 12px; margin-bottom: 16px; flex-wrap: wrap;
@@ -126,7 +126,7 @@
       <div class="tab-panel" id="panel-items">
         <!-- Bulk bar -->
         <div class="bulk-bar" id="bulkBar">
-          <span style="color:var(--green-bright);font-size:0.875rem;">
+          <span style="color:var(--accent-bright);font-size:0.875rem;">
             <span id="bulkCount">0</span> item(s) selected
           </span>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -492,7 +492,7 @@ window.appInit = async function() {
           </div>
         </td>
         <td>${cat ? `<span class="chip">${cat.emoji} ${cat.name}</span>` : '<span style="color:var(--text-dim)">—</span>'}</td>
-        <td><span style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${parseFloat(item.price).toFixed(2)}</span></td>
+        <td><span style="font-family:var(--font-mono);color:var(--accent-bright);">Rs. ${parseFloat(item.price).toFixed(2)}</span></td>
         <td>
           <div style="display:flex;align-items:center;gap:5px;">
             <div class="veg-dot ${item.is_veg ? 'veg' : 'nonveg'}"></div>

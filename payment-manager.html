@@ -28,7 +28,7 @@
     .pay-order-id  { font-family:var(--font-mono); font-size:0.8rem; color:var(--text-mid); }
     .pay-table     { font-size:1.1rem; font-weight:700; color:var(--text); }
     .pay-items     { font-size:0.8rem; color:var(--text-dim); margin-bottom:8px; line-height:1.6; }
-    .pay-total     { font-family:var(--font-mono); font-size:1.1rem; color:var(--green-bright); font-weight:600; }
+    .pay-total     { font-family:var(--font-mono); font-size:1.1rem; color:var(--accent-bright); font-weight:600; }
     .pay-actions   { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
 
     /* Star rating */
@@ -45,7 +45,7 @@
       cursor:pointer; text-align:center; transition:all 0.2s;
     }
     .pay-method-btn:hover { border-color:var(--border-light); color:var(--text); }
-    .pay-method-btn.active { border-color:var(--green-accent); background:var(--green-dim); color:var(--green-bright); }
+    .pay-method-btn.active { border-color:var(--accent); background:var(--accent-dim); color:var(--accent-bright); }
 
     /* Review stars display */
     .review-stars { display:flex; gap:2px; }
@@ -55,8 +55,8 @@
 
     /* Collection request blink */
     @keyframes blink-gold {
-      0%,100% { box-shadow:0 0 0 0 rgba(255,193,7,0); border-color:var(--gold); }
-      50%      { box-shadow:0 0 0 6px rgba(255,193,7,0.2); border-color:var(--gold); }
+      0%,100% { box-shadow:0 0 0 0 rgba(255,179,71,0); border-color:var(--gold); }
+      50%      { box-shadow:0 0 0 6px rgba(255,179,71,0.2); border-color:var(--gold); }
     }
     .collect-blink { animation:blink-gold 1.5s infinite; }
   </style>
@@ -221,9 +221,9 @@
     </div>
 
     <!-- Amount display -->
-    <div style="background:var(--green-dim);border:1px solid rgba(76,175,80,0.3);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+    <div style="background:var(--accent-dim);border:1px solid rgba(255,106,0,0.3);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
       <span style="color:var(--text-mid);font-weight:600;">Amount to Collect</span>
-      <span style="font-family:var(--font-mono);font-size:1.4rem;color:var(--green-bright);font-weight:700;" id="payAmount">Rs. 0</span>
+      <span style="font-family:var(--font-mono);font-size:1.4rem;color:var(--accent-bright);font-weight:700;" id="payAmount">Rs. 0</span>
     </div>
 
     <!-- Send to waiter option -->
@@ -690,7 +690,7 @@
     const o = allOrders.find(x => x.id === orderId);
     document.getElementById('assignCollectInfo').innerHTML = `
       <strong>${o?.order_id}</strong> — ${o?.room_number ? 'Room ' + o.room_number : 'Table ' + (o?.table_number||'—')}<br>
-      Amount: <strong style="color:var(--green-bright)">Rs. ${parseFloat(o?.total||0).toFixed(2)}</strong>
+      Amount: <strong style="color:var(--accent-bright)">Rs. ${parseFloat(o?.total||0).toFixed(2)}</strong>
     `;
     document.getElementById('assignCollectModal').style.display = 'flex';
   };
@@ -757,7 +757,7 @@
       const matchOrder = allOrders.find(o => o.order_id === r.order_id);
       const ratedByVal = matchOrder?.rated_by || r.rated_by || null;
       const ratedBy = ratedByVal === 'customer'
-        ? `<span style="font-size:0.68rem;background:#e8f0e8;color:#2d7a2d;padding:2px 6px;border-radius:10px;font-weight:600;">📲 Customer</span>`
+        ? `<span style="font-size:0.68rem;background:var(--accent-dim);color:var(--accent);padding:2px 6px;border-radius:10px;font-weight:600;">📲 Customer</span>`
         : ratedByVal
           ? `<span style="font-size:0.68rem;background:var(--surface2);color:var(--text-dim);padding:2px 6px;border-radius:10px;font-weight:600;">👤 Staff</span>`
           : '';

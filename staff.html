@@ -13,7 +13,7 @@
     .role-matrix td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
     .role-matrix tr:last-child td { border-bottom:none; }
     .role-matrix tr:hover td { background:rgba(255,255,255,0.02); }
-    .perm-yes { color:var(--green-bright); font-size:1.1rem; }
+    .perm-yes { color:var(--accent-bright); font-size:1.1rem; }
     .perm-no  { color:var(--text-muted);   font-size:1.1rem; }
     .staff-avatar {
       width:38px; height:38px; border-radius:50%;
@@ -21,7 +21,7 @@
       font-weight:700; font-size:1rem; flex-shrink:0;
     }
     .invite-box {
-      background:var(--green-dim); border:1px solid var(--green-accent);
+      background:var(--accent-dim); border:1px solid var(--accent);
       border-radius:var(--radius); padding:16px 20px;
       display:flex; align-items:center; gap:12px; flex-wrap:wrap;
       margin-bottom:20px;
@@ -98,7 +98,7 @@
       <div class="invite-box">
         <span style="font-size:1.4rem;">💡</span>
         <div style="flex:1;">
-          <div style="font-weight:600;color:var(--green-bright);font-size:0.875rem;">How to add staff</div>
+          <div style="font-weight:600;color:var(--accent-bright);font-size:0.875rem;">How to add staff</div>
           <div style="font-size:0.8rem;color:var(--text-mid);margin-top:2px;">
             First take staff Firebase UID from <strong> Developer </strong>, then add them here with their Firebase UID and assign a role.
           </div>
@@ -322,7 +322,7 @@
     <!-- UID Helper -->
     <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-top:16px;font-size:0.82rem;color:var(--text-dim);line-height:1.7;">
       <strong style="color:var(--text-mid);">📋 How to get Firebase UID:</strong><br>
-      1. Go to <a href="#" target="_blank" style="color:var(--green-bright);">Contact Developer</a>
+      1. Go to <a href="#" target="_blank" style="color:var(--accent-bright);">Contact Developer</a>
       <br>
       2. Find the staff member's email<br>
       3. Paste the <strong style="color:var(--text);">User UID</strong> <br>
@@ -451,7 +451,7 @@ function canDelete(targetStaff) {
     }
 
     const roleColors = {
-      superadmin:'#ffc107', admin:'#f44336', manager:'#42a5f5',
+      superadmin:'#FFB347', admin:'#f44336', manager:'#42a5f5',
       kitchen:'#66bb6a', waiter:'#81c784'
     };
 

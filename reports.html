@@ -25,7 +25,7 @@
     .kpi-card  { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; }
     .kpi-label { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-dim); margin-bottom:6px; }
     .kpi-value { font-family:var(--font-mono); font-size:1.5rem; font-weight:500; color:var(--text); }
-    .kpi-value.green { color:var(--green-bright); }
+    .kpi-value.green { color:var(--accent-bright); }
     .kpi-value.gold  { color:var(--gold); }
     .kpi-value.blue  { color:var(--blue); }
     .kpi-value.red   { color:var(--red); }
@@ -36,9 +36,9 @@
     .top-item-rank { font-family:var(--font-mono); font-size:0.8rem; color:var(--text-dim); width:24px; }
     .top-item-bar-wrap { flex:1; }
     .top-item-bar-bg { background:var(--surface2); border-radius:4px; height:8px; overflow:hidden; }
-    .top-item-bar-fill { background:var(--green-accent); height:8px; border-radius:4px; transition:width 0.6s ease; }
+    .top-item-bar-fill { background:var(--accent); height:8px; border-radius:4px; transition:width 0.6s ease; }
     .top-item-name { font-size:0.875rem; font-weight:500; }
-    .top-item-stats { font-family:var(--font-mono); font-size:0.78rem; color:var(--green-bright); white-space:nowrap; }
+    .top-item-stats { font-family:var(--font-mono); font-size:0.78rem; color:var(--accent-bright); white-space:nowrap; }
   </style>
 </head>
 <body>
@@ -141,7 +141,7 @@
         <div class="chart-wrap">
           <div class="chart-title">
             <span>📈 Daily Revenue</span>
-            <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--green-bright);" id="revChartTotal">Rs. 0</span>
+            <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--accent-bright);" id="revChartTotal">Rs. 0</span>
           </div>
           <svg class="chart-svg" id="dailyRevenueChart" height="200" viewBox="0 0 700 200"></svg>
         </div>
@@ -349,7 +349,7 @@
   }
 
   // ── SVG Helpers
-  function buildBarChart(svgId, labels, values, W=700, H=160, color='var(--green-dim)', hoverColor='var(--green-accent)') {
+  function buildBarChart(svgId, labels, values, W=700, H=160, color='var(--accent-dim)', hoverColor='var(--accent)') {
     const svg    = document.getElementById(svgId); if(!svg) return;
     const maxVal = Math.max(...values, 1);
     const pad    = 36, barAreaH = H - 30;
@@ -379,7 +379,7 @@
       </rect>`;
       if (val > 0) {
         const dispVal = val>=1000 ? 'Rs. '+(val/1000).toFixed(1)+'k' : 'Rs. '+val.toFixed(0);
-        html += `<text x="${x+barW/2}" y="${y-4}" fill="var(--green-bright)" font-size="9" text-anchor="middle" font-family="DM Mono">${dispVal}</text>`;
+        html += `<text x="${x+barW/2}" y="${y-4}" fill="var(--accent-bright)" font-size="9" text-anchor="middle" font-family="DM Mono">${dispVal}</text>`;
       }
       // Label — rotate if many bars
       if (labels.length <= 14) {
@@ -494,12 +494,12 @@
       return `<tr>
         <td><strong>${table}</strong></td>
         <td style="font-family:var(--font-mono);">${data.orders}</td>
-        <td style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${data.revenue.toFixed(2)}</td>
+        <td style="font-family:var(--font-mono);color:var(--accent-bright);">Rs. ${data.revenue.toFixed(2)}</td>
         <td style="font-family:var(--font-mono);">Rs. ${avg}</td>
         <td>
           <div style="display:flex;align-items:center;gap:8px;">
             <div style="flex:1;background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;">
-              <div style="width:${pct}%;background:var(--green-accent);height:6px;border-radius:4px;"></div>
+              <div style="width:${pct}%;background:var(--accent);height:6px;border-radius:4px;"></div>
             </div>
             <span style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-dim);">${pct}%</span>
           </div>
@@ -558,7 +558,7 @@
           <td><span style="margin-right:6px;">${item.emoji}</span>${item.name}</td>
           <td><span class="chip">—</span></td>
           <td style="font-family:var(--font-mono);">${item.qty}</td>
-          <td style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${item.revenue.toFixed(2)}</td>
+          <td style="font-family:var(--font-mono);color:var(--accent-bright);">Rs. ${item.revenue.toFixed(2)}</td>
           <td style="font-family:var(--font-mono);">Rs. ${item.avgPrice.toFixed(2)}</td>
           <td style="font-family:var(--font-mono);">${item.orders}</td>
         </tr>`).join('')
@@ -607,7 +607,7 @@
         <td style="font-size:0.8rem;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${summary}</td>
         <td style="font-family:var(--font-mono);">Rs. ${parseFloat(o.subtotal).toFixed(2)}</td>
         <td style="font-family:var(--font-mono);color:var(--gold);">Rs. ${gst}</td>
-        <td style="font-family:var(--font-mono);color:var(--green-bright);">Rs. ${parseFloat(o.total).toFixed(2)}</td>
+        <td style="font-family:var(--font-mono);color:var(--accent-bright);">Rs. ${parseFloat(o.total).toFixed(2)}</td>
         <td><span class="badge badge-${o.status === 'done' ? 'delivered' : o.status}">${o.status === 'done' ? 'delivered' : o.status}</span></td>
         <td><span class="badge ${o.payment_status==='paid'?'badge-paid':'badge-unpaid'}">${o.payment_status}</span></td>
         <td style="font-size:0.78rem;color:var(--text-dim);white-space:nowrap;">${dt}</td>
