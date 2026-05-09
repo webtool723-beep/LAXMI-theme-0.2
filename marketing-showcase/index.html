@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Cucina RMS | Next-Gen Restaurant Management System</title>
+    <meta name="description" content="Upgrade your restaurant with the ultimate role-based Restaurant Management System. Secure, fast, and feature-rich for every staff member.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-main: #FFFFFF;
+            --text-muted: #A0AEC0;
+            --accent-1: #00F0FF; /* Neon Cyan */
+            --accent-2: #8A2BE2; /* Neon Purple */
+            --accent-3: #00FF87; /* Emerald */
+            --accent-4: #FF3366; /* Pink/Red */
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --font-sans: 'Outfit', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Mouse Glow Effect */
+        #mouse-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(138, 43, 226, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            transition: width 0.3s, height 0.3s;
+        }
+
+        /* Typography & Utilities */
+        h1, h2, h3 { line-height: 1.2; }
+        .text-gradient {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gradient-2 {
+            background: linear-gradient(135deg, var(--accent-3), var(--accent-1));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 20px rgba(0, 240, 255, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(0, 240, 255, 0.5); }
+            100% { box-shadow: 0 0 20px rgba(0, 240, 255, 0.2); }
+        }
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding-top: 80px;
+        }
+        .hero-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 30%, rgba(138, 43, 226, 0.2) 0%, var(--bg-color) 60%);
+            z-index: -1;
+        }
+        .hero h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
+            animation: slideUpFade 1s forwards;
+        }
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            animation: slideUpFade 1s 0.2s forwards;
+            opacity: 0;
+        }
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 36px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #000;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            animation: slideUpFade 1s 0.4s forwards;
+            opacity: 0;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--accent-3), var(--accent-1));
+            z-index: -1;
+            transition: opacity 0.3s;
+            opacity: 0;
+        }
+        .cta-btn:hover::before {
+            opacity: 1;
+        }
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 240, 255, 0.4);
+        }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        .section-header h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Security Layer Section */
+        .security-section {
+            padding: 120px 0;
+            background: linear-gradient(to bottom, transparent, rgba(255,51,102,0.05), transparent);
+        }
+        .security-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .security-visual {
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .shield-icon {
+            font-size: 150px;
+            color: var(--accent-4);
+            animation: float 6s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(255, 51, 102, 0.6));
+        }
+        .shield-ring {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border: 2px dashed rgba(255, 51, 102, 0.3);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+        .security-text h3 {
+            font-size: 2.5rem;
+            margin-bottom: 24px;
+            color: var(--accent-4);
+        }
+        .security-text p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        .security-list {
+            list-style: none;
+            margin-top: 30px;
+        }
+        .security-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            background: rgba(255, 51, 102, 0.05);
+            padding: 12px 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-4);
+        }
+
+        /* Roles & Layers Section */
+        .roles-section {
+            padding: 120px 0;
+        }
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%; width: 2px; height: 100%;
+            background: linear-gradient(to bottom, var(--accent-1), var(--accent-2), var(--accent-3));
+            transform: translateX(-50%);
+        }
+        .role-card-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 100px;
+            position: relative;
+        }
+        .role-card-wrapper:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        .role-card {
+            width: 45%;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+        .role-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .role-card:hover::before { opacity: 1; }
+        
+        .role-icon {
+            width: 64px; height: 64px;
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px;
+            margin-bottom: 24px;
+        }
+        
+        /* Specific Role Themes */
+        .super-admin .role-icon { background: rgba(138, 43, 226, 0.1); color: var(--accent-2); box-shadow: 0 0 20px rgba(138,43,226,0.3); }
+        .super-admin:hover { border-color: var(--accent-2); }
+        
+        .admin .role-icon { background: rgba(0, 240, 255, 0.1); color: var(--accent-1); box-shadow: 0 0 20px rgba(0,240,255,0.3); }
+        .admin:hover { border-color: var(--accent-1); }
+
+        .kitchen .role-icon { background: rgba(255, 140, 0, 0.1); color: #FF8C00; box-shadow: 0 0 20px rgba(255,140,0,0.3); }
+        .kitchen:hover { border-color: #FF8C00; }
+
+        .menu-manager .role-icon { background: rgba(0, 255, 135, 0.1); color: var(--accent-3); box-shadow: 0 0 20px rgba(0,255,135,0.3); }
+        .menu-manager:hover { border-color: var(--accent-3); }
+
+        .payment .role-icon { background: rgba(255, 215, 0, 0.1); color: #FFD700; box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .payment:hover { border-color: #FFD700; }
+
+        .waiter .role-icon { background: rgba(255, 51, 102, 0.1); color: var(--accent-4); box-shadow: 0 0 20px rgba(255,51,102,0.3); }
+        .waiter:hover { border-color: var(--accent-4); }
+
+        .customer .role-icon { background: rgba(255, 255, 255, 0.1); color: #FFF; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        .customer:hover { border-color: #FFF; }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%; top: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px; height: 24px;
+            background: var(--bg-color);
+            border: 4px solid var(--accent-1);
+            border-radius: 50%;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+        .role-card-wrapper:hover .timeline-dot {
+            transform: translate(-50%, -50%) scale(1.5);
+            box-shadow: 0 0 20px var(--accent-1);
+        }
+
+        .role-title {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .role-desc {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .feature-list {
+            list-style: none;
+        }
+        .feature-list li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .feature-list i {
+            color: var(--accent-3);
+            margin-top: 4px;
+        }
+
+        /* Kitchen Highlight (The Bell System) */
+        .bell-highlight {
+            background: linear-gradient(90deg, rgba(255,140,0,0.1), transparent);
+            border-left: 3px solid #FF8C00;
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 16px;
+            animation: pulseGlow 2s infinite;
+        }
+
+        /* Footer / Call to Action */
+        .footer-cta {
+            padding: 120px 0;
+            text-align: center;
+            background: linear-gradient(to top, rgba(0, 240, 255, 0.05), transparent);
+        }
+        .footer-cta h2 {
+            font-size: 4rem;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .timeline::before { left: 30px; }
+            .role-card { width: calc(100% - 80px); margin-left: 80px; }
+            .role-card-wrapper:nth-child(even) { flex-direction: row; }
+            .timeline-dot { left: 30px; }
+            .security-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 3.5rem; }
+        }
+
+        /* Loader Screen */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: var(--bg-color);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1), visibility 0.8s;
+            padding: 20px;
+            text-align: center;
+        }
+        .loader-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        .loader-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 0;
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulseGlowText 2s infinite alternate;
+        }
+        .loader-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            letter-spacing: 2px;
+            font-family: var(--font-sans);
+            text-transform: uppercase;
+        }
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 240, 255, 0.1);
+            border-top-color: var(--accent-1);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 24px;
+        }
+        @keyframes pulseGlowText {
+            0% { opacity: 0.8; filter: drop-shadow(0 0 10px rgba(0,240,255,0.2)); transform: scale(0.98); }
+            100% { opacity: 1; filter: drop-shadow(0 0 25px rgba(0,240,255,0.6)); transform: scale(1); }
+        }
+        @keyframes spin { 
+            to { transform: rotate(360deg); } 
+        }
+        
+        body.loaded {
+            overflow: auto;
+        }
+        body.loading {
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .loader-title { font-size: 2rem; }
+            .loader-subtitle { font-size: 0.9rem; letter-spacing: 1px; }
+        }
+        /* Kitchen Animation Loop */
+        .kitchen-anim-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 50px;
+            margin: 40px auto 50px;
+            animation: slideUpFade 1s 0.6s forwards;
+            opacity: 0;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 30px 60px;
+            border-radius: 100px;
+            width: fit-content;
+            backdrop-filter: blur(10px);
+        }
+
+        .k-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .k-receipt {
+            font-size: 3rem;
+            color: var(--accent-1);
+            animation: receiptFly 3s infinite cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .k-pot {
+            font-size: 4rem;
+            color: #FF8C00;
+            position: relative;
+            animation: potBounce 3s infinite ease-in-out;
+            z-index: 2;
+        }
+
+        .k-steam {
+            position: absolute;
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.7);
+            font-family: var(--font-sans);
+            top: -20px;
+            left: 20px;
+            opacity: 0;
+            z-index: 1;
+        }
+        .k-steam-1 { animation: steamRise 1.5s infinite linear; }
+        .k-steam-2 { animation: steamRise 1.5s infinite linear 0.75s; left: 35px; }
+
+        .k-bell {
+            font-size: 3.5rem;
+            color: var(--accent-4);
+            animation: bellRing 3s infinite ease-in-out;
+            transform-origin: top center;
+        }
+
+        .k-arrow {
+            color: rgba(255,255,255,0.1);
+            font-size: 2rem;
+            animation: arrowPulse 3s infinite;
+        }
+        .k-arrow-1 { animation-delay: 0s; }
+        .k-arrow-2 { animation-delay: 1.5s; }
+
+        @keyframes receiptFly {
+            0% { transform: translateX(-40px) translateY(10px) rotate(-20deg) scale(0.5); opacity: 0; }
+            15% { opacity: 1; transform: translateX(-10px) translateY(-20px) rotate(0deg) scale(1.1); filter: drop-shadow(0 0 15px var(--accent-1)); }
+            30% { transform: translateX(20px) translateY(10px) rotate(20deg) scale(0.5); opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        @keyframes potBounce {
+            0%, 25% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 10px rgba(255, 140, 0, 0.2)); }
+            30% { transform: translateY(8px) scale(1.05); filter: drop-shadow(0 0 40px rgba(255, 140, 0, 0.8)); }
+            35% { transform: translateY(-5px) scale(0.98); }
+            45%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 10px rgba(255, 140, 0, 0.2)); }
+        }
+
+        @keyframes steamRise {
+            0% { transform: translateY(0) scale(0.8) rotate(-10deg); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-40px) scale(1.5) rotate(10deg); opacity: 0; }
+        }
+
+        @keyframes bellRing {
+            0%, 40% { transform: rotate(0); filter: drop-shadow(0 0 0px transparent); }
+            45% { transform: rotate(20deg); filter: drop-shadow(0 0 30px var(--accent-4)); color: #FFF; }
+            50% { transform: rotate(-20deg); }
+            55% { transform: rotate(15deg); }
+            60% { transform: rotate(-10deg); }
+            65%, 100% { transform: rotate(0); filter: drop-shadow(0 0 0px transparent); color: var(--accent-4); }
+        }
+        
+        @keyframes arrowPulse {
+            0%, 100% { color: rgba(255,255,255,0.1); transform: translateX(0); }
+            20% { color: var(--accent-3); transform: translateX(10px); }
+            40% { color: rgba(255,255,255,0.1); transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            .kitchen-anim-wrapper { gap: 20px; padding: 20px 30px; margin-top: 30px; margin-bottom: 40px; border-radius: 50px; flex-wrap: wrap; }
+            .k-pot { font-size: 3rem; }
+            .k-receipt { font-size: 2rem; }
+            .k-bell { font-size: 2.5rem; }
+            .k-arrow { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body class="loading">
+
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <h1 class="loader-title">Restaurant Management System</h1>
+            <p class="loader-subtitle">powered by WeCraft Studio</p>
+        </div>
+    </div>
+
+    <div id="mouse-glow"></div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="container">
+            <h1>The Intelligent <br><span class="text-gradient">Restaurant Ecosystem</span></h1>
+            <p>Elevate your hospitality with our multi-layered, role-based Restaurant Management System. Flawless synchronization from the customer's phone to the kitchen's bell.</p>
+            
+            <div class="kitchen-anim-wrapper">
+                <div class="k-item k-receipt"><i class="ph-fill ph-receipt"></i></div>
+                <div class="k-item k-arrow k-arrow-1"><i class="ph-bold ph-caret-right"></i></div>
+                <div class="k-item k-pot">
+                    <div class="k-steam k-steam-1">~</div>
+                    <div class="k-steam k-steam-2">~</div>
+                    <i class="ph-fill ph-cooking-pot"></i>
+                </div>
+                <div class="k-item k-arrow k-arrow-2"><i class="ph-bold ph-caret-right"></i></div>
+                <div class="k-item k-bell"><i class="ph-fill ph-bell-ringing"></i></div>
+            </div>
+
+            <a href="#features" class="cta-btn">
+                Explore the System <i class="ph-bold ph-arrow-down"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Security Section -->
+    <section class="security-section reveal">
+        <div class="container">
+            <div class="security-grid">
+                <div class="security-visual">
+                    <div class="shield-ring"></div>
+                    <i class="ph-fill ph-shield-check shield-icon"></i>
+                </div>
+                <div class="security-text">
+                    <h3>Ironclad <span style="color:var(--text-main);">Security & Access Control</span></h3>
+                    <p>In a fast-paced restaurant, data integrity is paramount. Our system is built on a strict Role-Based Access Control (RBAC) architecture.</p>
+                    <p>Every login is verified. Every action is audited. No crossover, no confusion.</p>
+                    
+                    <ul class="security-list">
+                        <li><i class="ph-bold ph-lock-key"></i> Waiters cannot access Admin settings.</li>
+                        <li><i class="ph-bold ph-lock-key"></i> Kitchen staff are locked to the Kitchen Dashboard.</li>
+                        <li><i class="ph-bold ph-lock-key"></i> Payment Managers cannot edit the core Menu.</li>
+                        <li><i class="ph-bold ph-shield-star"></i> Only the Super Admin holds the master keys.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roles & Layers Section -->
+    <section id="features" class="roles-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Layer by Layer <span class="text-gradient-2">Excellence</span></h2>
+                <p>Every person on your team has unique qualities. Our system provides them with dedicated tools tailored exactly to their function.</p>
+            </div>
+
+            <div class="timeline">
+                
+                <!-- Super Admin -->
+                <div class="role-card-wrapper reveal">
+                    <div class="timeline-dot" style="border-color: var(--accent-2);"></div>
+                    <div class="role-card super-admin">
+                        <div class="role-icon"><i class="ph-bold ph-crown"></i></div>
+                        <h3 class="role-title">Super Admin</h3>
+                        <p class="role-desc">The ultimate overseer. Total control over the entire restaurant chain.</p>
+                        <ul class="feature-list">
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Absolute Access:</strong> Has access to every single feature enabled on the platform.</li>
+                            <li><i class="ph-bold ph-buildings"></i> <strong>Chain Overview:</strong> Monitor multiple branches simultaneously.</li>
+                            <li><i class="ph-bold ph-users-three"></i> <strong>Global Staffing:</strong> Add and manage staff across all locations.</li>
+                            <li><i class="ph-bold ph-chart-line-up"></i> <strong>Master Reports:</strong> Deep analytics and overriding administrative power.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Admin -->
+                <div class="role-card-wrapper reveal">
+                    <div class="timeline-dot" style="border-color: var(--accent-1);"></div>
+                    <div class="role-card admin">
+                        <div class="role-icon"><i class="ph-bold ph-user-gear"></i></div>
+                        <h3 class="role-title">Admin</h3>
+                        <p class="role-desc">The branch commander. Focused on optimizing a specific location.</p>
+                        <ul class="feature-list">
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Table & Room Management:</strong> Create and organize tables and VIP rooms.</li>
+                            <li><i class="ph-bold ph-qr-code"></i> <strong>Smart QR Generation:</strong> Generate specific QR codes for instant table ordering.</li>
+                            <li><i class="ph-bold ph-list-dashes"></i> <strong>Order Oversight:</strong> View and manage all incoming order details in real-time.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Kitchen -->
+                <div class="role-card-wrapper reveal">
+                    <div class="timeline-dot" style="border-color: #FF8C00;"></div>
+                    <div class="role-card kitchen">
+                        <div class="role-icon"><i class="ph-bold ph-cooking-pot"></i></div>
+                        <h3 class="role-title">Kitchen</h3>
+                        <p class="role-desc">The heart of the restaurant. Focused strictly on culinary execution.</p>
+                        <ul class="feature-list">
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Live Order Cards:</strong> Incoming orders appear instantly as distinct cards.</li>
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Waiter Assignment:</strong> Call specific waiters when a dish is ready for pickup.</li>
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Daily Summaries:</strong> Track total dishes prepared throughout the shift.</li>
+                        </ul>
+                        <div class="bell-highlight">
+                            <strong><i class="ph-fill ph-bell-ringing"></i> Intelligent Audio Alerts:</strong> Whenever a new order card appears on the kitchen dashboard, a high-fidelity bell sound alerts the chefs instantly. No missed orders, ever.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Menu Manager -->
+                <div class="role-card-wrapper reveal">
+                    <div class="timeline-dot" style="border-color: var(--accent-3);"></div>
+                    <div class="role-card menu-manager">
+                        <div class="role-icon"><i class="ph-bold ph-book-open-text"></i></div>
+                        <h3 class="role-title">Menu Manager</h3>
+                        <p class="role-desc">The digital curator. Keeping the offerings fresh and accurate.</p>
+                        <ul class="feature-list">
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Category Control:</strong> Add, edit, or delete entire menu categories effortlessly.</li>
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Item Engineering:</strong> Update pricing, descriptions, and dietary tags.</li>
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Availability Toggles:</strong> Instantly mark items out-of-stock across the entire system.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Payment Manager -->
+                <div class="role-card-wrapper reveal">
+                    <div class="timeline-dot" style="border-color: #FFD700;"></div>
+                    <div class="role-card payment">
+                        <div class="role-icon"><i class="ph-bold ph-wallet"></i></div>
+                        <h3 class="role-title">Payment Manager</h3>
+                        <p class="role-desc">The financial hub. Secure, fast, and transparent transactions.</p>
+                        <ul class="feature-list">
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Direct Collections:</strong> Process digital and cash payments directly.</li>
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Waiter Dispatch:</strong> Send specific waiters to tables to collect cash.</li>
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Instant Receipts:</strong> Confirm payments and close out orders seamlessly.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Waiter -->
+                <div class="role-card-wrapper reveal">
+                    <div class="timeline-dot" style="border-color: var(--accent-4);"></div>
+                    <div class="role-card waiter">
+                        <div class="role-icon"><i class="ph-bold ph-tray"></i></div>
+                        <h3 class="role-title">Waiter</h3>
+                        <p class="role-desc">The frontline experience. Empowered with mobility and speed.</p>
+                        <ul class="feature-list">
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Mobile Dashboard:</strong> Take and review orders right at the table.</li>
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Table Transfers:</strong> Effortlessly transfer a guest's order to a different table or waiter.</li>
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Direct Kitchen Link:</strong> Fire orders directly to the kitchen with zero delay.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Customer -->
+                <div class="role-card-wrapper reveal">
+                    <div class="timeline-dot" style="border-color: #FFF;"></div>
+                    <div class="role-card customer">
+                        <div class="role-icon"><i class="ph-bold ph-smiley"></i></div>
+                        <h3 class="role-title">Customer Experience</h3>
+                        <p class="role-desc">The user portal (index.html). A frictionless dining journey.</p>
+                        <ul class="feature-list">
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>QR & Location Selection:</strong> Scan to order dine-in, or use the interactive map for delivery.</li>
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Premium Notification Drawer:</strong> Guests receive live status updates right on their phones.</li>
+                            <li><i class="ph-bold ph-check-circle"></i> <strong>Cart & Checkout:</strong> Beautiful, intuitive browsing of categories and secure checkout.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer CTA -->
+    <section class="footer-cta reveal">
+        <div class="container">
+            <h2 class="text-gradient">Upgrade to the Next Level</h2>
+            <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 40px;">Stop managing chaos. Start orchestrating success. Hook your customers with speed, and empower your staff with clarity.</p>
+            <button class="cta-btn" style="font-size: 1.3rem; padding: 20px 48px;">
+                Deploy System Now <i class="ph-bold ph-rocket-launch"></i>
+            </button>
+        </div>
+    </section>
+
+    <script>
+        // Mouse Glow Effect
+        const glow = document.getElementById('mouse-glow');
+        document.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+        
+        // Add subtle expansion on click
+        document.addEventListener('mousedown', () => {
+            glow.style.width = '500px';
+            glow.style.height = '500px';
+        });
+        document.addEventListener('mouseup', () => {
+            glow.style.width = '400px';
+            glow.style.height = '400px';
+        });
+
+        // Scroll Reveal Animation
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        
+        // Loader Logic
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            // Minimum delay to let the user see the beautiful animation
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+                
+                // Trigger reveal animations after loader fades out
+                setTimeout(reveal, 100); 
+            }, 1500); 
+        });
+    </script>
+</body>
+</html>
